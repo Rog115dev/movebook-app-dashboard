@@ -1,0 +1,951 @@
+{
+  "version": 6,
+  "updatedAt": "2026-10-13T09:41:29.104Z",
+  "colors": {
+    "bg": "#0A0A0A",
+    "bgElevated": "#141414",
+    "bgCard": "#161616",
+    "white": "#FFFFFF",
+    "whiteMuted": "rgba(255,255,255,0.78)",
+    "whiteDim": "rgba(255,255,255,0.52)",
+    "orange": "#FF7800",
+    "orangeHot": "#FF8F2A",
+    "gold": "#FF7800",
+    "goldSoft": "#FFA04A",
+    "red": "#E53935",
+    "border": "rgba(255,255,255,0.16)",
+    "borderSoft": "rgba(255,120,0,0.28)",
+    "borderOrange": "rgba(255,120,0,0.95)",
+    "black": "#000000"
+  },
+  "home": {
+    "brandPrefix": "Movesbook ",
+    "brandAccent": "FitnessAI",
+    "brandSuffix": " Coach",
+    "subtitle": "Comprehensive solutions for modern sport & fitness digital challenges",
+    "heroCaption": "Push Beyond Yesterday...",
+    "heroHeadline": "BREAK ALL LIMITS",
+    "featuresCta": "Feature of the version",
+    "signupCta": "Sign up",
+    "loginPrompt": "Already have an account?",
+    "loginLink": "Log in",
+    "confidenceText": "We're confident that our premium experience will exceed your expectations, providing you with unique value and satisfaction.\n\nEnjoy the freedom to explore everything we offer, because your satisfaction is, and always will be, our top priority.",
+    "heroImageUrl": "/uploads/hero-break-limits.jpg"
+  },
+  "whyChooseMe": {
+    "title": "Why Choose Me",
+    "reasons": [
+      {
+        "key": "results",
+        "icon": "trending-up",
+        "title": "Results-Driven",
+        "body": "Focused on achieving measurable sport technology results through optimal solutions"
+      },
+      {
+        "key": "quality",
+        "icon": "shield-checkmark-outline",
+        "title": "Quality Assured",
+        "body": "Committed to excellence with rigorous testings, code reviews, and adherence to best sport industry practices"
+      },
+      {
+        "key": "collab",
+        "icon": "people-outline",
+        "title": "Collaborative",
+        "body": "Ability to listen to user needs and a collaborative approach to ensure project success and users satisfaction"
+      }
+    ]
+  },
+  "plans": [
+    {
+      "id": "free",
+      "name": "Free",
+      "price": "€ 0",
+      "subtitle": "Use version free for 1 month",
+      "cta": "Choose Free",
+      "features": [
+        {
+          "text": "Develop aerobic workout plan",
+          "included": true
+        },
+        {
+          "text": "Develop weight training plan",
+          "included": true
+        },
+        {
+          "text": "Develop circuit training plan",
+          "included": true
+        },
+        {
+          "text": "Develop weekly weight training plan",
+          "included": true
+        },
+        {
+          "text": "Download user-shared workout plans",
+          "included": true
+        },
+        {
+          "text": "Store workouts in the Annual Work Plan",
+          "included": true
+        },
+        {
+          "text": "Store completed work",
+          "included": true
+        }
+      ]
+    },
+    {
+      "id": "basic",
+      "name": "Basic",
+      "price": "€ 24",
+      "subtitle": "Annual subscription",
+      "cta": "Choose Basic",
+      "features": [
+        {
+          "text": "All the features of the version free +",
+          "included": true
+        },
+        {
+          "text": "500+ exercises with videos",
+          "included": true
+        },
+        {
+          "text": "Version for male and female",
+          "included": true
+        },
+        {
+          "text": "View targeted muscle areas",
+          "included": true
+        },
+        {
+          "text": "Completed workouts compared with planned",
+          "included": true
+        },
+        {
+          "text": "Access to library of workouts",
+          "included": true
+        },
+        {
+          "text": "Create your own preparatory cycles",
+          "included": true
+        }
+      ]
+    },
+    {
+      "id": "premium",
+      "name": "Premium",
+      "price": "€ 73",
+      "subtitle": "Annual subscription",
+      "cta": "Choose Premium",
+      "features": [
+        {
+          "text": "All the features of the version Basic +",
+          "included": true
+        },
+        {
+          "text": "Statistics on workouts planned",
+          "included": true
+        },
+        {
+          "text": "Statistics on workouts completed",
+          "included": true
+        },
+        {
+          "text": "Full editor new exercises",
+          "included": true
+        },
+        {
+          "text": "Training assistant",
+          "included": true
+        },
+        {
+          "text": "Analyze your diet",
+          "included": true
+        },
+        {
+          "text": "Create meal plans",
+          "included": true
+        },
+        {
+          "text": "Body analysis",
+          "included": true
+        }
+      ]
+    },
+    {
+      "id": "pro",
+      "name": "Pro",
+      "price": "€ 109",
+      "subtitle": "Annual subscription",
+      "cta": "Choose Pro",
+      "badge": "Personal avatar",
+      "badgeDenied": true,
+      "features": [
+        {
+          "text": "All the features of the version Premium +",
+          "included": true
+        },
+        {
+          "text": "Gps workout map tracking",
+          "included": true
+        },
+        {
+          "text": "Heart rate tracking",
+          "included": true
+        },
+        {
+          "text": "Advanced statistical analysis",
+          "included": true
+        },
+        {
+          "text": "Actions tracking",
+          "included": true
+        },
+        {
+          "text": "Intelligent assistant",
+          "included": true
+        },
+        {
+          "text": "Self-learning",
+          "included": true
+        },
+        {
+          "text": "AI training plan development",
+          "included": true,
+          "highlight": true
+        }
+      ]
+    }
+  ],
+  "paywall": {
+    "brandName": "FitAI Coach",
+    "brandSub": "Personalized AI Workout Plans",
+    "claimDiscountLabel": "Claim discount",
+    "startTrialLabel": "Start Free Trial",
+    "trustLine1": "No commitment. Cancel anytime!",
+    "trustLine2": "Top quality workouts",
+    "athletesImageUrl": "/uploads/paywall-athletes.jpg",
+    "features": [
+      {
+        "icon": "clipboard-outline",
+        "label": "Customized plans"
+      },
+      {
+        "icon": "headset-outline",
+        "label": "24/7 AI trainer"
+      },
+      {
+        "icon": "stats-chart-outline",
+        "label": "Progress tracking"
+      },
+      {
+        "icon": "barbell-outline",
+        "label": "Unlimited workouts"
+      }
+    ],
+    "tiers": [
+      {
+        "id": "1m",
+        "label": "1 month",
+        "price": "0.50 USD",
+        "original": "$28.00 USD",
+        "discount": "50% OFF",
+        "popular": false
+      },
+      {
+        "id": "3m",
+        "label": "3 months",
+        "price": "0.35 USD",
+        "original": "$32.55 USD",
+        "discount": "65% OFF",
+        "popular": false
+      },
+      {
+        "id": "12m",
+        "label": "12 months",
+        "price": "0.20 USD",
+        "original": "$73.00 USD",
+        "discount": "80% OFF",
+        "popular": true
+      }
+    ]
+  },
+  "trainPro": {
+    "headlineOrange": "TRAIN PRO: ",
+    "headlineWhite": "Unleash Your Potential.",
+    "trialCta": "START FREE TRIAL",
+    "downloadCta": "DOWNLOAD APP",
+    "bannerImageUrl": "/uploads/train-pro.jpg",
+    "stats": [
+      {
+        "icon": "barbell-outline",
+        "value": "100,000+",
+        "label": "TOTAL WORKOUTS COMPLETED"
+      },
+      {
+        "icon": "flame-outline",
+        "value": "2,000,000+",
+        "label": "CALORIES BURNED"
+      },
+      {
+        "icon": "hourglass-outline",
+        "value": "10,000+",
+        "label": "HOURS TRAINED"
+      },
+      {
+        "icon": "happy-outline",
+        "value": "98%",
+        "label": "USER SATISFACTION"
+      }
+    ],
+    "features": [
+      {
+        "icon": "clipboard-outline",
+        "title": "PERSONALIZED PLANS",
+        "description": "Customer personalized plans"
+      },
+      {
+        "icon": "stats-chart-outline",
+        "title": "TRACK PROGRESS",
+        "description": "Analyze and track progress to gain insights"
+      },
+      {
+        "icon": "person-outline",
+        "title": "COACH FUNCTION",
+        "description": "Get the most out of your coaching"
+      },
+      {
+        "icon": "nutrition-outline",
+        "title": "NUTRITION GUIDANCE",
+        "description": "Let your nutrition guide help you"
+      }
+    ],
+    "faqs": [
+      {
+        "q": "How does personalized training work?",
+        "a": "FitAI builds plans from your goals, level, and available equipment, then adapts as you complete sessions."
+      },
+      {
+        "q": "Can I customize my program?",
+        "a": "Yes. Swap exercises, adjust volume, and save your own cycles while keeping coach-ready structure."
+      },
+      {
+        "q": "Can I track nutrition?",
+        "a": "Premium and Pro unlock meal plans, diet analysis, and body metrics alongside workout tracking."
+      },
+      {
+        "q": "What's included in the trial?",
+        "a": "Start with the Free month: aerobic, weights, circuit planning, shared downloads, and annual plan storage."
+      }
+    ],
+    "guaranteeBest": "Best",
+    "guaranteeLine": "SATISFACTION GUARANTEE",
+    "secureText": "Pay Safe & Secure"
+  },
+  "images": [
+    {
+      "id": "hero",
+      "key": "heroBreakLimits",
+      "label": "Home hero image",
+      "url": "/uploads/hero-break-limits.jpg"
+    },
+    {
+      "id": "paywall",
+      "key": "paywallAthletes",
+      "label": "Paywall athletes image",
+      "url": "/uploads/paywall-athletes.jpg"
+    },
+    {
+      "id": "train",
+      "key": "trainPro",
+      "label": "TRAIN PRO banner",
+      "url": "/uploads/train-pro.jpg"
+    }
+  ],
+  "i18n": {
+    "defaultLocale": "en",
+    "locales": [
+      "en",
+      "fr",
+      "de",
+      "it",
+      "es",
+      "hi",
+      "pt",
+      "ru",
+      "zh",
+      "ar",
+      "ja",
+      "id"
+    ],
+    "strings": {
+      "en": {
+        "home.brandPrefix": "Movesbook ",
+        "home.brandAccent": "FitnessAI",
+        "home.brandSuffix": " Coach",
+        "home.subtitle": "Comprehensive solutions for modern sport & fitness digital challenges",
+        "home.heroCaption": "Push Beyond Yesterday...",
+        "home.heroHeadline": "BREAK ALL LIMITS",
+        "home.featuresCta": "Feature of the version",
+        "home.signupCta": "Sign up",
+        "home.loginPrompt": "Already have an account?",
+        "home.loginLink": "Log in",
+        "home.confidenceText": "We're confident that our premium experience will exceed your expectations, providing you with unique value and satisfaction.\n\nEnjoy the freedom to explore everything we offer, because your satisfaction is, and always will be, our top priority.",
+        "whyChoose.title": "Why Choose Me",
+        "whyChoose.results.title": "Results-Driven",
+        "whyChoose.results.body": "Focused on achieving measurable sport technology results through optimal solutions",
+        "whyChoose.quality.title": "Quality Assured",
+        "whyChoose.quality.body": "Committed to excellence with rigorous testings, code reviews, and adherence to best sport industry practices",
+        "whyChoose.collab.title": "Collaborative",
+        "whyChoose.collab.body": "Ability to listen to user needs and a collaborative approach to ensure project success and users satisfaction",
+        "plan.free.name": "Free",
+        "plan.free.subtitle": "Use version free for 1 month",
+        "plan.free.cta": "Choose Free",
+        "plan.free.feature.0": "Develop aerobic workout plan",
+        "plan.free.feature.1": "Develop weight training plan",
+        "plan.free.feature.2": "Develop circuit training plan",
+        "plan.free.feature.3": "Develop weekly weight training plan",
+        "plan.free.feature.4": "Download user-shared workout plans",
+        "plan.free.feature.5": "Store workouts in the Annual Work Plan",
+        "plan.free.feature.6": "Store completed work",
+        "plan.basic.name": "Basic",
+        "plan.basic.subtitle": "Annual subscription",
+        "plan.basic.cta": "Choose Basic",
+        "plan.basic.feature.0": "All the features of the version free +",
+        "plan.basic.feature.1": "500+ exercises with videos",
+        "plan.basic.feature.2": "Version for male and female",
+        "plan.basic.feature.3": "View targeted muscle areas",
+        "plan.basic.feature.4": "Completed workouts compared with planned",
+        "plan.basic.feature.5": "Access to library of workouts",
+        "plan.basic.feature.6": "Create your own preparatory cycles",
+        "plan.premium.name": "Premium",
+        "plan.premium.subtitle": "Annual subscription",
+        "plan.premium.cta": "Choose Premium",
+        "plan.premium.feature.0": "All the features of the version Basic +",
+        "plan.premium.feature.1": "Statistics on workouts planned",
+        "plan.premium.feature.2": "Statistics on workouts completed",
+        "plan.premium.feature.3": "Full editor new exercises",
+        "plan.premium.feature.4": "Training assistant",
+        "plan.premium.feature.5": "Analyze your diet",
+        "plan.premium.feature.6": "Create meal plans",
+        "plan.premium.feature.7": "Body analysis",
+        "plan.pro.name": "Pro",
+        "plan.pro.subtitle": "Annual subscription",
+        "plan.pro.cta": "Choose Pro",
+        "plan.pro.badge": "Personal avatar",
+        "plan.pro.feature.0": "All the features of the version Premium +",
+        "plan.pro.feature.1": "Gps workout map tracking",
+        "plan.pro.feature.2": "Heart rate tracking",
+        "plan.pro.feature.3": "Advanced statistical analysis",
+        "plan.pro.feature.4": "Actions tracking",
+        "plan.pro.feature.5": "Intelligent assistant",
+        "plan.pro.feature.6": "Self-learning",
+        "plan.pro.feature.7": "AI training plan development",
+        "paywall.brandName": "FitAI Coach",
+        "paywall.brandSub": "Personalized AI Workout Plans",
+        "paywall.claimDiscountLabel": "Claim discount",
+        "paywall.startTrialLabel": "Start Free Trial",
+        "paywall.trustLine1": "No commitment. Cancel anytime!",
+        "paywall.trustLine2": "Top quality workouts",
+        "paywall.feature.0": "Customized plans",
+        "paywall.feature.1": "24/7 AI trainer",
+        "paywall.feature.2": "Progress tracking",
+        "paywall.feature.3": "Unlimited workouts",
+        "paywall.tier.1m.label": "1 month",
+        "paywall.tier.1m.discount": "50% OFF",
+        "paywall.tier.3m.label": "3 months",
+        "paywall.tier.3m.discount": "65% OFF",
+        "paywall.tier.12m.label": "12 months",
+        "paywall.tier.12m.discount": "80% OFF",
+        "trainPro.headlineOrange": "TRAIN PRO: ",
+        "trainPro.headlineWhite": "Unleash Your Potential.",
+        "trainPro.trialCta": "START FREE TRIAL",
+        "trainPro.downloadCta": "DOWNLOAD APP",
+        "trainPro.guaranteeBest": "Best",
+        "trainPro.guaranteeLine": "SATISFACTION GUARANTEE",
+        "trainPro.secureText": "Pay Safe & Secure",
+        "trainPro.stat.0.value": "100,000+",
+        "trainPro.stat.0.label": "TOTAL WORKOUTS COMPLETED",
+        "trainPro.stat.1.value": "2,000,000+",
+        "trainPro.stat.1.label": "CALORIES BURNED",
+        "trainPro.stat.2.value": "10,000+",
+        "trainPro.stat.2.label": "HOURS TRAINED",
+        "trainPro.stat.3.value": "98%",
+        "trainPro.stat.3.label": "USER SATISFACTION",
+        "trainPro.feature.0.title": "PERSONALIZED PLANS",
+        "trainPro.feature.0.description": "Customer personalized plans",
+        "trainPro.feature.1.title": "TRACK PROGRESS",
+        "trainPro.feature.1.description": "Analyze and track progress to gain insights",
+        "trainPro.feature.2.title": "COACH FUNCTION",
+        "trainPro.feature.2.description": "Get the most out of your coaching",
+        "trainPro.feature.3.title": "NUTRITION GUIDANCE",
+        "trainPro.feature.3.description": "Let your nutrition guide help you",
+        "trainPro.faq.0.q": "How does personalized training work?",
+        "trainPro.faq.0.a": "FitAI builds plans from your goals, level, and available equipment, then adapts as you complete sessions.",
+        "trainPro.faq.1.q": "Can I customize my program?",
+        "trainPro.faq.1.a": "Yes. Swap exercises, adjust volume, and save your own cycles while keeping coach-ready structure.",
+        "trainPro.faq.2.q": "Can I track nutrition?",
+        "trainPro.faq.2.a": "Premium and Pro unlock meal plans, diet analysis, and body metrics alongside workout tracking.",
+        "trainPro.faq.3.q": "What's included in the trial?",
+        "trainPro.faq.3.a": "Start with the Free month: aerobic, weights, circuit planning, shared downloads, and annual plan storage."
+      },
+      "fr": {},
+      "de": {},
+      "it": {},
+      "es": {},
+      "hi": {},
+      "pt": {},
+      "ru": {},
+      "zh": {},
+      "ar": {},
+      "ja": {},
+      "id": {}
+    },
+    "meta": {
+      "en": {
+        "home.brandPrefix": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "home.brandAccent": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "home.brandSuffix": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "home.subtitle": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "home.heroCaption": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "home.heroHeadline": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "home.featuresCta": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "home.signupCta": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "home.loginPrompt": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "home.loginLink": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "home.confidenceText": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "whyChoose.title": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "whyChoose.results.title": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "whyChoose.results.body": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "whyChoose.quality.title": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "whyChoose.quality.body": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "whyChoose.collab.title": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "whyChoose.collab.body": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.free.name": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.free.subtitle": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.free.cta": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.free.feature.0": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.free.feature.1": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.free.feature.2": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.free.feature.3": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.free.feature.4": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.free.feature.5": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.free.feature.6": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.basic.name": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.basic.subtitle": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.basic.cta": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.basic.feature.0": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.basic.feature.1": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.basic.feature.2": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.basic.feature.3": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.basic.feature.4": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.basic.feature.5": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.basic.feature.6": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.premium.name": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.premium.subtitle": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.premium.cta": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.premium.feature.0": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.premium.feature.1": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.premium.feature.2": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.premium.feature.3": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.premium.feature.4": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.premium.feature.5": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.premium.feature.6": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.premium.feature.7": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.pro.name": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.pro.subtitle": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.pro.cta": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.pro.badge": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.pro.feature.0": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.pro.feature.1": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.pro.feature.2": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.pro.feature.3": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.pro.feature.4": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.pro.feature.5": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.pro.feature.6": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "plan.pro.feature.7": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "paywall.brandName": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "paywall.brandSub": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "paywall.claimDiscountLabel": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "paywall.startTrialLabel": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "paywall.trustLine1": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "paywall.trustLine2": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "paywall.feature.0": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "paywall.feature.1": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "paywall.feature.2": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "paywall.feature.3": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "paywall.tier.1m.label": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "paywall.tier.1m.discount": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "paywall.tier.3m.label": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "paywall.tier.3m.discount": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "paywall.tier.12m.label": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "paywall.tier.12m.discount": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.headlineOrange": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.headlineWhite": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.trialCta": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.downloadCta": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.guaranteeBest": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.guaranteeLine": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.secureText": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.stat.0.value": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.stat.0.label": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.stat.1.value": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.stat.1.label": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.stat.2.value": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.stat.2.label": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.stat.3.value": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.stat.3.label": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.feature.0.title": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.feature.0.description": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.feature.1.title": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.feature.1.description": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.feature.2.title": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.feature.2.description": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.feature.3.title": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.feature.3.description": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.faq.0.q": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.faq.0.a": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.faq.1.q": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.faq.1.a": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.faq.2.q": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.faq.2.a": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.faq.3.q": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        },
+        "trainPro.faq.3.a": {
+          "source": "source",
+          "updatedAt": "2026-10-13T09:41:29.104Z"
+        }
+      },
+      "fr": {},
+      "de": {},
+      "it": {},
+      "es": {},
+      "hi": {},
+      "pt": {},
+      "ru": {},
+      "zh": {},
+      "ar": {},
+      "ja": {},
+      "id": {}
+    }
+  }
+}
