@@ -42,7 +42,7 @@ const SECTIONS = [
   {
     href: '/dashboard/images',
     title: 'Images',
-    desc: 'Hero, paywall, TRAIN PRO banners',
+    desc: '1–9 images per section, fixed or random rotate',
   },
 ];
 

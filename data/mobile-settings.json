@@ -1,6 +1,6 @@
 {
-  "version": 25,
-  "updatedAt": "2026-10-14T15:57:48.008Z",
+  "version": 27,
+  "updatedAt": "2026-10-14T17:41:09.605Z",
   "defaultLocale": "en",
   "locales": [
     "en",
@@ -23,7 +23,7 @@
       "common.menu": "Menu",
       "common.language": "Language",
       "common.chooseLanguage": "Choose language",
-      "home.brandPrefix": "Movesbook ",
+      "home.brandPrefix": "Movesbook12",
       "home.brandAccent": "FitAI",
       "home.brandSuffix": " Coach",
       "home.subtitle": "Comprehensive solutions for modern sport & fitness digital challenges",
@@ -157,8 +157,8 @@
     "black": "#000000"
   },
   "home": {
-    "brandPrefix": "Movesbook ",
-    "brandAccent": "FitnessAI",
+    "brandPrefix": "Movesbook12",
+    "brandAccent": "FitAI",
     "brandSuffix": " Coach",
     "subtitle": "Comprehensive solutions for modern sport & fitness digital challenges",
     "heroCaption": "Push Beyond Yesterday...",
@@ -457,6 +457,7 @@
         "description": "Let your nutrition guide help you"
       }
     ],
+    "faqTitle": "FAQ",
     "faqs": [
       {
         "q": "How does personalized training work?",

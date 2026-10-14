@@ -122,6 +122,26 @@ export type ImageAsset = {
   url: string;
 };
 
+export const IMAGE_SECTION_KEYS = ['hero', 'paywall', 'trainPro'] as const;
+export type ImageSectionKey = (typeof IMAGE_SECTION_KEYS)[number];
+
+export const ROTATE_DELAYS = [3, 5, 7, 10, 15] as const;
+export type RotateDelaySec = (typeof ROTATE_DELAYS)[number];
+
+export type ImagePoolItem = {
+  id: string;
+  url: string;
+};
+
+/** Per-screen image pool: 1–9 images, select 1 (fixed) or 2+ (random rotate). */
+export type ImageSectionConfig = {
+  key: ImageSectionKey;
+  label: string;
+  items: ImagePoolItem[];
+  selectedIds: string[];
+  rotateDelaySec: RotateDelaySec;
+};
+
 export type MobileAppSettings = {
   version: number;
   updatedAt: string;
@@ -138,5 +158,7 @@ export type MobileAppSettings = {
   plans: PlanSettings[];
   paywall: PaywallSettings;
   trainPro: TrainProSettings;
+  /** @deprecated Prefer imageSections; kept for legacy clients */
   images: ImageAsset[];
+  imageSections: ImageSectionConfig[];
 };

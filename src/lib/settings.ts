@@ -2,6 +2,11 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { createDefaultSettings } from './defaults';
 import { LOCALES, mergeI18n, resolveStrings, type LocaleCode } from './i18n';
+import {
+  migrateImageSections,
+  syncLegacyImages,
+  syncPrimaryUrls,
+} from './imageSections';
 import type { MobileAppSettings } from './types';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
@@ -9,6 +14,8 @@ const SETTINGS_PATH = path.join(DATA_DIR, 'mobile-settings.json');
 
 function normalize(settings: MobileAppSettings): MobileAppSettings {
   const defaults = createDefaultSettings();
+  const imageSections = migrateImageSections(settings);
+  const primary = syncPrimaryUrls(imageSections);
   return {
     ...defaults,
     ...settings,
@@ -16,7 +23,11 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
     locales: settings.locales?.length ? settings.locales : [...LOCALES],
     i18n: mergeI18n(settings.i18n),
     colors: { ...defaults.colors, ...(settings.colors || {}) },
-    home: { ...defaults.home, ...(settings.home || {}) },
+    home: {
+      ...defaults.home,
+      ...(settings.home || {}),
+      heroImageUrl: primary.heroImageUrl || defaults.home.heroImageUrl,
+    },
     whyChooseMe: {
       ...defaults.whyChooseMe,
       ...(settings.whyChooseMe || {}),
@@ -34,6 +45,8 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
       tiers: settings.paywall?.tiers?.length
         ? settings.paywall.tiers
         : defaults.paywall.tiers,
+      athletesImageUrl:
+        primary.athletesImageUrl || defaults.paywall.athletesImageUrl,
     },
     trainPro: {
       ...defaults.trainPro,
@@ -49,8 +62,11 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
       faqs: Array.isArray(settings.trainPro?.faqs)
         ? settings.trainPro.faqs
         : defaults.trainPro.faqs,
+      bannerImageUrl:
+        primary.bannerImageUrl || defaults.trainPro.bannerImageUrl,
     },
-    images: settings.images?.length ? settings.images : defaults.images,
+    imageSections,
+    images: syncLegacyImages(imageSections),
   };
 }
 

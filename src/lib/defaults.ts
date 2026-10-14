@@ -1,5 +1,9 @@
 import type { MobileAppSettings } from './types';
 import { createDefaultI18n, LOCALES } from './i18n';
+import {
+  createDefaultImageSections,
+  syncLegacyImages,
+} from './imageSections';
 
 export function createDefaultSettings(): MobileAppSettings {
   return {
@@ -252,25 +256,17 @@ export function createDefaultSettings(): MobileAppSettings {
       guaranteeLine: 'SATISFACTION GUARANTEE',
       secureText: 'Pay Safe & Secure',
     },
-    images: [
-      {
-        id: 'hero',
-        key: 'heroBreakLimits',
-        label: 'Home hero image',
-        url: '/uploads/hero-break-limits.jpg',
-      },
-      {
-        id: 'paywall',
-        key: 'paywallAthletes',
-        label: 'Paywall athletes image',
-        url: '/uploads/paywall-athletes.jpg',
-      },
-      {
-        id: 'train',
-        key: 'trainPro',
-        label: 'TRAIN PRO banner',
-        url: '/uploads/train-pro.jpg',
-      },
-    ],
+    imageSections: createDefaultImageSections({
+      hero: '/uploads/hero-break-limits.jpg',
+      paywall: '/uploads/paywall-athletes.jpg',
+      trainPro: '/uploads/train-pro.jpg',
+    }),
+    images: syncLegacyImages(
+      createDefaultImageSections({
+        hero: '/uploads/hero-break-limits.jpg',
+        paywall: '/uploads/paywall-athletes.jpg',
+        trainPro: '/uploads/train-pro.jpg',
+      })
+    ),
   };
 }
