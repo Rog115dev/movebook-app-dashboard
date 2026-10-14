@@ -1,6 +1,6 @@
 {
-  "version": 27,
-  "updatedAt": "2026-10-14T17:41:09.605Z",
+  "version": 28,
+  "updatedAt": "2026-10-14T22:56:32.385Z",
   "defaultLocale": "en",
   "locales": [
     "en",
@@ -480,6 +480,54 @@
     "guaranteeLine": "SATISFACTION GUARANTEE",
     "secureText": "Pay Safe & Secure"
   },
+  "imageSections": [
+    {
+      "key": "hero",
+      "label": "Home hero image",
+      "items": [
+        {
+          "id": "hero-1",
+          "url": "/uploads/hero-break-limits.jpg"
+        },
+        {
+          "id": "hero-mv8plncv-mh7xc",
+          "url": "/uploads/hero-new-1792018592382.jpg"
+        }
+      ],
+      "selectedIds": [
+        "hero-1"
+      ],
+      "rotateDelaySec": 5
+    },
+    {
+      "key": "paywall",
+      "label": "Paywall athletes image",
+      "items": [
+        {
+          "id": "paywall-1",
+          "url": "/uploads/paywall-athletes.jpg"
+        }
+      ],
+      "selectedIds": [
+        "paywall-1"
+      ],
+      "rotateDelaySec": 5
+    },
+    {
+      "key": "trainPro",
+      "label": "TRAIN PRO banner",
+      "items": [
+        {
+          "id": "trainPro-1",
+          "url": "/uploads/train-pro.jpg"
+        }
+      ],
+      "selectedIds": [
+        "trainPro-1"
+      ],
+      "rotateDelaySec": 5
+    }
+  ],
   "images": [
     {
       "id": "hero",
@@ -494,7 +542,7 @@
       "url": "/uploads/paywall-athletes.jpg"
     },
     {
-      "id": "train",
+      "id": "trainPro",
       "key": "trainPro",
       "label": "TRAIN PRO banner",
       "url": "/uploads/train-pro.jpg"
