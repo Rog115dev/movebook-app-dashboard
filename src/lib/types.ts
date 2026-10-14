@@ -108,6 +108,7 @@ export type TrainProSettings = {
   bannerImageUrl: string;
   stats: TrainStat[];
   features: TrainFeature[];
+  faqTitle: string;
   faqs: FaqItem[];
   guaranteeBest: string;
   guaranteeLine: string;

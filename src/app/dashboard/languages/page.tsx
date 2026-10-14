@@ -40,6 +40,17 @@ export default function LanguagesPage() {
   }, [locale, settings]);
 
   const group = I18N_GROUPS.find((g) => g.id === groupId) ?? I18N_GROUPS[0];
+  const groupKeys = useMemo(() => {
+    if (groupId !== 'faq' || !settings) return group.keys;
+    const fromSettings = Object.keys(settings.i18n?.en || {}).filter(
+      (k) => k === 'train.faqTitle' || /^train\.faq\d+[QA]$/.test(k)
+    );
+    return Array.from(new Set([...group.keys, ...fromSettings])).sort((a, b) => {
+      if (a === 'train.faqTitle') return -1;
+      if (b === 'train.faqTitle') return 1;
+      return a.localeCompare(b, undefined, { numeric: true });
+    });
+  }, [group.keys, groupId, settings]);
   const progress = useMemo(
     () => localeProgress(settings?.i18n, locale),
     [settings, locale]
@@ -147,7 +158,10 @@ export default function LanguagesPage() {
       </div>
 
       <div className="mt-6 space-y-5">
-        {group.keys.map((key) => (
+        {groupKeys.map((key) => {
+          const enRef =
+            settings.i18n?.en?.[key] || ENGLISH_STRINGS[key] || '';
+          return (
           <div
             key={key}
             className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4"
@@ -160,7 +174,7 @@ export default function LanguagesPage() {
             </div>
             {locale !== 'en' ? (
               <p className="mb-3 whitespace-pre-wrap rounded-lg bg-zinc-950 px-3 py-2 text-sm text-zinc-400">
-                {ENGLISH_STRINGS[key]}
+                {enRef}
               </p>
             ) : null}
             <Field
@@ -168,12 +182,13 @@ export default function LanguagesPage() {
               value={draft[key] || ''}
               onChange={(v) => setKey(key, v)}
               multiline={
-                (draft[key] || ENGLISH_STRINGS[key] || '').length > 60 ||
-                (ENGLISH_STRINGS[key] || '').includes('\n')
+                (draft[key] || enRef || '').length > 60 ||
+                (enRef || '').includes('\n')
               }
             />
           </div>
-        ))}
+          );
+        })}
       </div>
 
       <SaveBar

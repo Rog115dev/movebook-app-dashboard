@@ -1,6 +1,6 @@
 {
-  "version": 11,
-  "updatedAt": "2026-10-14T15:32:28.769Z",
+  "version": 25,
+  "updatedAt": "2026-10-14T15:57:48.008Z",
   "defaultLocale": "en",
   "locales": [
     "en",
@@ -24,7 +24,7 @@
       "common.language": "Language",
       "common.chooseLanguage": "Choose language",
       "home.brandPrefix": "Movesbook ",
-      "home.brandAccent": "FitAIess",
+      "home.brandAccent": "FitAI",
       "home.brandSuffix": " Coach",
       "home.subtitle": "Comprehensive solutions for modern sport & fitness digital challenges",
       "home.heroHeadline": "BREAK ALL LIMITS",
@@ -113,7 +113,21 @@
       "auth.loginFailed": "Login failed",
       "auth.checkCredentials": "Please check your credentials."
     },
-    "fr": {},
+    "fr": {
+      "home.brandPrefix": "",
+      "home.videoSoon": "",
+      "home.menuSoon": "",
+      "home.confidenceText": "",
+      "home.loginLink": "",
+      "home.loginPrompt": "",
+      "home.signupCta": "",
+      "home.featuresCta": "",
+      "home.heroCaption": "",
+      "home.heroHeadline": "",
+      "home.subtitle": "",
+      "home.brandSuffix": "",
+      "home.brandAccent": ""
+    },
     "de": {},
     "it": {},
     "es": {},

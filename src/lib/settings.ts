@@ -44,7 +44,9 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
       features: settings.trainPro?.features?.length
         ? settings.trainPro.features
         : defaults.trainPro.features,
-      faqs: settings.trainPro?.faqs?.length
+      faqTitle:
+        settings.trainPro?.faqTitle?.trim() || defaults.trainPro.faqTitle,
+      faqs: Array.isArray(settings.trainPro?.faqs)
         ? settings.trainPro.faqs
         : defaults.trainPro.faqs,
     },
@@ -209,6 +211,7 @@ export function buildLocalizedConfig(
         title: s(`train.feat${i + 1}Title`, f.title),
         description: s(`train.feat${i + 1}Desc`, f.description),
       })),
+      faqTitle: s('train.faqTitle', settings.trainPro.faqTitle),
       faqs: settings.trainPro.faqs.map((f, i) => ({
         q: s(`train.faq${i + 1}Q`, f.q),
         a: s(`train.faq${i + 1}A`, f.a),

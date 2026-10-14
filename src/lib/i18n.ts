@@ -159,7 +159,19 @@ export const I18N_GROUPS: { id: string; label: string; keys: string[] }[] = [
   {
     id: 'train',
     label: 'TRAIN PRO',
-    keys: Object.keys(ENGLISH_STRINGS).filter((k) => k.startsWith('train.')),
+    keys: Object.keys(ENGLISH_STRINGS).filter(
+      (k) =>
+        k.startsWith('train.') &&
+        k !== 'train.faqTitle' &&
+        !/^train\.faq\d+[QA]$/.test(k)
+    ),
+  },
+  {
+    id: 'faq',
+    label: 'FAQ',
+    keys: Object.keys(ENGLISH_STRINGS).filter(
+      (k) => k === 'train.faqTitle' || /^train\.faq\d+[QA]$/.test(k)
+    ),
   },
   {
     id: 'features',

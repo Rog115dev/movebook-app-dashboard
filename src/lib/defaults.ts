@@ -229,6 +229,7 @@ export function createDefaultSettings(): MobileAppSettings {
           description: 'Let your nutrition guide help you',
         },
       ],
+      faqTitle: 'FAQ',
       faqs: [
         {
           q: 'How does personalized training work?',

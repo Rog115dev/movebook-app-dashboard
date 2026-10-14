@@ -15,6 +15,11 @@ const SECTIONS = [
     desc: 'Titles, CTAs, confidence text',
   },
   {
+    href: '/dashboard/faq',
+    title: 'FAQ',
+    desc: 'Questions and answers on TRAIN PRO',
+  },
+  {
     href: '/dashboard/languages',
     title: 'Languages',
     desc: 'Manual translations for 12 locales',
