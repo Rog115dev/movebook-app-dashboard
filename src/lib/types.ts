@@ -1,3 +1,5 @@
+import type { I18nMap, LocaleCode } from './i18n';
+
 export type ColorSettings = {
   bg: string;
   bgElevated: string;
@@ -122,6 +124,10 @@ export type ImageAsset = {
 export type MobileAppSettings = {
   version: number;
   updatedAt: string;
+  defaultLocale: LocaleCode;
+  locales: LocaleCode[];
+  /** Manual translations keyed by locale then string key */
+  i18n: I18nMap;
   colors: ColorSettings;
   home: HomeSettings;
   whyChooseMe: {

@@ -7,6 +7,7 @@ const LINKS = [
   { href: '/dashboard', label: 'Overview' },
   { href: '/dashboard/colors', label: 'Colors' },
   { href: '/dashboard/home', label: 'Home content' },
+  { href: '/dashboard/languages', label: 'Languages' },
   { href: '/dashboard/plans', label: 'Plans' },
   { href: '/dashboard/paywall', label: 'Paywall' },
   { href: '/dashboard/train-pro', label: 'TRAIN PRO' },

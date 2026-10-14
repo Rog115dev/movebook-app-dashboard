@@ -32,8 +32,31 @@ export default function HomePageEditor() {
       await saveSettings({
         home,
         whyChooseMe: { title, reasons },
+        // Keep English i18n keys in sync with Home editor
+        i18n: {
+          en: {
+            'home.brandPrefix': home.brandPrefix,
+            'home.brandAccent': home.brandAccent,
+            'home.brandSuffix': home.brandSuffix,
+            'home.subtitle': home.subtitle,
+            'home.heroHeadline': home.heroHeadline,
+            'home.heroCaption': home.heroCaption,
+            'home.featuresCta': home.featuresCta,
+            'home.signupCta': home.signupCta,
+            'home.loginPrompt': home.loginPrompt,
+            'home.loginLink': home.loginLink,
+            'home.confidenceText': home.confidenceText,
+            'why.title': title,
+            'why.resultsTitle': reasons[0]?.title || '',
+            'why.resultsBody': reasons[0]?.body || '',
+            'why.qualityTitle': reasons[1]?.title || '',
+            'why.qualityBody': reasons[1]?.body || '',
+            'why.collabTitle': reasons[2]?.title || '',
+            'why.collabBody': reasons[2]?.body || '',
+          },
+        },
       });
-      setMessage('Home content saved.');
+      setMessage('Home content saved (English translations updated).');
     } catch {
       setMessage('Save failed.');
     } finally {
@@ -47,7 +70,8 @@ export default function HomePageEditor() {
     <div className="mx-auto max-w-3xl">
       <h1 className="text-3xl font-semibold">Home content</h1>
       <p className="mt-2 text-zinc-400">
-        Titles, CTAs, hero copy, and Why Choose Me cards.
+        English source copy for home. Translate other languages under{' '}
+        <span className="text-[#FF7800]">Languages</span>.
       </p>
 
       <div className="mt-6 grid gap-4">

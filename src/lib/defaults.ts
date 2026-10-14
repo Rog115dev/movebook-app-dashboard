@@ -1,9 +1,13 @@
 import type { MobileAppSettings } from './types';
+import { createDefaultI18n, LOCALES } from './i18n';
 
 export function createDefaultSettings(): MobileAppSettings {
   return {
     version: 1,
     updatedAt: new Date().toISOString(),
+    defaultLocale: 'en',
+    locales: [...LOCALES],
+    i18n: createDefaultI18n(),
     colors: {
       bg: '#0A0A0A',
       bgElevated: '#141414',

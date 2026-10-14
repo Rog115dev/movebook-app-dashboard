@@ -1,16 +1,72 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import { createDefaultSettings } from './defaults';
+import { LOCALES, mergeI18n, resolveStrings, type LocaleCode } from './i18n';
 import type { MobileAppSettings } from './types';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 const SETTINGS_PATH = path.join(DATA_DIR, 'mobile-settings.json');
 
+function normalize(settings: MobileAppSettings): MobileAppSettings {
+  const defaults = createDefaultSettings();
+  return {
+    ...defaults,
+    ...settings,
+    defaultLocale: settings.defaultLocale || 'en',
+    locales: settings.locales?.length ? settings.locales : [...LOCALES],
+    i18n: mergeI18n(settings.i18n),
+    colors: { ...defaults.colors, ...(settings.colors || {}) },
+    home: { ...defaults.home, ...(settings.home || {}) },
+    whyChooseMe: {
+      ...defaults.whyChooseMe,
+      ...(settings.whyChooseMe || {}),
+      reasons: settings.whyChooseMe?.reasons?.length
+        ? settings.whyChooseMe.reasons
+        : defaults.whyChooseMe.reasons,
+    },
+    plans: settings.plans?.length ? settings.plans : defaults.plans,
+    paywall: {
+      ...defaults.paywall,
+      ...(settings.paywall || {}),
+      features: settings.paywall?.features?.length
+        ? settings.paywall.features
+        : defaults.paywall.features,
+      tiers: settings.paywall?.tiers?.length
+        ? settings.paywall.tiers
+        : defaults.paywall.tiers,
+    },
+    trainPro: {
+      ...defaults.trainPro,
+      ...(settings.trainPro || {}),
+      stats: settings.trainPro?.stats?.length
+        ? settings.trainPro.stats
+        : defaults.trainPro.stats,
+      features: settings.trainPro?.features?.length
+        ? settings.trainPro.features
+        : defaults.trainPro.features,
+      faqs: settings.trainPro?.faqs?.length
+        ? settings.trainPro.faqs
+        : defaults.trainPro.faqs,
+    },
+    images: settings.images?.length ? settings.images : defaults.images,
+  };
+}
+
 export async function readSettings(): Promise<MobileAppSettings> {
   await fs.mkdir(DATA_DIR, { recursive: true });
   try {
     const raw = await fs.readFile(SETTINGS_PATH, 'utf8');
-    return JSON.parse(raw) as MobileAppSettings;
+    const parsed = JSON.parse(raw) as MobileAppSettings;
+    const normalized = normalize(parsed);
+    // Persist migration if i18n was missing
+    if (!parsed.i18n) {
+      await fs.writeFile(
+        SETTINGS_PATH,
+        JSON.stringify(normalized, null, 2),
+        'utf8'
+      );
+    }
+    return normalized;
   } catch {
     const defaults = createDefaultSettings();
     await fs.writeFile(SETTINGS_PATH, JSON.stringify(defaults, null, 2), 'utf8');
@@ -22,11 +78,11 @@ export async function writeSettings(
   next: MobileAppSettings
 ): Promise<MobileAppSettings> {
   await fs.mkdir(DATA_DIR, { recursive: true });
-  const payload: MobileAppSettings = {
+  const payload = normalize({
     ...next,
     version: (next.version ?? 0) + 1,
     updatedAt: new Date().toISOString(),
-  };
+  });
   await fs.writeFile(SETTINGS_PATH, JSON.stringify(payload, null, 2), 'utf8');
   return payload;
 }
@@ -35,9 +91,128 @@ export async function patchSettings(
   partial: Partial<MobileAppSettings>
 ): Promise<MobileAppSettings> {
   const current = await readSettings();
+  let i18n = current.i18n;
+  if (partial.i18n) {
+    const merged = { ...current.i18n };
+    for (const locale of LOCALES) {
+      if (partial.i18n[locale]) {
+        merged[locale] = {
+          ...(current.i18n[locale] || {}),
+          ...partial.i18n[locale],
+        };
+      }
+    }
+    i18n = mergeI18n(merged);
+  }
+
   return writeSettings({
     ...current,
     ...partial,
+    i18n,
     version: current.version,
   });
+}
+
+/** Build API payload for a locale: merged strings + localized content overlays. */
+export function buildLocalizedConfig(
+  settings: MobileAppSettings,
+  lang: string
+) {
+  const strings = resolveStrings(settings.i18n, lang);
+  const locale = (LOCALES as readonly string[]).includes(lang)
+    ? (lang as LocaleCode)
+    : settings.defaultLocale || 'en';
+
+  const s = (key: string, fallback: string) =>
+    strings[key]?.trim() ? strings[key] : fallback;
+
+  return {
+    ...settings,
+    locale,
+    dir: locale === 'ar' ? 'rtl' : 'ltr',
+    strings,
+    home: {
+      ...settings.home,
+      brandPrefix: s('home.brandPrefix', settings.home.brandPrefix),
+      brandAccent: s('home.brandAccent', settings.home.brandAccent),
+      brandSuffix: s('home.brandSuffix', settings.home.brandSuffix),
+      subtitle: s('home.subtitle', settings.home.subtitle),
+      heroHeadline: s('home.heroHeadline', settings.home.heroHeadline),
+      heroCaption: s('home.heroCaption', settings.home.heroCaption),
+      featuresCta: s('home.featuresCta', settings.home.featuresCta),
+      signupCta: s('home.signupCta', settings.home.signupCta),
+      loginPrompt: s('home.loginPrompt', settings.home.loginPrompt),
+      loginLink: s('home.loginLink', settings.home.loginLink),
+      confidenceText: s('home.confidenceText', settings.home.confidenceText),
+    },
+    whyChooseMe: {
+      title: s('why.title', settings.whyChooseMe.title),
+      reasons: settings.whyChooseMe.reasons.map((r, idx) => {
+        const keys = [
+          ['why.resultsTitle', 'why.resultsBody'],
+          ['why.qualityTitle', 'why.qualityBody'],
+          ['why.collabTitle', 'why.collabBody'],
+        ][idx];
+        if (!keys) return r;
+        return {
+          ...r,
+          title: s(keys[0], r.title),
+          body: s(keys[1], r.body),
+        };
+      }),
+    },
+    paywall: {
+      ...settings.paywall,
+      brandSub: s('paywall.brandSub', settings.paywall.brandSub),
+      claimDiscountLabel: s(
+        'paywall.claimDiscount',
+        settings.paywall.claimDiscountLabel
+      ),
+      startTrialLabel: s(
+        'paywall.startTrial',
+        settings.paywall.startTrialLabel
+      ),
+      trustLine1: s('paywall.trust1', settings.paywall.trustLine1),
+      trustLine2: s('paywall.trust2', settings.paywall.trustLine2),
+      features: settings.paywall.features.map((f, i) => ({
+        ...f,
+        label: s(`paywall.feature${i + 1}`, f.label),
+      })),
+      tiers: settings.paywall.tiers.map((t) => ({
+        ...t,
+        label:
+          t.id === '1m'
+            ? s('paywall.tier1m', t.label)
+            : t.id === '3m'
+              ? s('paywall.tier3m', t.label)
+              : t.id === '12m'
+                ? s('paywall.tier12m', t.label)
+                : t.label,
+      })),
+    },
+    trainPro: {
+      ...settings.trainPro,
+      headlineOrange: s('train.headlineOrange', settings.trainPro.headlineOrange),
+      headlineWhite: s('train.headlineWhite', settings.trainPro.headlineWhite),
+      trialCta: s('train.trialCta', settings.trainPro.trialCta),
+      downloadCta: s('train.downloadCta', settings.trainPro.downloadCta),
+      guaranteeBest: s('train.guaranteeBest', settings.trainPro.guaranteeBest),
+      guaranteeLine: s('train.guaranteeLine', settings.trainPro.guaranteeLine),
+      secureText: s('train.secureText', settings.trainPro.secureText),
+      stats: settings.trainPro.stats.map((st, i) => ({
+        ...st,
+        value: s(`train.stat${i + 1}Value`, st.value),
+        label: s(`train.stat${i + 1}Label`, st.label),
+      })),
+      features: settings.trainPro.features.map((f, i) => ({
+        ...f,
+        title: s(`train.feat${i + 1}Title`, f.title),
+        description: s(`train.feat${i + 1}Desc`, f.description),
+      })),
+      faqs: settings.trainPro.faqs.map((f, i) => ({
+        q: s(`train.faq${i + 1}Q`, f.q),
+        a: s(`train.faq${i + 1}A`, f.a),
+      })),
+    },
+  };
 }

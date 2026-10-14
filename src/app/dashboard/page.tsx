@@ -15,6 +15,11 @@ const SECTIONS = [
     desc: 'Titles, CTAs, confidence text',
   },
   {
+    href: '/dashboard/languages',
+    title: 'Languages',
+    desc: 'Manual translations for 12 locales',
+  },
+  {
     href: '/dashboard/plans',
     title: 'Plans',
     desc: 'Free / Basic / Premium / Pro cards',
