@@ -30,7 +30,15 @@ export type HomeSettings = {
   loginPrompt: string;
   loginLink: string;
   confidenceText: string;
+  /** Poster / fallback still image */
   heroImageUrl: string;
+  /**
+   * Active hero video (uploaded path or external URL).
+   * When set, mobile plays video; otherwise shows hero image.
+   */
+  heroVideoUrl: string;
+  /** Sample / library videos admin can pick from */
+  heroVideoSamples: { id: string; label: string; url: string }[];
 };
 
 export type WhyChooseReason = {

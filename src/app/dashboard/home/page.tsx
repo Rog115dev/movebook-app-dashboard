@@ -11,11 +11,17 @@ export default function HomePageEditor() {
   const [title, setTitle] = useState('Why Choose Me');
   const [reasons, setReasons] = useState<WhyChooseReason[]>([]);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState('');
 
   async function load() {
     const s = await fetchSettings();
-    setHome(s.home);
+    setHome({
+      ...s.home,
+      heroVideoSamples: s.home.heroVideoSamples?.length
+        ? s.home.heroVideoSamples.map((v) => ({ ...v }))
+        : [],
+    });
     setTitle(s.whyChooseMe.title);
     setReasons(s.whyChooseMe.reasons);
   }
@@ -24,13 +30,47 @@ export default function HomePageEditor() {
     load().catch(() => setMessage('Failed to load settings'));
   }, []);
 
+  async function uploadVideo(file: File) {
+    if (!home) return;
+    setUploading(true);
+    setMessage('');
+    try {
+      const body = new FormData();
+      body.append('file', file);
+      body.append('folder', 'hero-video');
+      const res = await fetch('/api/upload/asset', {
+        method: 'POST',
+        body,
+      });
+      if (!res.ok) throw new Error('Upload failed');
+      const json = (await res.json()) as { url: string };
+      const id = `upload-${Date.now()}`;
+      setHome({
+        ...home,
+        heroVideoUrl: json.url,
+        heroVideoSamples: [
+          ...home.heroVideoSamples,
+          { id, label: file.name || 'Uploaded video', url: json.url },
+        ],
+      });
+      setMessage('Video uploaded — save to apply on mobile.');
+    } catch {
+      setMessage('Video upload failed.');
+    } finally {
+      setUploading(false);
+    }
+  }
+
   async function onSave() {
     if (!home) return;
     setSaving(true);
     setMessage('');
     try {
       await saveSettings({
-        home,
+        home: {
+          ...home,
+          heroVideoUrl: home.heroVideoUrl.trim(),
+        },
         whyChooseMe: { title, reasons },
         // Keep English i18n keys in sync with Home editor
         i18n: {
@@ -65,6 +105,10 @@ export default function HomePageEditor() {
   }
 
   if (!home) return <p className="text-zinc-400">Loading…</p>;
+
+  const isVideo =
+    Boolean(home.heroVideoUrl?.trim()) &&
+    /\.(mp4|webm|mov|m3u8)(\?|$)/i.test(home.heroVideoUrl);
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -133,12 +177,111 @@ export default function HomePageEditor() {
           multiline
         />
         <Field
-          label="Hero image URL"
+          label="Hero poster image URL"
           value={home.heroImageUrl}
           onChange={(v) => setHome({ ...home, heroImageUrl: v })}
-          hint="Upload via Images page, or paste a URL"
+          hint="Shown as poster / fallback when no video is set. Manage pool under Images."
         />
       </div>
+
+      <section className="mt-10 rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
+        <h2 className="text-xl font-semibold text-white">Hero video</h2>
+        <p className="mt-1 text-sm text-zinc-400">
+          Paste a direct video URL (.mp4 / .webm / .m3u8) or upload a file. Pick
+          one of the 3 samples below. Clear the URL to show the poster image
+          only.
+        </p>
+
+        <div className="mt-4">
+          <Field
+            label="Active video URL"
+            value={home.heroVideoUrl}
+            onChange={(v) => setHome({ ...home, heroVideoUrl: v })}
+            hint="Example: https://…/clip.mp4 or /uploads/sample-hero-1.mp4"
+          />
+        </div>
+
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <label className="cursor-pointer rounded-lg border border-zinc-700 px-3 py-2 text-sm text-zinc-200 hover:border-[#FF7800]">
+            {uploading ? 'Uploading…' : 'Upload video'}
+            <input
+              type="file"
+              accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov"
+              className="hidden"
+              disabled={uploading}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) uploadVideo(file);
+                e.target.value = '';
+              }}
+            />
+          </label>
+          {home.heroVideoUrl ? (
+            <button
+              type="button"
+              onClick={() => setHome({ ...home, heroVideoUrl: '' })}
+              className="text-xs text-zinc-500 hover:text-red-300"
+            >
+              Clear video (use image)
+            </button>
+          ) : null}
+        </div>
+
+        <div className="mt-6">
+          <p className="text-sm font-medium text-zinc-200">Sample videos</p>
+          <div className="mt-3 grid gap-3 sm:grid-cols-3">
+            {home.heroVideoSamples.map((sample) => {
+              const selected = home.heroVideoUrl === sample.url;
+              return (
+                <button
+                  key={sample.id}
+                  type="button"
+                  onClick={() =>
+                    setHome({ ...home, heroVideoUrl: sample.url })
+                  }
+                  className={`rounded-xl border p-3 text-left transition ${
+                    selected
+                      ? 'border-[#FF7800] bg-[#FF7800]/10'
+                      : 'border-zinc-700 bg-zinc-950/50 hover:border-zinc-500'
+                  }`}
+                >
+                  <p className="text-sm font-medium text-white">
+                    {sample.label}
+                  </p>
+                  <p className="mt-1 truncate text-[11px] text-zinc-500">
+                    {sample.url}
+                  </p>
+                  {selected ? (
+                    <p className="mt-2 text-[11px] font-medium text-[#FF7800]">
+                      Selected
+                    </p>
+                  ) : null}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {home.heroVideoUrl ? (
+          <div className="mt-4 overflow-hidden rounded-lg border border-zinc-800 bg-black">
+            {isVideo || home.heroVideoUrl.startsWith('http') ? (
+              <video
+                key={home.heroVideoUrl}
+                src={home.heroVideoUrl}
+                controls
+                muted
+                playsInline
+                className="max-h-56 w-full object-contain"
+              />
+            ) : (
+              <p className="p-4 text-sm text-zinc-400">
+                Preview unavailable for this URL — it will still play in the
+                app if reachable.
+              </p>
+            )}
+          </div>
+        ) : null}
+      </section>
 
       <h2 className="mt-10 text-xl font-semibold">Why Choose Me</h2>
       <div className="mt-4">

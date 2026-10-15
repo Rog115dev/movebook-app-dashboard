@@ -44,6 +44,24 @@ export function createDefaultSettings(): MobileAppSettings {
       confidenceText:
         "We're confident that our premium experience will exceed your expectations, providing you with unique value and satisfaction.\n\nEnjoy the freedom to explore everything we offer, because your satisfaction is, and always will be, our top priority.",
       heroImageUrl: '/uploads/hero-break-limits.jpg',
+      heroVideoUrl: '/uploads/sample-hero-1.mp4',
+      heroVideoSamples: [
+        {
+          id: 'sample-1',
+          label: 'Break All Limits — AI workout plans',
+          url: '/uploads/sample-hero-1.mp4',
+        },
+        {
+          id: 'sample-2',
+          label: 'Train Smarter — Coach Mode',
+          url: '/uploads/sample-hero-2.mp4',
+        },
+        {
+          id: 'sample-3',
+          label: 'Push Beyond — Progress tracking',
+          url: '/uploads/sample-hero-3.mp4',
+        },
+      ],
     },
     whyChooseMe: {
       title: 'Why Choose Me',

@@ -36,6 +36,9 @@ const SECTION_HITS: SearchHit[] = [
     keywords: [
       'home',
       'hero',
+      'video',
+      'mp4',
+      'upload video',
       'cta',
       'signup',
       'login',

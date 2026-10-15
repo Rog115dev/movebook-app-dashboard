@@ -28,6 +28,19 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
       ...defaults.home,
       ...(settings.home || {}),
       heroImageUrl: primary.heroImageUrl || defaults.home.heroImageUrl,
+      heroVideoUrl:
+        settings.home?.heroVideoUrl?.trim() || defaults.home.heroVideoUrl,
+      heroVideoSamples:
+        Array.isArray(settings.home?.heroVideoSamples) &&
+        settings.home.heroVideoSamples.length > 0
+          ? settings.home.heroVideoSamples.map((sample) => {
+              const fresh = defaults.home.heroVideoSamples.find(
+                (d) => d.id === sample.id
+              );
+              // Keep FitAI sample labels/urls in sync for built-in samples
+              return fresh ? { ...fresh } : sample;
+            })
+          : defaults.home.heroVideoSamples,
     },
     whyChooseMe: {
       ...defaults.whyChooseMe,
