@@ -7,7 +7,8 @@ import {
   syncLegacyImages,
   syncPrimaryUrls,
 } from './imageSections';
-import type { MobileAppSettings } from './types';
+import type { MobileAppSettings, RotateDelaySec } from './types';
+import { ROTATE_DELAYS } from './types';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 const SETTINGS_PATH = path.join(DATA_DIR, 'mobile-settings.json');
@@ -64,6 +65,43 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
         : defaults.trainPro.faqs,
       bannerImageUrl:
         primary.bannerImageUrl || defaults.trainPro.bannerImageUrl,
+    },
+    featuresPage: {
+      ...defaults.featuresPage,
+      ...(settings.featuresPage || {}),
+      unlockTitle:
+        settings.featuresPage?.unlockTitle?.trim() ||
+        defaults.featuresPage.unlockTitle,
+      unlockSub:
+        settings.featuresPage?.unlockSub?.trim() ||
+        defaults.featuresPage.unlockSub,
+      items: Array.isArray(settings.featuresPage?.items)
+        ? settings.featuresPage.items
+        : defaults.featuresPage.items,
+    },
+    testimonials: {
+      ...defaults.testimonials,
+      ...(settings.testimonials || {}),
+      subtitle:
+        settings.testimonials?.subtitle?.trim() ||
+        defaults.testimonials.subtitle,
+      carouselDelaySec: (
+        ROTATE_DELAYS as readonly number[]
+      ).includes(settings.testimonials?.carouselDelaySec as number)
+        ? (settings.testimonials!.carouselDelaySec as RotateDelaySec)
+        : defaults.testimonials.carouselDelaySec,
+      items: Array.isArray(settings.testimonials?.items)
+        ? settings.testimonials.items.map((item, i) => ({
+            id: item.id || `testimonial-${i + 1}`,
+            code: item.code || '',
+            pictureUrl: item.pictureUrl || '',
+            borderColor: item.borderColor || defaults.colors.orange,
+            title: item.title || '',
+            description: item.description || '',
+            showInPresentation: Boolean(item.showInPresentation),
+            showInMenu: Boolean(item.showInMenu),
+          }))
+        : defaults.testimonials.items,
     },
     imageSections,
     images: syncLegacyImages(imageSections),
@@ -231,6 +269,30 @@ export function buildLocalizedConfig(
       faqs: settings.trainPro.faqs.map((f, i) => ({
         q: s(`train.faq${i + 1}Q`, f.q),
         a: s(`train.faq${i + 1}A`, f.a),
+      })),
+    },
+    featuresPage: {
+      ...settings.featuresPage,
+      unlockTitle: s(
+        'features.unlockTitle',
+        settings.featuresPage.unlockTitle
+      ),
+      unlockSub: s('features.unlockSub', settings.featuresPage.unlockSub),
+      items: settings.featuresPage.items.map((item, i) => ({
+        ...item,
+        title: s(`features.unlock${i + 1}Title`, item.title),
+        description: s(`features.unlock${i + 1}Desc`, item.description),
+        badge: s(`features.unlock${i + 1}Badge`, item.badge),
+      })),
+    },
+    testimonials: {
+      ...settings.testimonials,
+      subtitle: s('features.loveSub', settings.testimonials.subtitle),
+      items: settings.testimonials.items.map((item, i) => ({
+        ...item,
+        code: s(`testimonials.${i + 1}.code`, item.code),
+        title: s(`testimonials.${i + 1}.title`, item.title),
+        description: s(`testimonials.${i + 1}.description`, item.description),
       })),
     },
   };

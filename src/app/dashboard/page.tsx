@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { DashboardSearch } from '@/components/DashboardSearch';
 import { readSettings } from '@/lib/settings';
 
 export const dynamic = 'force-dynamic';
@@ -18,6 +19,16 @@ const SECTIONS = [
     href: '/dashboard/faq',
     title: 'FAQ',
     desc: 'Questions and answers on TRAIN PRO',
+  },
+  {
+    href: '/dashboard/features',
+    title: 'Unlock features',
+    desc: 'Title, subtitle, and feature cards with badges',
+  },
+  {
+    href: '/dashboard/testimonials',
+    title: 'Testimonials',
+    desc: 'Reviews, photos, presentation & menu visibility',
   },
   {
     href: '/dashboard/languages',
@@ -54,14 +65,22 @@ export default async function DashboardPage() {
       <header>
         <h1 className="text-3xl font-semibold text-white">Overview</h1>
         <p className="mt-2 text-zinc-400">
-          Control the FitAI Coach mobile app content from one place. Changes are
-          served at{' '}
-          <code className="rounded bg-zinc-900 px-1.5 py-0.5 text-[#FF7800]">
-            /api/mobile-config
-          </code>
-          .
+          Control the FitAI Coach mobile app content from one place. Use Search
+          to jump to any option to edit.
         </p>
       </header>
+
+      <section className="rounded-2xl border border-[#FF7800]/40 bg-zinc-900/60 p-5">
+        <h2 className="text-sm font-medium uppercase tracking-wide text-[#FF7800]">
+          Find what to edit
+        </h2>
+        <p className="mt-1 text-sm text-zinc-400">
+          Try “FAQ”, “orange”, “hero”, “why.resultsBody”, “paywall”, “images”…
+        </p>
+        <div className="mt-4">
+          <DashboardSearch variant="hero" />
+        </div>
+      </section>
 
       <section className="grid gap-4 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 sm:grid-cols-3">
         <div>

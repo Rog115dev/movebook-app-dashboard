@@ -256,6 +256,81 @@ export function createDefaultSettings(): MobileAppSettings {
       guaranteeLine: 'SATISFACTION GUARANTEE',
       secureText: 'Pay Safe & Secure',
     },
+    featuresPage: {
+      unlockTitle: 'Unlock everything you need',
+      unlockSub: 'Everything you want. All in one place.',
+      items: [
+        {
+          id: 'ai-plans',
+          title: 'AI Workout Plans',
+          description: 'Built around your goals and level.',
+          badge: 'HOT',
+        },
+        {
+          id: 'videos',
+          title: 'Exercise Videos',
+          description: '500+ demos with form cues.',
+          badge: 'HIGH QUALITY',
+        },
+        {
+          id: 'coach',
+          title: 'Coach Mode',
+          description: 'Guidance that adapts as you train.',
+          badge: 'NEW',
+        },
+        {
+          id: 'progress',
+          title: 'Progress Tracking',
+          description: 'Compare planned vs completed work.',
+          badge: 'EXCLUSIVE',
+        },
+        {
+          id: 'nutrition',
+          title: 'Nutrition Guidance',
+          description: 'Meal plans and body analysis.',
+          badge: 'VIP',
+        },
+      ],
+    },
+    testimonials: {
+      subtitle: 'Join FitAI Coach users who cannot get enough.',
+      carouselDelaySec: 5,
+      items: [
+        {
+          id: 'mike-myers',
+          code: 'Mike Myers',
+          pictureUrl: '',
+          borderColor: '#FF7800',
+          title: 'Great training flow',
+          description:
+            'Plans feel personalized and the video library is excellent. Progress tracking keeps me consistent week after week.',
+          showInPresentation: true,
+          showInMenu: true,
+        },
+        {
+          id: 'shaun',
+          code: 'Shaun',
+          pictureUrl: '',
+          borderColor: '#FF7800',
+          title: 'Actually feels smart',
+          description:
+            'Not robotic at all. I ended up using FitAI Coach way more than I expected — coaching tips are clear and useful.',
+          showInPresentation: true,
+          showInMenu: true,
+        },
+        {
+          id: 'carlos-pearson',
+          code: 'Carlos Pearson',
+          pictureUrl: '',
+          borderColor: '#FF7800',
+          title: 'Production-level experience',
+          description:
+            'Workout videos and structure feel polished. Closest thing to having a real coach in my pocket.',
+          showInPresentation: true,
+          showInMenu: true,
+        },
+      ],
+    },
     imageSections: createDefaultImageSections({
       hero: '/uploads/hero-break-limits.jpg',
       paywall: '/uploads/paywall-athletes.jpg',

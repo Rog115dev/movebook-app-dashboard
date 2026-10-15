@@ -7,6 +7,7 @@ type Props = {
   multiline?: boolean;
   type?: string;
   hint?: string;
+  disabled?: boolean;
 };
 
 export function Field({
@@ -16,6 +17,7 @@ export function Field({
   multiline,
   type = 'text',
   hint,
+  disabled,
 }: Props) {
   return (
     <label className="block space-y-1.5">
@@ -25,14 +27,16 @@ export function Field({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           rows={4}
-          className="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-white outline-none ring-[#FF7800] focus:ring-2"
+          disabled={disabled}
+          className="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-white outline-none ring-[#FF7800] focus:ring-2 disabled:opacity-60"
         />
       ) : (
         <input
           type={type}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-white outline-none ring-[#FF7800] focus:ring-2"
+          disabled={disabled}
+          className="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-white outline-none ring-[#FF7800] focus:ring-2 disabled:opacity-60"
         />
       )}
       {hint ? <span className="text-xs text-zinc-500">{hint}</span> : null}

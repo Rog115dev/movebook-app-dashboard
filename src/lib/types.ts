@@ -115,6 +115,34 @@ export type TrainProSettings = {
   secureText: string;
 };
 
+export type UnlockFeatureItem = {
+  id: string;
+  title: string;
+  description: string;
+  badge: string;
+};
+
+/** Features screen — “Unlock everything you need” list */
+export type FeaturesPageSettings = {
+  unlockTitle: string;
+  unlockSub: string;
+  items: UnlockFeatureItem[];
+};
+
+export type TestimonialItem = {
+  id: string;
+  /** Display name / code of the person */
+  code: string;
+  pictureUrl: string;
+  /** Border color around the picture */
+  borderColor: string;
+  title: string;
+  description: string;
+  showInPresentation: boolean;
+  /** Reserved for a future Testimonials menu */
+  showInMenu: boolean;
+};
+
 export type ImageAsset = {
   id: string;
   key: string;
@@ -127,6 +155,14 @@ export type ImageSectionKey = (typeof IMAGE_SECTION_KEYS)[number];
 
 export const ROTATE_DELAYS = [3, 5, 7, 10, 15] as const;
 export type RotateDelaySec = (typeof ROTATE_DELAYS)[number];
+
+export type TestimonialsSettings = {
+  /** “Join FitAI Coach users who cannot get enough.” */
+  subtitle: string;
+  /** Used when more than 5 presentation testimonials are enabled */
+  carouselDelaySec: RotateDelaySec;
+  items: TestimonialItem[];
+};
 
 export type ImagePoolItem = {
   id: string;
@@ -158,6 +194,8 @@ export type MobileAppSettings = {
   plans: PlanSettings[];
   paywall: PaywallSettings;
   trainPro: TrainProSettings;
+  featuresPage: FeaturesPageSettings;
+  testimonials: TestimonialsSettings;
   /** @deprecated Prefer imageSections; kept for legacy clients */
   images: ImageAsset[];
   imageSections: ImageSectionConfig[];

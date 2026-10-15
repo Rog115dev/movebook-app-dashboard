@@ -108,8 +108,36 @@ export const ENGLISH_STRINGS: StringMap = {
   'features.builtFor': 'We built it just for you',
   'features.unlockTitle': 'Unlock everything you need',
   'features.unlockSub': 'Everything you want. All in one place.',
+  'features.unlock1Title': 'AI Workout Plans',
+  'features.unlock1Desc': 'Built around your goals and level.',
+  'features.unlock1Badge': 'HOT',
+  'features.unlock2Title': 'Exercise Videos',
+  'features.unlock2Desc': '500+ demos with form cues.',
+  'features.unlock2Badge': 'HIGH QUALITY',
+  'features.unlock3Title': 'Coach Mode',
+  'features.unlock3Desc': 'Guidance that adapts as you train.',
+  'features.unlock3Badge': 'NEW',
+  'features.unlock4Title': 'Progress Tracking',
+  'features.unlock4Desc': 'Compare planned vs completed work.',
+  'features.unlock4Badge': 'EXCLUSIVE',
+  'features.unlock5Title': 'Nutrition Guidance',
+  'features.unlock5Desc': 'Meal plans and body analysis.',
+  'features.unlock5Badge': 'VIP',
   'features.mostPopular': 'MOST POPULAR',
   'features.planSuffix': 'plan',
+  'features.loveSub': 'Join FitAI Coach users who cannot get enough.',
+  'testimonials.1.code': 'Mike Myers',
+  'testimonials.1.title': 'Great training flow',
+  'testimonials.1.description':
+    'Plans feel personalized and the video library is excellent. Progress tracking keeps me consistent week after week.',
+  'testimonials.2.code': 'Shaun',
+  'testimonials.2.title': 'Actually feels smart',
+  'testimonials.2.description':
+    'Not robotic at all. I ended up using FitAI Coach way more than I expected — coaching tips are clear and useful.',
+  'testimonials.3.code': 'Carlos Pearson',
+  'testimonials.3.title': 'Production-level experience',
+  'testimonials.3.description':
+    'Workout videos and structure feel polished. Closest thing to having a real coach in my pocket.',
   'paywall.brandSub': 'Personalized AI Workout Plans',
   'paywall.claimDiscount': 'Claim discount',
   'paywall.startTrial': 'Start Free Trial',
@@ -176,8 +204,15 @@ export const I18N_GROUPS: { id: string; label: string; keys: string[] }[] = [
   {
     id: 'features',
     label: 'Features',
-    keys: Object.keys(ENGLISH_STRINGS).filter((k) =>
-      k.startsWith('features.')
+    keys: Object.keys(ENGLISH_STRINGS).filter(
+      (k) => k.startsWith('features.') && k !== 'features.loveSub'
+    ),
+  },
+  {
+    id: 'testimonials',
+    label: 'Testimonials',
+    keys: Object.keys(ENGLISH_STRINGS).filter(
+      (k) => k === 'features.loveSub' || k.startsWith('testimonials.')
     ),
   },
   {

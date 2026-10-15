@@ -1,9 +1,14 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Field } from '@/components/Field';
 import { SaveBar } from '@/components/SaveBar';
 import { fetchSettings, saveSettings } from '@/lib/api-client';
+import {
+  browserTranslatorSupported,
+  translateStringsWithBrowser,
+} from '@/lib/browserTranslate';
 import {
   ENGLISH_STRINGS,
   I18N_GROUPS,
@@ -13,21 +18,28 @@ import {
   type LocaleCode,
   type StringMap,
 } from '@/lib/i18n';
-import {
-  applyAllLocaleSeeds,
-  applyLocaleSeed,
-  hasLocaleSeed,
-} from '@/lib/localeSeeds';
+import { applyLocaleSeed, hasLocaleSeed } from '@/lib/localeSeeds';
 import type { MobileAppSettings } from '@/lib/types';
 
 export default function LanguagesPage() {
+  return (
+    <Suspense fallback={<p className="text-zinc-400">Loading languages…</p>}>
+      <LanguagesPageInner />
+    </Suspense>
+  );
+}
+
+function LanguagesPageInner() {
+  const searchParams = useSearchParams();
   const [settings, setSettings] = useState<MobileAppSettings | null>(null);
   const [locale, setLocale] = useState<LocaleCode>('fr');
   const [draft, setDraft] = useState<StringMap>({});
   const [groupId, setGroupId] = useState(I18N_GROUPS[0].id);
+  const [highlightKey, setHighlightKey] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [applying, setApplying] = useState(false);
   const [message, setMessage] = useState('');
+  const [hasBrowserTranslator, setHasBrowserTranslator] = useState(false);
 
   async function load() {
     const s = await fetchSettings();
@@ -37,8 +49,26 @@ export default function LanguagesPage() {
 
   useEffect(() => {
     load().catch(() => setMessage('Failed to load settings'));
+    setHasBrowserTranslator(browserTranslatorSupported());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    const group = searchParams.get('group');
+    const highlight = searchParams.get('highlight');
+    if (group && I18N_GROUPS.some((g) => g.id === group)) {
+      setGroupId(group);
+    }
+    if (highlight) {
+      setHighlightKey(highlight);
+      // Scroll after paint
+      requestAnimationFrame(() => {
+        document
+          .getElementById(`lang-key-${highlight}`)
+          ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (!settings) return;
@@ -57,10 +87,15 @@ export default function LanguagesPage() {
       return a.localeCompare(b, undefined, { numeric: true });
     });
   }, [group.keys, groupId, settings]);
+
   const progress = useMemo(
     () => localeProgress(settings?.i18n, locale),
     [settings, locale]
   );
+
+  const englishSource = useMemo<StringMap>(() => {
+    return { ...ENGLISH_STRINGS, ...(settings?.i18n?.en || {}) };
+  }, [settings]);
 
   function setKey(key: string, value: string) {
     setDraft((prev) => ({ ...prev, [key]: value }));
@@ -68,53 +103,111 @@ export default function LanguagesPage() {
 
   function copyFromEnglish() {
     const next = { ...draft };
-    for (const key of Object.keys(ENGLISH_STRINGS)) {
-      if (!next[key]?.trim()) next[key] = ENGLISH_STRINGS[key];
+    for (const key of Object.keys(englishSource)) {
+      if (!next[key]?.trim()) next[key] = englishSource[key];
     }
     setDraft(next);
     setMessage('Empty fields filled from English (not saved yet).');
   }
 
-  /** Fill current language from built-in mobile translations (no AI/API). */
-  function applyTranslation(onlyEmpty: boolean) {
+  async function applyTranslation(onlyEmpty: boolean) {
     if (locale === 'en') {
       setMessage('English is the source language — pick another locale.');
       return;
     }
-    if (!hasLocaleSeed(locale)) {
-      setMessage(`No built-in seed for ${LOCALE_LABELS[locale]}.`);
-      return;
+
+    setApplying(true);
+    setMessage('');
+    try {
+      if (browserTranslatorSupported()) {
+        const { next, filled } = await translateStringsWithBrowser(
+          locale,
+          englishSource,
+          {
+            onlyEmpty,
+            current: draft,
+            onProgress: setMessage,
+          }
+        );
+        setDraft(next);
+        setMessage(
+          filled
+            ? `Browser translated ${filled} ${LOCALE_LABELS[locale]} string(s) from current English (not saved yet).`
+            : onlyEmpty
+              ? 'All fields already filled — nothing to apply.'
+              : 'Translations already match.'
+        );
+        return;
+      }
+
+      // Fallback: built-in mobile locale seeds (static, not live EN)
+      if (!hasLocaleSeed(locale)) {
+        throw new Error(
+          'Browser Translator API unavailable. Use Chrome 138+ desktop, or add a seed file.'
+        );
+      }
+      const { next, filled } = applyLocaleSeed(locale, draft, { onlyEmpty });
+      setDraft(next);
+      setMessage(
+        filled
+          ? `Applied ${filled} seeded string(s) (browser translator unavailable). Not saved yet.`
+          : 'Nothing to apply from seeds.'
+      );
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : 'Apply translation failed.');
+    } finally {
+      setApplying(false);
     }
-    const { next, filled } = applyLocaleSeed(locale, draft, { onlyEmpty });
-    setDraft(next);
-    setMessage(
-      filled
-        ? `Applied ${filled} ${LOCALE_LABELS[locale]} string(s) from built-in translations (not saved yet).`
-        : onlyEmpty
-          ? 'All fields already filled — nothing to apply.'
-          : 'Built-in translations already match the current fields.'
-    );
   }
 
-  /** Fill every non-English locale and persist. */
   async function applyTranslationAllLocales() {
     if (!settings) return;
     setApplying(true);
     setMessage('');
     try {
-      const { next, filled } = applyAllLocaleSeeds(settings.i18n || {}, {
-        onlyEmpty: false,
-      });
-      const saved = await saveSettings({ i18n: next });
+      const nextI18n = { ...(settings.i18n || {}) };
+      let filled = 0;
+      const targets = LOCALES.filter((code) => code !== 'en');
+
+      if (browserTranslatorSupported()) {
+        for (let i = 0; i < targets.length; i++) {
+          const code = targets[i];
+          setMessage(
+            `Browser translating ${LOCALE_LABELS[code]} (${i + 1}/${targets.length})…`
+          );
+          const result = await translateStringsWithBrowser(
+            code,
+            englishSource,
+            {
+              onlyEmpty: false,
+              current: nextI18n[code] || {},
+              onProgress: setMessage,
+            }
+          );
+          nextI18n[code] = result.next;
+          filled += result.filled;
+        }
+      } else {
+        for (const code of targets) {
+          if (!hasLocaleSeed(code)) continue;
+          const result = applyLocaleSeed(code, nextI18n[code] || {}, {
+            onlyEmpty: false,
+          });
+          nextI18n[code] = result.next;
+          filled += result.filled;
+        }
+      }
+
+      const saved = await saveSettings({ i18n: nextI18n });
       setSettings(saved);
       setDraft({ ...(saved.i18n?.[locale] || {}) });
       setMessage(
         filled
-          ? `Applied built-in translations to all languages (${filled} fields updated) and saved.`
-          : 'All languages already matched built-in translations.'
+          ? `Translated all languages (${filled} fields) from current English and saved.`
+          : 'All languages already up to date.'
       );
-    } catch {
-      setMessage('Apply translation failed.');
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : 'Apply translation failed.');
     } finally {
       setApplying(false);
     }
@@ -148,10 +241,13 @@ export default function LanguagesPage() {
     <div className="mx-auto max-w-4xl">
       <h1 className="text-3xl font-semibold">Languages</h1>
       <p className="mt-2 text-zinc-400">
-        Manually translate each string for all 12 app languages. Mobile loads{' '}
-        <code className="text-[#FF7800]">/api/mobile-config?lang=xx</code>.
-        Use <span className="text-white">Apply Translation</span> to fill fields
-        from the app&apos;s built-in locale files (no AI).
+        Edit English first and save, then use{' '}
+        <span className="text-white">Apply Translation</span> to translate the
+        current English CMS text via the{' '}
+        <span className="text-white">browser Translator API</span> (Chrome 138+).
+        {hasBrowserTranslator
+          ? ' Browser translator detected.'
+          : ' Browser translator not detected — seeds fallback will be used.'}
       </p>
 
       <div className="mt-6 flex flex-wrap gap-2">
@@ -188,15 +284,15 @@ export default function LanguagesPage() {
         <button
           type="button"
           onClick={() => applyTranslation(false)}
-          disabled={locale === 'en'}
+          disabled={locale === 'en' || applying}
           className="rounded-lg bg-[#FF7800] px-3 py-1.5 text-sm font-semibold text-black disabled:opacity-40"
         >
-          Apply Translation
+          {applying ? 'Translating…' : 'Apply Translation'}
         </button>
         <button
           type="button"
           onClick={() => applyTranslation(true)}
-          disabled={locale === 'en'}
+          disabled={locale === 'en' || applying}
           className="rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-zinc-300 disabled:opacity-40"
         >
           Fill empty only
@@ -204,7 +300,7 @@ export default function LanguagesPage() {
         <button
           type="button"
           onClick={copyFromEnglish}
-          disabled={locale === 'en'}
+          disabled={locale === 'en' || applying}
           className="rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-zinc-300 disabled:opacity-40"
         >
           Copy empty from English
@@ -238,11 +334,17 @@ export default function LanguagesPage() {
 
       <div className="mt-6 space-y-5">
         {groupKeys.map((key) => {
-          const enRef = settings.i18n?.en?.[key] || ENGLISH_STRINGS[key] || '';
+          const enRef = englishSource[key] || '';
+          const highlighted = highlightKey === key;
           return (
             <div
+              id={`lang-key-${key}`}
               key={key}
-              className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4"
+              className={`rounded-xl border p-4 ${
+                highlighted
+                  ? 'border-[#FF7800] bg-[#FF7800]/10'
+                  : 'border-zinc-800 bg-zinc-900/40'
+              }`}
             >
               <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                 <code className="text-xs text-[#FF7800]">{key}</code>
