@@ -13,6 +13,11 @@ import {
   type LocaleCode,
   type StringMap,
 } from '@/lib/i18n';
+import {
+  applyAllLocaleSeeds,
+  applyLocaleSeed,
+  hasLocaleSeed,
+} from '@/lib/localeSeeds';
 import type { MobileAppSettings } from '@/lib/types';
 
 export default function LanguagesPage() {
@@ -21,6 +26,7 @@ export default function LanguagesPage() {
   const [draft, setDraft] = useState<StringMap>({});
   const [groupId, setGroupId] = useState(I18N_GROUPS[0].id);
   const [saving, setSaving] = useState(false);
+  const [applying, setApplying] = useState(false);
   const [message, setMessage] = useState('');
 
   async function load() {
@@ -69,6 +75,51 @@ export default function LanguagesPage() {
     setMessage('Empty fields filled from English (not saved yet).');
   }
 
+  /** Fill current language from built-in mobile translations (no AI/API). */
+  function applyTranslation(onlyEmpty: boolean) {
+    if (locale === 'en') {
+      setMessage('English is the source language — pick another locale.');
+      return;
+    }
+    if (!hasLocaleSeed(locale)) {
+      setMessage(`No built-in seed for ${LOCALE_LABELS[locale]}.`);
+      return;
+    }
+    const { next, filled } = applyLocaleSeed(locale, draft, { onlyEmpty });
+    setDraft(next);
+    setMessage(
+      filled
+        ? `Applied ${filled} ${LOCALE_LABELS[locale]} string(s) from built-in translations (not saved yet).`
+        : onlyEmpty
+          ? 'All fields already filled — nothing to apply.'
+          : 'Built-in translations already match the current fields.'
+    );
+  }
+
+  /** Fill every non-English locale and persist. */
+  async function applyTranslationAllLocales() {
+    if (!settings) return;
+    setApplying(true);
+    setMessage('');
+    try {
+      const { next, filled } = applyAllLocaleSeeds(settings.i18n || {}, {
+        onlyEmpty: false,
+      });
+      const saved = await saveSettings({ i18n: next });
+      setSettings(saved);
+      setDraft({ ...(saved.i18n?.[locale] || {}) });
+      setMessage(
+        filled
+          ? `Applied built-in translations to all languages (${filled} fields updated) and saved.`
+          : 'All languages already matched built-in translations.'
+      );
+    } catch {
+      setMessage('Apply translation failed.');
+    } finally {
+      setApplying(false);
+    }
+  }
+
   async function onSave() {
     if (!settings) return;
     setSaving(true);
@@ -99,6 +150,8 @@ export default function LanguagesPage() {
       <p className="mt-2 text-zinc-400">
         Manually translate each string for all 12 app languages. Mobile loads{' '}
         <code className="text-[#FF7800]">/api/mobile-config?lang=xx</code>.
+        Use <span className="text-white">Apply Translation</span> to fill fields
+        from the app&apos;s built-in locale files (no AI).
       </p>
 
       <div className="mt-6 flex flex-wrap gap-2">
@@ -117,7 +170,9 @@ export default function LanguagesPage() {
               }`}
             >
               <div className="font-medium">{LOCALE_LABELS[code]}</div>
-              <div className={`text-xs ${active ? 'text-black/70' : 'text-zinc-500'}`}>
+              <div
+                className={`text-xs ${active ? 'text-black/70' : 'text-zinc-500'}`}
+              >
                 {p.filled}/{p.total}
               </div>
             </button>
@@ -132,11 +187,35 @@ export default function LanguagesPage() {
         </p>
         <button
           type="button"
+          onClick={() => applyTranslation(false)}
+          disabled={locale === 'en'}
+          className="rounded-lg bg-[#FF7800] px-3 py-1.5 text-sm font-semibold text-black disabled:opacity-40"
+        >
+          Apply Translation
+        </button>
+        <button
+          type="button"
+          onClick={() => applyTranslation(true)}
+          disabled={locale === 'en'}
+          className="rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-zinc-300 disabled:opacity-40"
+        >
+          Fill empty only
+        </button>
+        <button
+          type="button"
           onClick={copyFromEnglish}
           disabled={locale === 'en'}
           className="rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-zinc-300 disabled:opacity-40"
         >
           Copy empty from English
+        </button>
+        <button
+          type="button"
+          onClick={applyTranslationAllLocales}
+          disabled={applying}
+          className="rounded-lg border border-[#FF7800]/60 px-3 py-1.5 text-sm text-[#FF7800] disabled:opacity-40"
+        >
+          {applying ? 'Applying…' : 'Apply Translation to all languages'}
         </button>
       </div>
 
@@ -159,34 +238,35 @@ export default function LanguagesPage() {
 
       <div className="mt-6 space-y-5">
         {groupKeys.map((key) => {
-          const enRef =
-            settings.i18n?.en?.[key] || ENGLISH_STRINGS[key] || '';
+          const enRef = settings.i18n?.en?.[key] || ENGLISH_STRINGS[key] || '';
           return (
-          <div
-            key={key}
-            className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4"
-          >
-            <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-              <code className="text-xs text-[#FF7800]">{key}</code>
+            <div
+              key={key}
+              className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4"
+            >
+              <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                <code className="text-xs text-[#FF7800]">{key}</code>
+                {locale !== 'en' ? (
+                  <span className="text-xs text-zinc-500">
+                    EN reference below
+                  </span>
+                ) : null}
+              </div>
               {locale !== 'en' ? (
-                <span className="text-xs text-zinc-500">EN reference below</span>
+                <p className="mb-3 whitespace-pre-wrap rounded-lg bg-zinc-950 px-3 py-2 text-sm text-zinc-400">
+                  {enRef}
+                </p>
               ) : null}
+              <Field
+                label={locale === 'en' ? 'English text' : 'Translation'}
+                value={draft[key] || ''}
+                onChange={(v) => setKey(key, v)}
+                multiline={
+                  (draft[key] || enRef || '').length > 60 ||
+                  (enRef || '').includes('\n')
+                }
+              />
             </div>
-            {locale !== 'en' ? (
-              <p className="mb-3 whitespace-pre-wrap rounded-lg bg-zinc-950 px-3 py-2 text-sm text-zinc-400">
-                {enRef}
-              </p>
-            ) : null}
-            <Field
-              label={locale === 'en' ? 'English text' : 'Translation'}
-              value={draft[key] || ''}
-              onChange={(v) => setKey(key, v)}
-              multiline={
-                (draft[key] || enRef || '').length > 60 ||
-                (enRef || '').includes('\n')
-              }
-            />
-          </div>
           );
         })}
       </div>
