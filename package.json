@@ -11,7 +11,7 @@
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.11.2",
+    "mongoose": "^7.8.7",
     "next": "14.2.33",
     "react": "^18",
     "react-dom": "^18",
