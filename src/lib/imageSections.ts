@@ -10,8 +10,8 @@ import { ROTATE_DELAYS } from './types';
 import { looksLikeVideoUrl } from './mediaUrl';
 
 export const MAX_IMAGES_PER_SECTION = 9;
-/** Home hero is a single video slot (not a multi-image pool). */
-export const MAX_HERO_VIDEOS = 1;
+/** Home hero video playlist (circular playback on mobile). */
+export const MAX_HERO_VIDEOS = 9;
 
 const SECTION_META: Record<
   ImageSectionKey,
@@ -87,7 +87,8 @@ export function createDefaultImageSections(urls?: {
 }
 
 /**
- * Hero section holds exactly one video (deduped). Image sections keep 1–9 images.
+ * Hero section: video playlist (deduped URLs, up to MAX_HERO_VIDEOS).
+ * Image sections: 1–9 images.
  */
 export function normalizeImageSection(
   section: Partial<ImageSectionConfig> | undefined,
@@ -102,17 +103,9 @@ export function normalizeImageSection(
   items = dedupeByUrl(items);
 
   if (meta.kind === 'video') {
-    // Prefer video URLs; drop images from the hero video slot.
-    const videos = items.filter((i) => looksLikeVideoUrl(i.url));
-    items = videos.length ? videos : items.filter((i) => looksLikeVideoUrl(i.url));
-    // Keep a single active clip — last / selected wins (stops duplicate stack).
-    const preferredId =
-      (Array.isArray(section?.selectedIds) &&
-        section!.selectedIds.find((id) => items.some((i) => i.id === id))) ||
-      items[items.length - 1]?.id;
-    const preferred =
-      items.find((i) => i.id === preferredId) || items[items.length - 1];
-    items = preferred ? [{ ...preferred }] : [];
+    items = items
+      .filter((i) => looksLikeVideoUrl(i.url))
+      .slice(0, MAX_HERO_VIDEOS);
   } else {
     items = items
       .filter((i) => !looksLikeVideoUrl(i.url))
@@ -128,11 +121,9 @@ export function normalizeImageSection(
     ? section!.selectedIds.filter((id) => itemIds.has(id))
     : [];
 
+  // Preserve selection order for circular playback; default = all videos.
   if (!selectedIds.length && items.length) {
-    selectedIds = [items[0].id];
-  }
-  if (meta.kind === 'video' && items.length) {
-    selectedIds = [items[0].id];
+    selectedIds = items.map((i) => i.id);
   }
 
   return {
@@ -251,17 +242,27 @@ export function syncPrimaryUrls(sections: ImageSectionConfig[]) {
   };
 }
 
-/** Set / replace the single hero video (never append duplicates). */
-export function setHeroVideo(
+/** Append a hero video (dedupe by URL). Used for circular playlist. */
+export function addHeroVideo(
   section: ImageSectionConfig,
   url: string
 ): ImageSectionConfig {
-  const id = section.items[0]?.id || newId('hero');
+  const trimmed = url.trim();
+  if (!trimmed) return section;
+  if (section.items.some((i) => i.url === trimmed)) {
+    // Already present — ensure it's selected for the cycle.
+    const existing = section.items.find((i) => i.url === trimmed)!;
+    const selected = new Set(section.selectedIds);
+    selected.add(existing.id);
+    return { ...section, selectedIds: Array.from(selected) };
+  }
+  if (section.items.length >= MAX_HERO_VIDEOS) return section;
+  const id = newId('hero');
   return {
     ...section,
     label: SECTION_META.hero.label,
-    items: [{ id, url: url.trim() }],
-    selectedIds: [id],
+    items: [...section.items, { id, url: trimmed }],
+    selectedIds: [...section.selectedIds, id],
   };
 }
 
@@ -270,9 +271,8 @@ export function addImageToSection(
   url: string
 ): ImageSectionConfig {
   if (sectionKind(section.key) === 'video') {
-    return setHeroVideo(section, url);
+    return addHeroVideo(section, url);
   }
-  // Skip duplicate URLs
   if (section.items.some((i) => i.url === url)) return section;
   if (section.items.length >= MAX_IMAGES_PER_SECTION) return section;
   const id = newId(section.key);
@@ -281,7 +281,7 @@ export function addImageToSection(
     ...section,
     items,
     selectedIds: section.selectedIds.length
-      ? section.selectedIds
+      ? [...section.selectedIds, id]
       : [id],
   };
 }
@@ -291,13 +291,10 @@ export function replaceImageInSection(
   itemId: string,
   url: string
 ): ImageSectionConfig {
-  if (sectionKind(section.key) === 'video') {
-    return setHeroVideo(section, url);
-  }
   return {
     ...section,
     items: section.items.map((item) =>
-      item.id === itemId ? { ...item, url } : item
+      item.id === itemId ? { ...item, url: url.trim() } : item
     ),
   };
 }
@@ -306,12 +303,12 @@ export function removeImageFromSection(
   section: ImageSectionConfig,
   itemId: string
 ): ImageSectionConfig {
-  if (sectionKind(section.key) === 'video') {
-    return { ...section, items: [], selectedIds: [] };
-  }
-  if (section.items.length <= 1) return section;
+  const isVideo = sectionKind(section.key) === 'video';
+  if (!isVideo && section.items.length <= 1) return section;
   const items = section.items.filter((i) => i.id !== itemId);
   let selectedIds = section.selectedIds.filter((id) => id !== itemId);
-  if (!selectedIds.length) selectedIds = [items[0].id];
+  if (!selectedIds.length && items.length) {
+    selectedIds = isVideo ? items.map((i) => i.id) : [items[0].id];
+  }
   return { ...section, items, selectedIds };
 }

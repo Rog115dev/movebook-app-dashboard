@@ -4,11 +4,11 @@ import path from 'path';
 import { getSession } from '@/lib/auth';
 import {
   addImageToSection,
+  MAX_HERO_VIDEOS,
   MAX_IMAGES_PER_SECTION,
   primaryVideoUrlFromSection,
   replaceImageInSection,
   sectionKind,
-  setHeroVideo,
   syncLegacyImages,
   syncPrimaryUrls,
 } from '@/lib/imageSections';
@@ -83,13 +83,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Section not found' }, { status: 404 });
   }
 
+  const maxItems =
+    kind === 'video' ? MAX_HERO_VIDEOS : MAX_IMAGES_PER_SECTION;
   if (
-    kind === 'image' &&
     mode === 'add' &&
-    sections[index].items.length >= MAX_IMAGES_PER_SECTION
+    sections[index].items.length >= maxItems
   ) {
     return NextResponse.json(
-      { error: `Maximum ${MAX_IMAGES_PER_SECTION} images per section` },
+      {
+        error: `Maximum ${maxItems} ${kind === 'video' ? 'videos' : 'images'} per section`,
+      },
       { status: 400 }
     );
   }
@@ -106,22 +109,18 @@ export async function POST(req: Request) {
   await fs.writeFile(path.join(uploadDir, filename), bytes);
   const url = `/uploads/${filename}`;
 
-  if (kind === 'video') {
-    // Always a single slot — never append duplicates.
-    sections[index] = setHeroVideo(sections[index], url);
-  } else if (mode === 'replace' && itemId) {
+  if (mode === 'replace' && itemId) {
     sections[index] = replaceImageInSection(sections[index], itemId, url);
   } else {
+    // Hero videos append (deduped); images append as before.
     sections[index] = addImageToSection(sections[index], url);
   }
 
   const primary = syncPrimaryUrls(sections);
   const heroVideoUrl =
-    kind === 'video'
-      ? url
-      : primaryVideoUrlFromSection(sections.find((s) => s.key === 'hero')) ||
-        current.home.heroVideoUrl ||
-        '';
+    primaryVideoUrlFromSection(sections.find((s) => s.key === 'hero')) ||
+    current.home.heroVideoUrl ||
+    '';
 
   const saved = await patchSettings({
     imageSections: sections,

@@ -90,7 +90,9 @@ export function ImageSectionPreview({ section }: Props) {
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3">
               <p className="text-xs font-semibold text-white">
                 {isVideoSection
-                  ? 'Hero video'
+                  ? urls.length > 1
+                    ? `Video cycle · ${urls.length} clips`
+                    : 'Hero video'
                   : multi
                     ? `Random · every ${section.rotateDelaySec}s`
                     : 'Fixed display'}
@@ -98,8 +100,8 @@ export function ImageSectionPreview({ section }: Props) {
               <p className="text-[10px] text-zinc-300">
                 {isVideoSection
                   ? active
-                    ? 'Playing muted preview'
-                    : 'Upload an MP4 to preview'
+                    ? 'Full-length circular playback on mobile'
+                    : 'Add videos to build the cycle'
                   : `${urls.length} selected for presentation`}
               </p>
             </div>

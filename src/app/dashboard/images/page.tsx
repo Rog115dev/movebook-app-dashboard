@@ -5,6 +5,7 @@ import { ImageSectionPreview } from '@/components/ImageSectionPreview';
 import { SaveBar } from '@/components/SaveBar';
 import { fetchSettings, saveSettings } from '@/lib/api-client';
 import {
+  MAX_HERO_VIDEOS,
   MAX_IMAGES_PER_SECTION,
   migrateImageSections,
   primaryVideoUrlFromSection,
@@ -54,10 +55,6 @@ export default function ImagesPage() {
     sectionKey: ImageSectionConfig['key'],
     itemId: string
   ) {
-    if (sectionKind(sectionKey) === 'video') {
-      selectOnly(sectionKey, itemId);
-      return;
-    }
     updateSection(sectionKey, (section) => {
       const selected = new Set(section.selectedIds);
       if (selected.has(itemId)) {
@@ -188,9 +185,10 @@ export default function ImagesPage() {
     <div className="mx-auto max-w-7xl">
       <h1 className="text-3xl font-semibold">Images & video</h1>
       <p className="mt-2 text-zinc-400">
-        Home hero is a <span className="text-[#FF7800]">single video</span>.
-        Paywall and TRAIN PRO stay image pools (1–
-        {MAX_IMAGES_PER_SECTION}, multi-select rotates).
+        Home hero is a{' '}
+        <span className="text-[#FF7800]">video playlist</span> (up to{' '}
+        {MAX_HERO_VIDEOS}). Selected clips play in a circular cycle — each
+        plays for its full length. Paywall and TRAIN PRO stay image pools.
       </p>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_280px]">
@@ -199,9 +197,8 @@ export default function ImagesPage() {
             const kind = sectionKind(section.key);
             const isVideo = kind === 'video';
             const multi = !isVideo && section.selectedIds.length >= 2;
-            const canAdd = isVideo
-              ? section.items.length === 0
-              : section.items.length < MAX_IMAGES_PER_SECTION;
+            const maxItems = isVideo ? MAX_HERO_VIDEOS : MAX_IMAGES_PER_SECTION;
+            const canAdd = section.items.length < maxItems;
             return (
               <section
                 key={section.key}
@@ -219,8 +216,8 @@ export default function ImagesPage() {
                   <p className="mt-1 text-xs text-zinc-500">
                     {isVideo
                       ? section.items.length
-                        ? '1 video active'
-                        : 'No video yet'
+                        ? `${section.selectedIds.length} in cycle · ${section.items.length}/${MAX_HERO_VIDEOS}`
+                        : 'No videos yet'
                       : `${section.items.length}/${MAX_IMAGES_PER_SECTION}${
                           multi
                             ? ` · random ${section.rotateDelaySec}s`
@@ -256,7 +253,7 @@ export default function ImagesPage() {
                 <div className="flex flex-1 flex-col gap-3">
                   {section.items.map((item, index) => {
                     const selected = section.selectedIds.includes(item.id);
-                    const canRemove = isVideo || section.items.length > 1;
+                    const canRemove = section.items.length > 0;
                     const itemIsVideo = looksLikeVideoUrl(item.url);
                     return (
                       <div
@@ -287,42 +284,44 @@ export default function ImagesPage() {
                             />
                           )}
                           <span className="absolute left-2 top-2 rounded bg-black/75 px-2 py-0.5 text-[10px] uppercase tracking-wide text-[#FF7800]">
-                            {isVideo ? 'Hero video' : index === 0 ? 'Default' : `#${index + 1}`}
+                            {isVideo
+                              ? `Clip #${index + 1}`
+                              : index === 0
+                                ? 'Default'
+                                : `#${index + 1}`}
                           </span>
                         </div>
                         <div className="space-y-2 p-3">
                           <p className="truncate text-xs text-zinc-500">
                             {item.url}
                           </p>
-                          {!isVideo ? (
-                            <label
-                              className="flex cursor-pointer items-center gap-2 text-xs text-zinc-200"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <input
-                                type="checkbox"
-                                checked={selected}
-                                onChange={() =>
-                                  toggleSelected(section.key, item.id)
-                                }
-                                className="h-3.5 w-3.5 accent-[#FF7800]"
-                              />
-                              Use in presentation
-                            </label>
-                          ) : null}
+                          <label
+                            className="flex cursor-pointer items-center gap-2 text-xs text-zinc-200"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={selected}
+                              onChange={() =>
+                                toggleSelected(section.key, item.id)
+                              }
+                              className="h-3.5 w-3.5 accent-[#FF7800]"
+                            />
+                            {isVideo
+                              ? 'Include in cycle'
+                              : 'Use in presentation'}
+                          </label>
                           <div className="flex flex-wrap gap-2">
-                            {!isVideo ? (
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  selectOnly(section.key, item.id);
-                                }}
-                                className="rounded-lg border border-zinc-700 px-2 py-1 text-[11px] text-zinc-200 hover:border-[#FF7800]"
-                              >
-                                Show only this
-                              </button>
-                            ) : null}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                selectOnly(section.key, item.id);
+                              }}
+                              className="rounded-lg border border-zinc-700 px-2 py-1 text-[11px] text-zinc-200 hover:border-[#FF7800]"
+                            >
+                              {isVideo ? 'Play only this' : 'Show only this'}
+                            </button>
                             <label
                               className="inline-flex cursor-pointer rounded-lg bg-[#FF7800] px-2 py-1 text-[11px] font-semibold text-black"
                               onClick={(e) => e.stopPropagation()}
@@ -368,24 +367,23 @@ export default function ImagesPage() {
                   <label
                     onClick={(e) => e.stopPropagation()}
                     className={`mt-1 flex min-h-[88px] cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed px-3 py-4 text-center transition ${
-                      canAdd || isVideo
+                      canAdd
                         ? 'border-[#FF7800]/40 text-[#FF7800] hover:bg-[#FF7800]/10'
                         : 'cursor-not-allowed border-zinc-800 text-zinc-600'
                     }`}
                   >
                     <span className="text-sm font-semibold">
-                      {busyKey === `${section.key}:add:new` ||
-                      (isVideo && busyKey?.startsWith(`${section.key}:`))
+                      {busyKey === `${section.key}:add:new`
                         ? 'Uploading…'
                         : isVideo
-                          ? section.items.length
-                            ? 'Replace hero video'
-                            : 'Add hero video'
+                          ? 'Add video to cycle'
                           : 'Add images'}
                     </span>
                     <span className="mt-1 text-[11px] text-zinc-500">
                       {isVideo
-                        ? 'MP4 / WebM / MOV · one clip only'
+                        ? canAdd
+                          ? `MP4 / WebM / MOV · ${MAX_HERO_VIDEOS - section.items.length} slots left`
+                          : 'Maximum 9 videos'
                         : canAdd
                           ? `Up to ${MAX_IMAGES_PER_SECTION - section.items.length} more`
                           : 'Maximum 9 reached'}
@@ -398,16 +396,11 @@ export default function ImagesPage() {
                           : 'image/*'
                       }
                       className="hidden"
-                      disabled={(!canAdd && !isVideo) || busyKey !== null}
+                      disabled={!canAdd || busyKey !== null}
                       onChange={(e) => {
                         const file = e.target.files?.[0];
                         e.target.value = '';
-                        if (!file) return;
-                        if (isVideo && section.items[0]) {
-                          upload(section, file, 'replace', section.items[0].id);
-                        } else {
-                          upload(section, file, 'add');
-                        }
+                        if (file) upload(section, file, 'add');
                       }}
                     />
                   </label>
