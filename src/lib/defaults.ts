@@ -45,7 +45,8 @@ export function createDefaultSettings(): MobileAppSettings {
       confidenceText:
         "We're confident that our premium experience will exceed your expectations, providing you with unique value and satisfaction.\n\nEnjoy the freedom to explore everything we offer, because your satisfaction is, and always will be, our top priority.",
       heroImageUrl: '/uploads/hero-break-limits.jpg',
-      heroVideoUrl: '/uploads/sample-hero-1.mp4',
+      /** Empty by default so a custom hero image is not hidden by a sample video. */
+      heroVideoUrl: '',
       heroVideoSamples: [
         {
           id: 'sample-1',

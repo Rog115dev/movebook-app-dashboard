@@ -218,9 +218,15 @@ export default function HomePageEditor() {
         <h2 className="text-xl font-semibold text-white">Hero video</h2>
         <p className="mt-1 text-sm text-zinc-400">
           Paste a direct video URL (.mp4 / .webm / .m3u8) or upload a file. Pick
-          one of the 3 samples below. Clear the URL to show the poster image
-          only.
+          a sample below. On mobile, an active video URL overrides the hero
+          image from Images — use “Clear video” to show the image only.
         </p>
+        {videoUrl ? (
+          <p className="mt-2 rounded-lg border border-[#FF7800]/40 bg-[#FF7800]/10 px-3 py-2 text-xs text-[#FF7800]">
+            Video is active. The mobile hero will play this clip instead of the
+            Images → Home hero image until you clear it.
+          </p>
+        ) : null}
 
         <div className="mt-4">
           <Field

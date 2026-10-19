@@ -29,11 +29,11 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
       ...defaults.home,
       ...(settings.home || {}),
       heroImageUrl: primary.heroImageUrl || defaults.home.heroImageUrl,
-      // Keep empty string if admin cleared video (don't force default sample).
+      // Keep empty string if admin cleared video (don't force a sample clip).
       heroVideoUrl:
         typeof settings.home?.heroVideoUrl === 'string'
           ? settings.home.heroVideoUrl.trim()
-          : defaults.home.heroVideoUrl,
+          : '',
       heroVideoSamples:
         Array.isArray(settings.home?.heroVideoSamples) &&
         settings.home.heroVideoSamples.length > 0
