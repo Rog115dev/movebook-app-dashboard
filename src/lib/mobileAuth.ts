@@ -56,6 +56,8 @@ export async function registerMobileUser(input: {
   password: string;
   userType?: string;
   country?: string;
+  sports?: string[] | string;
+  sport?: string;
   firstName?: string;
   surname?: string;
   gender?: string;
@@ -103,6 +105,22 @@ export async function registerMobileUser(input: {
     throw new Error('Country is required.');
   }
 
+  const sportsRaw = Array.isArray(input.sports)
+    ? input.sports
+    : typeof input.sports === 'string' && input.sports.trim()
+      ? input.sports.split(/[,|]/)
+      : typeof input.sport === 'string' && input.sport.trim()
+        ? [input.sport]
+        : [];
+  const sports = Array.from(
+    new Set(
+      sportsRaw.map((s) => String(s || '').trim().toLowerCase()).filter(Boolean)
+    )
+  );
+  if (!sports.length) {
+    throw new Error('At least one sport is required.');
+  }
+
   const user = await UserModel.create({
     name: input.name.trim(),
     username,
@@ -110,6 +128,8 @@ export async function registerMobileUser(input: {
     passwordHash,
     userType,
     country,
+    sports,
+    sport: sports[0] || '',
     firstName: input.firstName?.trim(),
     surname: input.surname?.trim(),
     gender: input.gender?.trim(),

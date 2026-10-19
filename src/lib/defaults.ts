@@ -5,6 +5,7 @@ import {
   syncLegacyImages,
 } from './imageSections';
 import { DEFAULT_CURRENCIES } from './currency';
+import { createDefaultSports } from './sports';
 
 export function createDefaultSettings(): MobileAppSettings {
   return {
@@ -45,8 +46,9 @@ export function createDefaultSettings(): MobileAppSettings {
       confidenceText:
         "We're confident that our premium experience will exceed your expectations, providing you with unique value and satisfaction.\n\nEnjoy the freedom to explore everything we offer, because your satisfaction is, and always will be, our top priority.",
       heroImageUrl: '/uploads/hero-break-limits.jpg',
-      /** Empty by default so a custom hero image is not hidden by a sample video. */
+      /** Empty by default — samples are optional picks, not auto-active. */
       heroVideoUrl: '',
+      heroVideoChosen: false,
       heroVideoSamples: [
         {
           id: 'sample-1',
@@ -329,6 +331,7 @@ export function createDefaultSettings(): MobileAppSettings {
         },
       ],
     },
+    sports: createDefaultSports(),
     testimonials: {
       subtitle: 'Join FitAI Coach users who cannot get enough.',
       carouselDelaySec: 5,
@@ -337,34 +340,49 @@ export function createDefaultSettings(): MobileAppSettings {
           id: 'mike-myers',
           code: 'Mike Myers',
           pictureUrl: '',
+          logoUrl: '',
           borderColor: '#FF7800',
           title: 'Great training flow',
           description:
             'Plans feel personalized and the video library is excellent. Progress tracking keeps me consistent week after week.',
           showInPresentation: true,
           showInMenu: true,
+          countries: [],
+          languages: [],
+          audiences: [],
+          sports: [],
         },
         {
           id: 'shaun',
           code: 'Shaun',
           pictureUrl: '',
+          logoUrl: '',
           borderColor: '#FF7800',
           title: 'Actually feels smart',
           description:
             'Not robotic at all. I ended up using FitAI Coach way more than I expected — coaching tips are clear and useful.',
           showInPresentation: true,
           showInMenu: true,
+          countries: [],
+          languages: [],
+          audiences: [],
+          sports: [],
         },
         {
           id: 'carlos-pearson',
           code: 'Carlos Pearson',
           pictureUrl: '',
+          logoUrl: '',
           borderColor: '#FF7800',
           title: 'Production-level experience',
           description:
             'Workout videos and structure feel polished. Closest thing to having a real coach in my pocket.',
           showInPresentation: true,
           showInMenu: true,
+          countries: [],
+          languages: [],
+          audiences: [],
+          sports: [],
         },
       ],
     },

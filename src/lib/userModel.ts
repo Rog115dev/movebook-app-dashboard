@@ -26,6 +26,10 @@ const UserSchema = new Schema(
       default: 'athlete',
     },
     country: { type: String, required: true, default: 'US', trim: true },
+    /** CMS sport catalog ids (multi-select) */
+    sports: { type: [String], default: [] },
+    /** @deprecated Prefer sports[]; kept for older documents */
+    sport: { type: String, trim: true, default: '' },
     firstName: { type: String, trim: true },
     surname: { type: String, trim: true },
     gender: { type: String, trim: true },
@@ -49,5 +53,13 @@ export function publicUser(user: UserDocument) {
     email: user.email,
     userType: user.userType,
     country: user.country,
+    sports: (() => {
+      const list = Array.isArray(user.sports)
+        ? user.sports.map((s) => String(s || '').trim()).filter(Boolean)
+        : [];
+      if (list.length) return list;
+      const legacy = String(user.sport || '').trim();
+      return legacy ? [legacy] : [];
+    })(),
   };
 }

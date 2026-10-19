@@ -25,10 +25,24 @@ const RegisterSchema = z.object({
     .trim()
     .min(2, 'Country is required')
     .max(2, 'Use a 2-letter country code'),
+  sports: z
+    .union([
+      z.array(z.string().trim().min(1)).min(1, 'Select at least one sport'),
+      z.string().trim().min(1),
+    ])
+    .optional(),
+  /** @deprecated Prefer sports[] */
+  sport: z.string().trim().min(1).optional(),
   firstName: z.string().optional(),
   surname: z.string().optional(),
   gender: z.string().optional(),
-});
+}).refine(
+  (data) =>
+    (Array.isArray(data.sports) && data.sports.length > 0) ||
+    (typeof data.sports === 'string' && data.sports.trim().length > 0) ||
+    (typeof data.sport === 'string' && data.sport.trim().length > 0),
+  { message: 'Select at least one sport', path: ['sports'] }
+);
 
 export async function POST(req: Request) {
   try {

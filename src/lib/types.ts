@@ -34,9 +34,14 @@ export type HomeSettings = {
   heroImageUrl: string;
   /**
    * Active hero video (uploaded path or external URL).
-   * When set, mobile plays video; otherwise shows hero image.
+   * When set, mobile shows this clip only (image is fallback if cleared).
    */
   heroVideoUrl: string;
+  /**
+   * True when admin explicitly uploaded / pasted / picked a video.
+   * Legacy default sample URLs without this flag are ignored.
+   */
+  heroVideoChosen?: boolean;
   /** Sample / library videos admin can pick from */
   heroVideoSamples: { id: string; label: string; url: string }[];
 };
@@ -186,7 +191,10 @@ export type TestimonialItem = {
   id: string;
   /** Display name / code of the person */
   code: string;
+  /** Person photo (avatar) */
   pictureUrl: string;
+  /** Separate brand / logo image shown on the card */
+  logoUrl: string;
   /** Border color around the picture */
   borderColor: string;
   title: string;
@@ -194,6 +202,14 @@ export type TestimonialItem = {
   showInPresentation: boolean;
   /** Reserved for a future Testimonials menu */
   showInMenu: boolean;
+  /**
+   * Targeting — empty array = visible to all for that dimension.
+   */
+  countries: string[];
+  languages: string[];
+  audiences: UnlockAudience[];
+  /** Sport ids from the CMS sports catalog */
+  sports: string[];
 };
 
 export type ImageAsset = {
@@ -231,6 +247,11 @@ export type ImageSectionConfig = {
   rotateDelaySec: RotateDelaySec;
 };
 
+export type SportCatalogItem = {
+  id: string;
+  name: string;
+};
+
 export type MobileAppSettings = {
   version: number;
   updatedAt: string;
@@ -250,6 +271,8 @@ export type MobileAppSettings = {
   discount: DiscountSettings;
   trainPro: TrainProSettings;
   featuresPage: FeaturesPageSettings;
+  /** Admin-managed sport list (names from Movesbook; custom add/delete). */
+  sports: SportCatalogItem[];
   testimonials: TestimonialsSettings;
   /** @deprecated Prefer imageSections; kept for legacy clients */
   images: ImageAsset[];

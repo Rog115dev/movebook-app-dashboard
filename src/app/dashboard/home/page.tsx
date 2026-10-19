@@ -62,6 +62,7 @@ export default function HomePageEditor() {
       const nextHome = {
         ...home,
         heroVideoUrl: json.url,
+        heroVideoChosen: true,
         heroVideoSamples: [
           ...home.heroVideoSamples.filter((s) => s.url !== json.url),
           { id, label: file.name || 'Uploaded video', url: json.url },
@@ -74,6 +75,7 @@ export default function HomePageEditor() {
         home: {
           ...nextHome,
           heroVideoUrl: nextHome.heroVideoUrl.trim(),
+          heroVideoChosen: true,
         },
       });
       setMessage(
@@ -93,10 +95,12 @@ export default function HomePageEditor() {
     setSaving(true);
     setMessage('');
     try {
+      const trimmedVideo = home.heroVideoUrl.trim();
       await saveSettings({
         home: {
           ...home,
-          heroVideoUrl: home.heroVideoUrl.trim(),
+          heroVideoUrl: trimmedVideo,
+          heroVideoChosen: Boolean(trimmedVideo && home.heroVideoChosen),
         },
         whyChooseMe: { title, reasons },
         // Keep English i18n keys in sync with Home editor
@@ -207,24 +211,24 @@ export default function HomePageEditor() {
           multiline
         />
         <Field
-          label="Hero poster image URL"
+          label="Hero image URL (fallback)"
           value={home.heroImageUrl}
           onChange={(v) => setHome({ ...home, heroImageUrl: v })}
-          hint="Shown as poster / fallback when no video is set. Manage pool under Images."
+          hint="Shown only when no hero video is active. Manage pool under Images."
         />
       </div>
 
       <section className="mt-10 rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
         <h2 className="text-xl font-semibold text-white">Hero video</h2>
         <p className="mt-1 text-sm text-zinc-400">
-          Paste a direct video URL (.mp4 / .webm / .m3u8) or upload a file. Pick
-          a sample below. On mobile, an active video URL overrides the hero
-          image from Images — use “Clear video” to show the image only.
+          Preferred hero media. Paste a direct video URL (.mp4 / .webm / .m3u8),
+          upload a file, or pick a sample. When a video is chosen, mobile shows
+          the video only (not the image). Clear video to fall back to the image.
         </p>
-        {videoUrl ? (
+        {videoUrl && home.heroVideoChosen ? (
           <p className="mt-2 rounded-lg border border-[#FF7800]/40 bg-[#FF7800]/10 px-3 py-2 text-xs text-[#FF7800]">
-            Video is active. The mobile hero will play this clip instead of the
-            Images → Home hero image until you clear it.
+            Video is active. Mobile hero shows this clip only. Clear video to
+            show the hero image instead.
           </p>
         ) : null}
 
@@ -234,7 +238,11 @@ export default function HomePageEditor() {
             value={home.heroVideoUrl}
             onChange={(v) => {
               setPreviewError(false);
-              setHome({ ...home, heroVideoUrl: v });
+              setHome({
+                ...home,
+                heroVideoUrl: v,
+                heroVideoChosen: Boolean(v.trim()),
+              });
             }}
             hint="Example: https://…/clip.mp4 or /uploads/sample-hero-1.mp4"
           />
@@ -258,10 +266,16 @@ export default function HomePageEditor() {
           {home.heroVideoUrl ? (
             <button
               type="button"
-              onClick={() => setHome({ ...home, heroVideoUrl: '' })}
+              onClick={() =>
+                setHome({
+                  ...home,
+                  heroVideoUrl: '',
+                  heroVideoChosen: false,
+                })
+              }
               className="text-xs text-zinc-500 hover:text-red-300"
             >
-              Clear video (use image)
+              Clear video (image only)
             </button>
           ) : null}
         </div>
@@ -270,14 +284,19 @@ export default function HomePageEditor() {
           <p className="text-sm font-medium text-zinc-200">Sample videos</p>
           <div className="mt-3 grid gap-3 sm:grid-cols-3">
             {home.heroVideoSamples.map((sample) => {
-              const selected = home.heroVideoUrl === sample.url;
+              const selected =
+                home.heroVideoChosen && home.heroVideoUrl === sample.url;
               return (
                 <button
                   key={sample.id}
                   type="button"
                   onClick={() => {
                     setPreviewError(false);
-                    setHome({ ...home, heroVideoUrl: sample.url });
+                    setHome({
+                      ...home,
+                      heroVideoUrl: sample.url,
+                      heroVideoChosen: true,
+                    });
                   }}
                   className={`rounded-xl border p-3 text-left transition ${
                     selected

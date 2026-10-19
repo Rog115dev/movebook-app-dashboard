@@ -7,9 +7,14 @@ import {
   syncLegacyImages,
   syncPrimaryUrls,
 } from './imageSections';
-import type { MobileAppSettings, RotateDelaySec } from './types';
-import { ROTATE_DELAYS } from './types';
+import type {
+  MobileAppSettings,
+  RotateDelaySec,
+  UnlockAudience,
+} from './types';
+import { ROTATE_DELAYS, UNLOCK_AUDIENCE_OPTIONS } from './types';
 import { DEFAULT_CURRENCIES, normalizePlanPricing } from './currency';
+import { normalizeSports } from './sports';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 const SETTINGS_PATH = path.join(DATA_DIR, 'mobile-settings.json');
@@ -30,10 +35,29 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
       ...(settings.home || {}),
       heroImageUrl: primary.heroImageUrl || defaults.home.heroImageUrl,
       // Keep empty string if admin cleared video (don't force a sample clip).
-      heroVideoUrl:
-        typeof settings.home?.heroVideoUrl === 'string'
-          ? settings.home.heroVideoUrl.trim()
-          : '',
+      // Legacy installs had sample-hero-*.mp4 as default without an explicit choice.
+      ...(() => {
+        let heroVideoUrl =
+          typeof settings.home?.heroVideoUrl === 'string'
+            ? settings.home.heroVideoUrl.trim()
+            : '';
+        let heroVideoChosen = Boolean(settings.home?.heroVideoChosen);
+        const isBuiltInSample =
+          /\/uploads\/sample-hero-\d+\.(mp4|webm|mov)(\?|$)/i.test(
+            heroVideoUrl
+          );
+        if (!heroVideoUrl) {
+          heroVideoChosen = false;
+        } else if (isBuiltInSample && !heroVideoChosen) {
+          // Drop auto-defaulted sample so mobile shows the admin image instead.
+          heroVideoUrl = '';
+          heroVideoChosen = false;
+        } else if (heroVideoUrl && !isBuiltInSample) {
+          // Uploads / external URLs count as an explicit choice.
+          heroVideoChosen = true;
+        }
+        return { heroVideoUrl, heroVideoChosen };
+      })(),
       heroVideoSamples:
         Array.isArray(settings.home?.heroVideoSamples) &&
         settings.home.heroVideoSamples.length > 0
@@ -138,6 +162,7 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
           }))
         : defaults.featuresPage.items,
     },
+    sports: normalizeSports(settings.sports),
     testimonials: {
       ...defaults.testimonials,
       ...(settings.testimonials || {}),
@@ -150,16 +175,41 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
         ? (settings.testimonials!.carouselDelaySec as RotateDelaySec)
         : defaults.testimonials.carouselDelaySec,
       items: Array.isArray(settings.testimonials?.items)
-        ? settings.testimonials.items.map((item, i) => ({
-            id: item.id || `testimonial-${i + 1}`,
-            code: item.code || '',
-            pictureUrl: item.pictureUrl || '',
-            borderColor: item.borderColor || defaults.colors.orange,
-            title: item.title || '',
-            description: item.description || '',
-            showInPresentation: Boolean(item.showInPresentation),
-            showInMenu: Boolean(item.showInMenu),
-          }))
+        ? settings.testimonials.items.map((item, i) => {
+            const audiences = Array.isArray(item.audiences)
+              ? (item.audiences.filter((a) =>
+                  (UNLOCK_AUDIENCE_OPTIONS as readonly string[]).includes(a)
+                ) as UnlockAudience[])
+              : [];
+            const languages = Array.isArray(item.languages)
+              ? item.languages
+                  .map((l) => String(l).trim().toLowerCase())
+                  .filter((l) => (LOCALES as readonly string[]).includes(l))
+              : [];
+            const countries = Array.isArray(item.countries)
+              ? item.countries
+                  .map((c) => String(c).trim().toUpperCase())
+                  .filter((c) => c.length === 2)
+              : [];
+            const sports = Array.isArray(item.sports)
+              ? item.sports.map((s) => String(s).trim()).filter(Boolean)
+              : [];
+            return {
+              id: item.id || `testimonial-${i + 1}`,
+              code: item.code || '',
+              pictureUrl: item.pictureUrl || '',
+              logoUrl: item.logoUrl || '',
+              borderColor: item.borderColor || defaults.colors.orange,
+              title: item.title || '',
+              description: item.description || '',
+              showInPresentation: Boolean(item.showInPresentation),
+              showInMenu: Boolean(item.showInMenu),
+              countries,
+              languages,
+              audiences,
+              sports,
+            };
+          })
         : defaults.testimonials.items,
     },
     imageSections,
