@@ -13,6 +13,7 @@ const LINKS = [
   { href: '/dashboard/languages', label: 'Languages' },
   { href: '/dashboard/plans', label: 'Plans' },
   { href: '/dashboard/paywall', label: 'Paywall' },
+  { href: '/dashboard/discount', label: 'Discount' },
   { href: '/dashboard/train-pro', label: 'TRAIN PRO' },
   { href: '/dashboard/images', label: 'Images' },
 ];

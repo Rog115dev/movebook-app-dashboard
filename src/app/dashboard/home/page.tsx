@@ -13,6 +13,7 @@ export default function HomePageEditor() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState('');
+  const [previewError, setPreviewError] = useState(false);
 
   async function load() {
     const s = await fetchSettings();
@@ -32,6 +33,14 @@ export default function HomePageEditor() {
 
   async function uploadVideo(file: File) {
     if (!home) return;
+    if (!file.type.startsWith('video/') && !/\.(mp4|webm|mov)$/i.test(file.name)) {
+      setMessage('Please choose an MP4, WebM, or MOV video file.');
+      return;
+    }
+    if (file.size > 100 * 1024 * 1024) {
+      setMessage('Video is too large (max 100MB). Compress or shorten the clip.');
+      return;
+    }
     setUploading(true);
     setMessage('');
     try {
@@ -42,20 +51,38 @@ export default function HomePageEditor() {
         method: 'POST',
         body,
       });
-      if (!res.ok) throw new Error('Upload failed');
-      const json = (await res.json()) as { url: string };
+      const json = (await res.json().catch(() => ({}))) as {
+        url?: string;
+        error?: string;
+      };
+      if (!res.ok || !json.url) {
+        throw new Error(json.error || `Upload failed (${res.status})`);
+      }
       const id = `upload-${Date.now()}`;
-      setHome({
+      const nextHome = {
         ...home,
         heroVideoUrl: json.url,
         heroVideoSamples: [
-          ...home.heroVideoSamples,
+          ...home.heroVideoSamples.filter((s) => s.url !== json.url),
           { id, label: file.name || 'Uploaded video', url: json.url },
         ],
+      };
+      setPreviewError(false);
+      setHome(nextHome);
+      // Persist immediately so mobile can load the new URL
+      await saveSettings({
+        home: {
+          ...nextHome,
+          heroVideoUrl: nextHome.heroVideoUrl.trim(),
+        },
       });
-      setMessage('Video uploaded — save to apply on mobile.');
-    } catch {
-      setMessage('Video upload failed.');
+      setMessage(
+        `Video uploaded and saved (${Math.round(file.size / 1024)} KB). Preview below — reload the mobile app to see it.`
+      );
+    } catch (err) {
+      setMessage(
+        err instanceof Error ? err.message : 'Video upload failed.'
+      );
     } finally {
       setUploading(false);
     }
@@ -106,9 +133,12 @@ export default function HomePageEditor() {
 
   if (!home) return <p className="text-zinc-400">Loading…</p>;
 
-  const isVideo =
-    Boolean(home.heroVideoUrl?.trim()) &&
-    /\.(mp4|webm|mov|m3u8)(\?|$)/i.test(home.heroVideoUrl);
+  const videoUrl = home.heroVideoUrl?.trim() || '';
+  const canPreviewVideo =
+    Boolean(videoUrl) &&
+    (/^https?:\/\//i.test(videoUrl) ||
+      videoUrl.startsWith('/uploads/') ||
+      /\.(mp4|webm|mov|m3u8)(\?|$)/i.test(videoUrl));
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -196,7 +226,10 @@ export default function HomePageEditor() {
           <Field
             label="Active video URL"
             value={home.heroVideoUrl}
-            onChange={(v) => setHome({ ...home, heroVideoUrl: v })}
+            onChange={(v) => {
+              setPreviewError(false);
+              setHome({ ...home, heroVideoUrl: v });
+            }}
             hint="Example: https://…/clip.mp4 or /uploads/sample-hero-1.mp4"
           />
         </div>
@@ -236,9 +269,10 @@ export default function HomePageEditor() {
                 <button
                   key={sample.id}
                   type="button"
-                  onClick={() =>
-                    setHome({ ...home, heroVideoUrl: sample.url })
-                  }
+                  onClick={() => {
+                    setPreviewError(false);
+                    setHome({ ...home, heroVideoUrl: sample.url });
+                  }}
                   className={`rounded-xl border p-3 text-left transition ${
                     selected
                       ? 'border-[#FF7800] bg-[#FF7800]/10'
@@ -262,23 +296,31 @@ export default function HomePageEditor() {
           </div>
         </div>
 
-        {home.heroVideoUrl ? (
+        {videoUrl ? (
           <div className="mt-4 overflow-hidden rounded-lg border border-zinc-800 bg-black">
-            {isVideo || home.heroVideoUrl.startsWith('http') ? (
+            {canPreviewVideo && !previewError ? (
               <video
-                key={home.heroVideoUrl}
-                src={home.heroVideoUrl}
+                key={videoUrl}
+                src={videoUrl}
                 controls
                 muted
                 playsInline
-                className="max-h-56 w-full object-contain"
+                preload="metadata"
+                className="max-h-56 w-full object-contain bg-black"
+                onLoadedData={() => setPreviewError(false)}
+                onError={() => setPreviewError(true)}
               />
             ) : (
-              <p className="p-4 text-sm text-zinc-400">
-                Preview unavailable for this URL — it will still play in the
-                app if reachable.
+              <p className="p-4 text-sm text-red-300">
+                Preview failed to load{' '}
+                <code className="text-zinc-400">{videoUrl}</code>. Re-upload the
+                MP4 (max 100MB) or confirm the file exists under{' '}
+                <code className="text-zinc-400">public/uploads</code>.
               </p>
             )}
+            <p className="border-t border-zinc-800 px-3 py-2 text-[11px] text-zinc-500">
+              Active: {videoUrl}
+            </p>
           </div>
         ) : null}
       </section>

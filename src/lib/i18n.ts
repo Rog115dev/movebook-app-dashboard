@@ -145,6 +145,21 @@ export const ENGLISH_STRINGS: StringMap = {
   'paywall.trust1': 'No commitment. Cancel anytime!',
   'paywall.trust2': 'Top quality workouts',
   'paywall.discountApplied': 'Claim discount applied to your offer.',
+  'paywall.enterDiscountCode': 'Enter discount code',
+  'paywall.enterDiscountHint':
+    'Type the current promo code to unlock your discount.',
+  'paywall.discountCodePlaceholder': 'CODE',
+  'paywall.discountCodeRequired': 'Please enter a discount code.',
+  'paywall.discountInvalid': 'That code is not valid.',
+  'paywall.discountExpired': 'That discount code has expired.',
+  'paywall.discountUnavailable': 'No discount is available right now.',
+  'paywall.discountSuccess': '{percent}% discount applied to your offer.',
+  'paywall.discountActive':
+    '{percent}% discount is active. Remove it to enter a different code.',
+  'paywall.discountAppliedShort': '{percent}% OFF',
+  'paywall.removeDiscount': 'Remove',
+  'paywall.apply': 'Apply',
+  'paywall.cancel': 'Cancel',
   'paywall.feature1': 'Customized plans',
   'paywall.feature2': '24/7 AI trainer',
   'paywall.feature3': 'Progress tracking',
@@ -184,7 +199,7 @@ export const ENGLISH_STRINGS: StringMap = {
   'auth.passwordMin': 'Password must be at least 6 characters',
   'auth.countryRequired': 'Please select your country',
   'auth.userTypeRequired': 'Please select your user type',
-  'auth.audienceLabel': 'I am / We are',
+  'auth.audienceLabel': 'I am',
   'auth.signupFreeCta': 'Sign up free',
   'auth.signupSuccessTitle': 'Account created',
   'auth.signupSuccessBody': 'Welcome to FitAI Coach.',
@@ -195,6 +210,10 @@ export const ENGLISH_STRINGS: StringMap = {
   'auth.countryPlaceholder': 'Select your country',
   'auth.countryModalTitle': 'Select country',
   'auth.countrySearch': 'Search country',
+  'onboarding.countryTitle': 'Select your country',
+  'onboarding.countrySub':
+    'We use your country for local pricing and a better experience. You can change this later when you sign up.',
+  'onboarding.continue': 'Continue',
   'audience.athlete': 'Athlete',
   'audience.coaches': 'Coaches',
   'audience.teams': 'Teams',
@@ -210,6 +229,7 @@ export const ENGLISH_STRINGS: StringMap = {
   'features.loveTitleAfter': 'us',
   'features.realReview': 'Real review',
   'features.choosePlanTitle': 'Choose the perfect plan for you',
+  'features.pricesIn': 'Prices shown in {currency} for your country',
   'features.stickyCta': 'Get FitAI Coach',
   'features.continueTitle': 'Continue',
   'features.continueBody': 'Choose a plan below to continue.',
@@ -350,6 +370,13 @@ export const I18N_GROUPS: { id: string; label: string; keys: string[] }[] = [
     id: 'auth',
     label: 'Auth',
     keys: Object.keys(ENGLISH_STRINGS).filter((k) => k.startsWith('auth.')),
+  },
+  {
+    id: 'onboarding',
+    label: 'Onboarding',
+    keys: Object.keys(ENGLISH_STRINGS).filter((k) =>
+      k.startsWith('onboarding.')
+    ),
   },
   {
     id: 'audience',

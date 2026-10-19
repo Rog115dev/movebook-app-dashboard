@@ -114,6 +114,16 @@ export type PaywallSettings = {
   tiers: PaywallTier[];
 };
 
+/** Promo code claimed from the paywall “Claim discount” button. */
+export type DiscountSettings = {
+  /** Case-insensitive code users must enter */
+  code: string;
+  /** Percent off list price (0–100) */
+  percent: number;
+  /** Last valid day (YYYY-MM-DD), inclusive */
+  expiresOn: string;
+};
+
 export type TrainStat = {
   icon: string;
   value: string;
@@ -237,6 +247,7 @@ export type MobileAppSettings = {
   plans: PlanSettings[];
   pricing: PricingSettings;
   paywall: PaywallSettings;
+  discount: DiscountSettings;
   trainPro: TrainProSettings;
   featuresPage: FeaturesPageSettings;
   testimonials: TestimonialsSettings;

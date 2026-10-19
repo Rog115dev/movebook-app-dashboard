@@ -214,6 +214,11 @@ export function createDefaultSettings(): MobileAppSettings {
         },
       ],
     },
+    discount: {
+      code: 'FITAI50',
+      percent: 50,
+      expiresOn: '2027-12-31',
+    },
     trainPro: {
       headlineOrange: 'TRAIN PRO: ',
       headlineWhite: 'Unleash Your Potential.',

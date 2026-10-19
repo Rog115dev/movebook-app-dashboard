@@ -29,8 +29,11 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
       ...defaults.home,
       ...(settings.home || {}),
       heroImageUrl: primary.heroImageUrl || defaults.home.heroImageUrl,
+      // Keep empty string if admin cleared video (don't force default sample).
       heroVideoUrl:
-        settings.home?.heroVideoUrl?.trim() || defaults.home.heroVideoUrl,
+        typeof settings.home?.heroVideoUrl === 'string'
+          ? settings.home.heroVideoUrl.trim()
+          : defaults.home.heroVideoUrl,
       heroVideoSamples:
         Array.isArray(settings.home?.heroVideoSamples) &&
         settings.home.heroVideoSamples.length > 0
@@ -84,6 +87,19 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
       athletesImageUrl:
         primary.athletesImageUrl || defaults.paywall.athletesImageUrl,
     },
+    discount: (() => {
+      const d = { ...defaults.discount, ...(settings.discount || {}) };
+      const percent = Number(d.percent);
+      return {
+        code: String(d.code || '').trim().toUpperCase(),
+        percent:
+          Number.isFinite(percent) && percent >= 0
+            ? Math.min(100, Math.round(percent))
+            : defaults.discount.percent,
+        expiresOn:
+          String(d.expiresOn || '').trim() || defaults.discount.expiresOn,
+      };
+    })(),
     trainPro: {
       ...defaults.trainPro,
       ...(settings.trainPro || {}),

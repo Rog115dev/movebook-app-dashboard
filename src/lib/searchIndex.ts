@@ -110,6 +110,23 @@ const SECTION_HITS: SearchHit[] = [
     ],
   },
   {
+    id: 'discount',
+    title: 'Discount',
+    desc: 'Promo CODE, discount %, expiration for Claim discount',
+    href: '/dashboard/discount',
+    category: 'Section',
+    keywords: [
+      'discount',
+      'promo',
+      'code',
+      'coupon',
+      'percent',
+      'expiration',
+      'claim discount',
+      'offer',
+    ],
+  },
+  {
     id: 'plans',
     title: 'Plans',
     desc: 'Free / Basic / Premium / Pro plan cards',
