@@ -22,10 +22,10 @@ const UserSchema = new Schema(
     passwordHash: { type: String, required: true },
     userType: {
       type: String,
-      enum: ['athlete', 'coach', 'club'],
+      enum: ['athlete', 'coaches', 'teams', 'clubs', 'groups', 'coach', 'club'],
       default: 'athlete',
     },
-    country: { type: String, default: 'US', trim: true },
+    country: { type: String, required: true, default: 'US', trim: true },
     firstName: { type: String, trim: true },
     surname: { type: String, trim: true },
     gender: { type: String, trim: true },

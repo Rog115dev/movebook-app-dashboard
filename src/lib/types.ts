@@ -54,15 +54,38 @@ export type PlanFeature = {
   highlight?: boolean;
 };
 
+export type CurrencyOption = {
+  /** ISO-like code, e.g. EUR */
+  code: string;
+  /** Display symbol, e.g. € */
+  symbol: string;
+  /** Human label, e.g. Euro */
+  label: string;
+};
+
 export type PlanSettings = {
   id: string;
   name: string;
+  /**
+   * Legacy / display price string (kept in sync from amount + currency).
+   * Mobile may convert via FX from amount + currencyCode.
+   */
   price: string;
+  /** Numeric amount in `currencyCode` (admin entry currency). */
+  amount: number;
+  /** Currency of `amount` (default EUR as app base). */
+  currencyCode: string;
   subtitle: string;
   cta: string;
   badge?: string;
   badgeDenied?: boolean;
   features: PlanFeature[];
+};
+
+/** App pricing config — base currency is EUR for FX conversion. */
+export type PricingSettings = {
+  baseCurrency: 'EUR';
+  currencies: CurrencyOption[];
 };
 
 export type PaywallTier = {
@@ -200,6 +223,7 @@ export type MobileAppSettings = {
     reasons: WhyChooseReason[];
   };
   plans: PlanSettings[];
+  pricing: PricingSettings;
   paywall: PaywallSettings;
   trainPro: TrainProSettings;
   featuresPage: FeaturesPageSettings;

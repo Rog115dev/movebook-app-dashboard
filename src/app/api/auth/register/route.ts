@@ -9,8 +9,22 @@ const RegisterSchema = z.object({
   username: z.string().trim().min(3, 'Username must be at least 3 characters'),
   email: z.string().trim().email('Valid email is required'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
-  userType: z.string().optional(),
-  country: z.string().optional(),
+  userType: z.enum([
+    'athlete',
+    'coaches',
+    'teams',
+    'clubs',
+    'groups',
+    'coach',
+    'club',
+    'team',
+    'group',
+  ]),
+  country: z
+    .string()
+    .trim()
+    .min(2, 'Country is required')
+    .max(2, 'Use a 2-letter country code'),
   firstName: z.string().optional(),
   surname: z.string().optional(),
   gender: z.string().optional(),

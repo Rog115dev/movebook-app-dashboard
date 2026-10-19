@@ -4,6 +4,7 @@ import {
   createDefaultImageSections,
   syncLegacyImages,
 } from './imageSections';
+import { DEFAULT_CURRENCIES } from './currency';
 
 export function createDefaultSettings(): MobileAppSettings {
   return {
@@ -86,11 +87,17 @@ export function createDefaultSettings(): MobileAppSettings {
         },
       ],
     },
+    pricing: {
+      baseCurrency: 'EUR',
+      currencies: [...DEFAULT_CURRENCIES],
+    },
     plans: [
       {
         id: 'free',
         name: 'Free',
         price: '€ 0',
+        amount: 0,
+        currencyCode: 'EUR',
         subtitle: 'Use version free for 1 month',
         cta: 'Choose Free',
         features: [
@@ -107,6 +114,8 @@ export function createDefaultSettings(): MobileAppSettings {
         id: 'basic',
         name: 'Basic',
         price: '€ 36',
+        amount: 36,
+        currencyCode: 'EUR',
         subtitle: 'Annual subscription',
         cta: 'Choose Basic',
         features: [
@@ -123,6 +132,8 @@ export function createDefaultSettings(): MobileAppSettings {
         id: 'premium',
         name: 'Premium',
         price: '€ 73',
+        amount: 73,
+        currencyCode: 'EUR',
         subtitle: 'Annual subscription',
         cta: 'Choose Premium',
         features: [
@@ -140,6 +151,8 @@ export function createDefaultSettings(): MobileAppSettings {
         id: 'pro',
         name: 'Pro',
         price: '€ 109',
+        amount: 109,
+        currencyCode: 'EUR',
         subtitle: 'Annual subscription',
         cta: 'Choose Pro',
         badge: 'Personal avatar',

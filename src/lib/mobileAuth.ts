@@ -73,13 +73,35 @@ export async function registerMobileUser(input: {
   }
 
   const passwordHash = await hashPassword(input.password);
-  const allowedTypes = ['athlete', 'coach', 'club'] as const;
+  const allowedTypes = [
+    'athlete',
+    'coaches',
+    'teams',
+    'clubs',
+    'groups',
+  ] as const;
   type UserType = (typeof allowedTypes)[number];
+  const rawType = (input.userType || 'athlete').trim().toLowerCase();
+  const normalizedType =
+    rawType === 'coach'
+      ? 'coaches'
+      : rawType === 'club'
+        ? 'clubs'
+        : rawType === 'team'
+          ? 'teams'
+          : rawType === 'group'
+            ? 'groups'
+            : rawType;
   const userType: UserType = allowedTypes.includes(
-    (input.userType || '') as UserType
+    normalizedType as UserType
   )
-    ? ((input.userType || 'athlete') as UserType)
+    ? (normalizedType as UserType)
     : 'athlete';
+
+  const country = (input.country || '').trim().toUpperCase();
+  if (!country || country.length < 2) {
+    throw new Error('Country is required.');
+  }
 
   const user = await UserModel.create({
     name: input.name.trim(),
@@ -87,7 +109,7 @@ export async function registerMobileUser(input: {
     email,
     passwordHash,
     userType,
-    country: (input.country || 'US').trim() || 'US',
+    country,
     firstName: input.firstName?.trim(),
     surname: input.surname?.trim(),
     gender: input.gender?.trim(),

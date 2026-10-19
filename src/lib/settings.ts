@@ -9,6 +9,7 @@ import {
 } from './imageSections';
 import type { MobileAppSettings, RotateDelaySec } from './types';
 import { ROTATE_DELAYS } from './types';
+import { DEFAULT_CURRENCIES, normalizePlanPricing } from './currency';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 const SETTINGS_PATH = path.join(DATA_DIR, 'mobile-settings.json');
@@ -49,7 +50,28 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
         ? settings.whyChooseMe.reasons
         : defaults.whyChooseMe.reasons,
     },
-    plans: settings.plans?.length ? settings.plans : defaults.plans,
+    pricing: (() => {
+      const currencies =
+        Array.isArray(settings.pricing?.currencies) &&
+        settings.pricing.currencies.length > 0
+          ? settings.pricing.currencies.map((c) => ({
+              code: (c.code || '').trim().toUpperCase(),
+              symbol: (c.symbol || c.code || '').trim() || '€',
+              label: (c.label || c.code || '').trim() || c.code,
+            }))
+          : [...DEFAULT_CURRENCIES];
+      return { baseCurrency: 'EUR' as const, currencies };
+    })(),
+    plans: (() => {
+      const currencies =
+        Array.isArray(settings.pricing?.currencies) &&
+        settings.pricing.currencies.length > 0
+          ? settings.pricing.currencies
+          : DEFAULT_CURRENCIES;
+      return (settings.plans?.length ? settings.plans : defaults.plans).map(
+        (plan) => normalizePlanPricing(plan, currencies)
+      );
+    })(),
     paywall: {
       ...defaults.paywall,
       ...(settings.paywall || {}),
