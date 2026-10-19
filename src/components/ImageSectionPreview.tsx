@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { looksLikeVideoUrl } from '@/lib/mediaUrl';
+import { sectionKind } from '@/lib/imageSections';
 import type { ImageSectionConfig } from '@/lib/types';
 
 type Props = {
@@ -19,13 +21,14 @@ export function ImageSectionPreview({ section }: Props) {
   }, [section]);
 
   const [index, setIndex] = useState(0);
+  const isVideoSection = section ? sectionKind(section.key) === 'video' : false;
 
   useEffect(() => {
     setIndex(0);
   }, [section?.key, urls.join('|')]);
 
   useEffect(() => {
-    if (urls.length < 2 || !section) return;
+    if (isVideoSection || urls.length < 2 || !section) return;
     const timer = setInterval(() => {
       setIndex((prev) => {
         if (urls.length < 2) return 0;
@@ -35,7 +38,7 @@ export function ImageSectionPreview({ section }: Props) {
       });
     }, Math.max(3, section.rotateDelaySec) * 1000);
     return () => clearInterval(timer);
-  }, [urls, section]);
+  }, [urls, section, isVideoSection]);
 
   if (!section) {
     return (
@@ -45,8 +48,9 @@ export function ImageSectionPreview({ section }: Props) {
     );
   }
 
-  const multi = urls.length >= 2;
+  const multi = !isVideoSection && urls.length >= 2;
   const active = urls[Math.min(index, urls.length - 1)];
+  const activeIsVideo = looksLikeVideoUrl(active);
 
   return (
     <aside className="lg:sticky lg:top-6">
@@ -60,25 +64,43 @@ export function ImageSectionPreview({ section }: Props) {
         <div className="overflow-hidden rounded-[1.35rem] border border-zinc-800 bg-black">
           <div className="relative aspect-[9/14] bg-zinc-950">
             {active ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={active}
-                alt="Preview"
-                className="h-full w-full object-cover transition-opacity duration-500"
-              />
+              activeIsVideo ? (
+                <video
+                  key={active}
+                  src={active}
+                  className="h-full w-full object-cover"
+                  muted
+                  autoPlay
+                  loop
+                  playsInline
+                />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={active}
+                  alt="Preview"
+                  className="h-full w-full object-cover transition-opacity duration-500"
+                />
+              )
             ) : (
               <div className="flex h-full items-center justify-center text-xs text-zinc-500">
-                No image
+                {isVideoSection ? 'No video' : 'No image'}
               </div>
             )}
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3">
               <p className="text-xs font-semibold text-white">
-                {multi
-                  ? `Random · every ${section.rotateDelaySec}s`
-                  : 'Fixed display'}
+                {isVideoSection
+                  ? 'Hero video'
+                  : multi
+                    ? `Random · every ${section.rotateDelaySec}s`
+                    : 'Fixed display'}
               </p>
               <p className="text-[10px] text-zinc-300">
-                {urls.length} selected for presentation
+                {isVideoSection
+                  ? active
+                    ? 'Playing muted preview'
+                    : 'Upload an MP4 to preview'
+                  : `${urls.length} selected for presentation`}
               </p>
             </div>
           </div>

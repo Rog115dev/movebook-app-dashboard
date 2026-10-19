@@ -1,14 +1,17 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ImageSectionPreview } from '@/components/ImageSectionPreview';
 import { SaveBar } from '@/components/SaveBar';
 import { fetchSettings, saveSettings } from '@/lib/api-client';
 import {
   MAX_IMAGES_PER_SECTION,
   migrateImageSections,
+  primaryVideoUrlFromSection,
   removeImageFromSection,
+  sectionKind,
 } from '@/lib/imageSections';
+import { looksLikeVideoUrl } from '@/lib/mediaUrl';
 import type {
   ImageSectionConfig,
   ImageSectionKey,
@@ -22,6 +25,7 @@ export default function ImagesPage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [busyKey, setBusyKey] = useState<string | null>(null);
+  const uploadLock = useRef(false);
 
   async function load() {
     const s = await fetchSettings();
@@ -50,6 +54,10 @@ export default function ImagesPage() {
     sectionKey: ImageSectionConfig['key'],
     itemId: string
   ) {
+    if (sectionKind(sectionKey) === 'video') {
+      selectOnly(sectionKey, itemId);
+      return;
+    }
     updateSection(sectionKey, (section) => {
       const selected = new Set(section.selectedIds);
       if (selected.has(itemId)) {
@@ -91,6 +99,8 @@ export default function ImagesPage() {
     mode: 'add' | 'replace',
     itemId?: string
   ) {
+    if (uploadLock.current) return;
+    uploadLock.current = true;
     const busy = `${section.key}:${mode}:${itemId || 'new'}`;
     setBusyKey(busy);
     setMessage('');
@@ -109,15 +119,19 @@ export default function ImagesPage() {
           ? data.settings.imageSections
           : migrateImageSections(data.settings || {});
       setSections(next);
+      const kind = sectionKind(section.key);
       setMessage(
-        mode === 'add'
-          ? `Added image to ${section.label}`
-          : `Replaced image in ${section.label}`
+        kind === 'video'
+          ? 'Hero video saved (single clip).'
+          : mode === 'add'
+            ? `Added image to ${section.label}`
+            : `Replaced image in ${section.label}`
       );
     } catch (err) {
       setMessage(err instanceof Error ? err.message : 'Upload failed.');
     } finally {
       setBusyKey(null);
+      uploadLock.current = false;
     }
   }
 
@@ -126,22 +140,36 @@ export default function ImagesPage() {
     setMessage('');
     try {
       for (const section of sections) {
-        if (!section.items.length) {
+        const kind = sectionKind(section.key);
+        if (kind === 'image' && !section.items.length) {
           throw new Error(`${section.label}: keep at least 1 image`);
         }
-        if (!section.selectedIds.length) {
+        if (kind === 'image' && !section.selectedIds.length) {
           throw new Error(
             `${section.label}: select at least 1 image to display`
           );
         }
       }
-      const saved = await saveSettings({ imageSections: sections });
+      const current = await fetchSettings();
+      const hero = sections.find((s) => s.key === 'hero');
+      const heroVideoUrl = primaryVideoUrlFromSection(hero);
+      const final = await saveSettings({
+        imageSections: sections,
+        home: {
+          ...current.home,
+          heroVideoUrl: heroVideoUrl || '',
+          heroVideoChosen: Boolean(heroVideoUrl),
+          heroImageUrl: looksLikeVideoUrl(current.home.heroImageUrl)
+            ? ''
+            : current.home.heroImageUrl,
+        },
+      });
       const next =
-        saved.imageSections?.length > 0
-          ? saved.imageSections
-          : migrateImageSections(saved);
+        final.imageSections?.length > 0
+          ? final.imageSections
+          : migrateImageSections(final);
       setSections(next);
-      setMessage('Image settings saved.');
+      setMessage('Media settings saved.');
     } catch (err) {
       setMessage(err instanceof Error ? err.message : 'Save failed.');
     } finally {
@@ -153,22 +181,27 @@ export default function ImagesPage() {
     sections.find((s) => s.key === previewKey) || sections[0] || null;
 
   if (!sections.length) {
-    return <p className="text-zinc-400">Loading images…</p>;
+    return <p className="text-zinc-400">Loading media…</p>;
   }
 
   return (
     <div className="mx-auto max-w-7xl">
-      <h1 className="text-3xl font-semibold">Images</h1>
+      <h1 className="text-3xl font-semibold">Images & video</h1>
       <p className="mt-2 text-zinc-400">
-        Add 1–{MAX_IMAGES_PER_SECTION} images per column. First image is the
-        default. Select 1 for fixed display, or 2+ for random rotation.
+        Home hero is a <span className="text-[#FF7800]">single video</span>.
+        Paywall and TRAIN PRO stay image pools (1–
+        {MAX_IMAGES_PER_SECTION}, multi-select rotates).
       </p>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_280px]">
         <div className="grid gap-4 lg:grid-cols-3">
           {sections.map((section) => {
-            const multi = section.selectedIds.length >= 2;
-            const canAdd = section.items.length < MAX_IMAGES_PER_SECTION;
+            const kind = sectionKind(section.key);
+            const isVideo = kind === 'video';
+            const multi = !isVideo && section.selectedIds.length >= 2;
+            const canAdd = isVideo
+              ? section.items.length === 0
+              : section.items.length < MAX_IMAGES_PER_SECTION;
             return (
               <section
                 key={section.key}
@@ -184,39 +217,47 @@ export default function ImagesPage() {
                     {section.label}
                   </h2>
                   <p className="mt-1 text-xs text-zinc-500">
-                    {section.items.length}/{MAX_IMAGES_PER_SECTION}
-                    {multi
-                      ? ` · random ${section.rotateDelaySec}s`
-                      : ' · fixed'}
+                    {isVideo
+                      ? section.items.length
+                        ? '1 video active'
+                        : 'No video yet'
+                      : `${section.items.length}/${MAX_IMAGES_PER_SECTION}${
+                          multi
+                            ? ` · random ${section.rotateDelaySec}s`
+                            : ' · fixed'
+                        }`}
                   </p>
                 </div>
 
-                <label className="mb-3 block text-xs text-zinc-400">
-                  Rotate delay
-                  <select
-                    value={section.rotateDelaySec}
-                    disabled={!multi}
-                    onClick={(e) => e.stopPropagation()}
-                    onChange={(e) =>
-                      setDelay(
-                        section.key,
-                        Number(e.target.value) as RotateDelaySec
-                      )
-                    }
-                    className="mt-1 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-2 text-sm text-white disabled:opacity-40"
-                  >
-                    {ROTATE_DELAYS.map((sec) => (
-                      <option key={sec} value={sec}>
-                        {sec}&quot;
-                      </option>
-                    ))}
-                  </select>
-                </label>
+                {!isVideo ? (
+                  <label className="mb-3 block text-xs text-zinc-400">
+                    Rotate delay
+                    <select
+                      value={section.rotateDelaySec}
+                      disabled={!multi}
+                      onClick={(e) => e.stopPropagation()}
+                      onChange={(e) =>
+                        setDelay(
+                          section.key,
+                          Number(e.target.value) as RotateDelaySec
+                        )
+                      }
+                      className="mt-1 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-2 text-sm text-white disabled:opacity-40"
+                    >
+                      {ROTATE_DELAYS.map((sec) => (
+                        <option key={sec} value={sec}>
+                          {sec}&quot;
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                ) : null}
 
                 <div className="flex flex-1 flex-col gap-3">
                   {section.items.map((item, index) => {
                     const selected = section.selectedIds.includes(item.id);
-                    const canRemove = section.items.length > 1;
+                    const canRemove = isVideo || section.items.length > 1;
+                    const itemIsVideo = looksLikeVideoUrl(item.url);
                     return (
                       <div
                         key={item.id}
@@ -225,55 +266,63 @@ export default function ImagesPage() {
                         } bg-zinc-950/70`}
                       >
                         <div className="relative aspect-square bg-zinc-950">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={item.url}
-                            alt={`${section.label} ${index + 1}`}
-                            className="h-full w-full object-cover"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).style.opacity =
-                                '0.25';
-                            }}
-                          />
-                          {index === 0 ? (
-                            <span className="absolute left-2 top-2 rounded bg-black/75 px-2 py-0.5 text-[10px] uppercase tracking-wide text-[#FF7800]">
-                              Default
-                            </span>
+                          {itemIsVideo ? (
+                            <video
+                              src={item.url}
+                              className="h-full w-full object-cover"
+                              muted
+                              playsInline
+                              preload="metadata"
+                            />
                           ) : (
-                            <span className="absolute left-2 top-2 rounded bg-black/75 px-2 py-0.5 text-[10px] text-zinc-300">
-                              #{index + 1}
-                            </span>
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={item.url}
+                              alt={`${section.label} ${index + 1}`}
+                              className="h-full w-full object-cover"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).style.opacity =
+                                  '0.25';
+                              }}
+                            />
                           )}
+                          <span className="absolute left-2 top-2 rounded bg-black/75 px-2 py-0.5 text-[10px] uppercase tracking-wide text-[#FF7800]">
+                            {isVideo ? 'Hero video' : index === 0 ? 'Default' : `#${index + 1}`}
+                          </span>
                         </div>
                         <div className="space-y-2 p-3">
                           <p className="truncate text-xs text-zinc-500">
                             {item.url}
                           </p>
-                          <label
-                            className="flex cursor-pointer items-center gap-2 text-xs text-zinc-200"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={selected}
-                              onChange={() =>
-                                toggleSelected(section.key, item.id)
-                              }
-                              className="h-3.5 w-3.5 accent-[#FF7800]"
-                            />
-                            Use in presentation
-                          </label>
-                          <div className="flex flex-wrap gap-2">
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                selectOnly(section.key, item.id);
-                              }}
-                              className="rounded-lg border border-zinc-700 px-2 py-1 text-[11px] text-zinc-200 hover:border-[#FF7800]"
+                          {!isVideo ? (
+                            <label
+                              className="flex cursor-pointer items-center gap-2 text-xs text-zinc-200"
+                              onClick={(e) => e.stopPropagation()}
                             >
-                              Show only this
-                            </button>
+                              <input
+                                type="checkbox"
+                                checked={selected}
+                                onChange={() =>
+                                  toggleSelected(section.key, item.id)
+                                }
+                                className="h-3.5 w-3.5 accent-[#FF7800]"
+                              />
+                              Use in presentation
+                            </label>
+                          ) : null}
+                          <div className="flex flex-wrap gap-2">
+                            {!isVideo ? (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  selectOnly(section.key, item.id);
+                                }}
+                                className="rounded-lg border border-zinc-700 px-2 py-1 text-[11px] text-zinc-200 hover:border-[#FF7800]"
+                              >
+                                Show only this
+                              </button>
+                            ) : null}
                             <label
                               className="inline-flex cursor-pointer rounded-lg bg-[#FF7800] px-2 py-1 text-[11px] font-semibold text-black"
                               onClick={(e) => e.stopPropagation()}
@@ -284,7 +333,11 @@ export default function ImagesPage() {
                                 : 'Replace'}
                               <input
                                 type="file"
-                                accept="image/*"
+                                accept={
+                                  isVideo
+                                    ? 'video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov'
+                                    : 'image/*'
+                                }
                                 className="hidden"
                                 disabled={busyKey !== null}
                                 onChange={(e) => {
@@ -312,34 +365,49 @@ export default function ImagesPage() {
                     );
                   })}
 
-                  {/* Add images zone — below the default / stack */}
                   <label
                     onClick={(e) => e.stopPropagation()}
                     className={`mt-1 flex min-h-[88px] cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed px-3 py-4 text-center transition ${
-                      canAdd
+                      canAdd || isVideo
                         ? 'border-[#FF7800]/40 text-[#FF7800] hover:bg-[#FF7800]/10'
                         : 'cursor-not-allowed border-zinc-800 text-zinc-600'
                     }`}
                   >
                     <span className="text-sm font-semibold">
-                      {busyKey === `${section.key}:add:new`
+                      {busyKey === `${section.key}:add:new` ||
+                      (isVideo && busyKey?.startsWith(`${section.key}:`))
                         ? 'Uploading…'
-                        : 'Add images'}
+                        : isVideo
+                          ? section.items.length
+                            ? 'Replace hero video'
+                            : 'Add hero video'
+                          : 'Add images'}
                     </span>
                     <span className="mt-1 text-[11px] text-zinc-500">
-                      {canAdd
-                        ? `Up to ${MAX_IMAGES_PER_SECTION - section.items.length} more`
-                        : 'Maximum 9 reached'}
+                      {isVideo
+                        ? 'MP4 / WebM / MOV · one clip only'
+                        : canAdd
+                          ? `Up to ${MAX_IMAGES_PER_SECTION - section.items.length} more`
+                          : 'Maximum 9 reached'}
                     </span>
                     <input
                       type="file"
-                      accept="image/*"
+                      accept={
+                        isVideo
+                          ? 'video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov'
+                          : 'image/*'
+                      }
                       className="hidden"
-                      disabled={!canAdd || busyKey !== null}
+                      disabled={(!canAdd && !isVideo) || busyKey !== null}
                       onChange={(e) => {
                         const file = e.target.files?.[0];
                         e.target.value = '';
-                        if (file) upload(section, file, 'add');
+                        if (!file) return;
+                        if (isVideo && section.items[0]) {
+                          upload(section, file, 'replace', section.items[0].id);
+                        } else {
+                          upload(section, file, 'add');
+                        }
                       }}
                     />
                   </label>

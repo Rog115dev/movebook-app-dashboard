@@ -4,6 +4,7 @@ import { createDefaultSettings } from './defaults';
 import { LOCALES, mergeI18n, resolveStrings, type LocaleCode } from './i18n';
 import {
   migrateImageSections,
+  primaryVideoUrlFromSection,
   syncLegacyImages,
   syncPrimaryUrls,
 } from './imageSections';
@@ -15,6 +16,7 @@ import type {
 import { ROTATE_DELAYS, UNLOCK_AUDIENCE_OPTIONS } from './types';
 import { DEFAULT_CURRENCIES, normalizePlanPricing } from './currency';
 import { normalizeSports } from './sports';
+import { looksLikeVideoUrl } from './mediaUrl';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 const SETTINGS_PATH = path.join(DATA_DIR, 'mobile-settings.json');
@@ -33,15 +35,38 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
     home: {
       ...defaults.home,
       ...(settings.home || {}),
-      heroImageUrl: primary.heroImageUrl || defaults.home.heroImageUrl,
       // Keep empty string if admin cleared video (don't force a sample clip).
-      // Legacy installs had sample-hero-*.mp4 as default without an explicit choice.
+      // Legacy: MP4s uploaded into Images → hero landed in heroImageUrl only.
       ...(() => {
+        let heroImageUrl = (
+          primary.heroImageUrl ||
+          settings.home?.heroImageUrl ||
+          defaults.home.heroImageUrl ||
+          ''
+        ).trim();
         let heroVideoUrl =
           typeof settings.home?.heroVideoUrl === 'string'
             ? settings.home.heroVideoUrl.trim()
             : '';
         let heroVideoChosen = Boolean(settings.home?.heroVideoChosen);
+
+        const heroSection = imageSections.find((s) => s.key === 'hero');
+        const videoFromImages = primaryVideoUrlFromSection(heroSection);
+
+        // Hero Images column is the video source of truth when it has a clip.
+        if (videoFromImages) {
+          heroVideoUrl = videoFromImages;
+          heroVideoChosen = true;
+        } else if (!heroVideoUrl && looksLikeVideoUrl(heroImageUrl)) {
+          heroVideoUrl = heroImageUrl;
+          heroVideoChosen = true;
+        }
+
+        // heroImageUrl must be an image for mobile fallback (never an mp4).
+        if (looksLikeVideoUrl(heroImageUrl)) {
+          heroImageUrl = '';
+        }
+
         const isBuiltInSample =
           /\/uploads\/sample-hero-\d+\.(mp4|webm|mov)(\?|$)/i.test(
             heroVideoUrl
@@ -49,14 +74,12 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
         if (!heroVideoUrl) {
           heroVideoChosen = false;
         } else if (isBuiltInSample && !heroVideoChosen) {
-          // Drop auto-defaulted sample so mobile shows the admin image instead.
           heroVideoUrl = '';
           heroVideoChosen = false;
         } else if (heroVideoUrl && !isBuiltInSample) {
-          // Uploads / external URLs count as an explicit choice.
           heroVideoChosen = true;
         }
-        return { heroVideoUrl, heroVideoChosen };
+        return { heroImageUrl, heroVideoUrl, heroVideoChosen };
       })(),
       heroVideoSamples:
         Array.isArray(settings.home?.heroVideoSamples) &&
@@ -273,6 +296,16 @@ export async function patchSettings(
   return writeSettings({
     ...current,
     ...partial,
+    // Deep-merge nested home so partial hero video fields don't wipe copy.
+    home: partial.home
+      ? { ...current.home, ...partial.home }
+      : current.home,
+    paywall: partial.paywall
+      ? { ...current.paywall, ...partial.paywall }
+      : current.paywall,
+    trainPro: partial.trainPro
+      ? { ...current.trainPro, ...partial.trainPro }
+      : current.trainPro,
     i18n,
     version: current.version,
   });

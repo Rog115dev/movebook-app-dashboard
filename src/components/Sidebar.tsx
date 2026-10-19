@@ -15,7 +15,7 @@ const LINKS = [
   { href: '/dashboard/paywall', label: 'Paywall' },
   { href: '/dashboard/discount', label: 'Discount' },
   { href: '/dashboard/train-pro', label: 'TRAIN PRO' },
-  { href: '/dashboard/images', label: 'Images' },
+  { href: '/dashboard/images', label: 'Images & video' },
 ];
 
 export function Sidebar() {

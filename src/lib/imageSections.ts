@@ -7,17 +7,36 @@ import type {
   RotateDelaySec,
 } from './types';
 import { ROTATE_DELAYS } from './types';
+import { looksLikeVideoUrl } from './mediaUrl';
 
 export const MAX_IMAGES_PER_SECTION = 9;
+/** Home hero is a single video slot (not a multi-image pool). */
+export const MAX_HERO_VIDEOS = 1;
 
 const SECTION_META: Record<
   ImageSectionKey,
-  { label: string; legacyKey: string }
+  { label: string; legacyKey: string; kind: 'image' | 'video' }
 > = {
-  hero: { label: 'Home hero image', legacyKey: 'heroBreakLimits' },
-  paywall: { label: 'Paywall athletes image', legacyKey: 'paywallAthletes' },
-  trainPro: { label: 'TRAIN PRO banner', legacyKey: 'trainPro' },
+  hero: {
+    label: 'Home hero video',
+    legacyKey: 'heroBreakLimits',
+    kind: 'video',
+  },
+  paywall: {
+    label: 'Paywall athletes image',
+    legacyKey: 'paywallAthletes',
+    kind: 'image',
+  },
+  trainPro: {
+    label: 'TRAIN PRO banner',
+    legacyKey: 'trainPro',
+    kind: 'image',
+  },
 };
+
+export function sectionKind(key: ImageSectionKey): 'image' | 'video' {
+  return SECTION_META[key]?.kind || 'image';
+}
 
 export function isRotateDelay(value: unknown): value is RotateDelaySec {
   return (
@@ -30,6 +49,18 @@ function newId(prefix: string) {
   return `${prefix}-${Date.now().toString(36)}-${Math.random()
     .toString(36)
     .slice(2, 7)}`;
+}
+
+function dedupeByUrl(items: ImagePoolItem[]): ImagePoolItem[] {
+  const seen = new Set<string>();
+  const out: ImagePoolItem[] = [];
+  for (const item of items) {
+    const url = (item.url || '').trim();
+    if (!url || seen.has(url)) continue;
+    seen.add(url);
+    out.push({ ...item, url });
+  }
+  return out;
 }
 
 export function createDefaultImageSections(urls?: {
@@ -49,12 +80,15 @@ export function createDefaultImageSections(urls?: {
   };
 
   return [
-    mk('hero', urls?.hero || '/uploads/hero-break-limits.jpg'),
+    mk('hero', urls?.hero || ''),
     mk('paywall', urls?.paywall || '/uploads/paywall-athletes.jpg'),
     mk('trainPro', urls?.trainPro || '/uploads/train-pro.jpg'),
   ];
 }
 
+/**
+ * Hero section holds exactly one video (deduped). Image sections keep 1–9 images.
+ */
 export function normalizeImageSection(
   section: Partial<ImageSectionConfig> | undefined,
   fallback: ImageSectionConfig
@@ -62,12 +96,30 @@ export function normalizeImageSection(
   const key = (section?.key || fallback.key) as ImageSectionKey;
   const meta = SECTION_META[key] || SECTION_META[fallback.key];
   let items = Array.isArray(section?.items)
-    ? section!.items
-        .filter((i): i is ImagePoolItem => Boolean(i?.id && i?.url))
-        .slice(0, MAX_IMAGES_PER_SECTION)
+    ? section!.items.filter((i): i is ImagePoolItem => Boolean(i?.id && i?.url))
     : [];
 
-  if (!items.length) {
+  items = dedupeByUrl(items);
+
+  if (meta.kind === 'video') {
+    // Prefer video URLs; drop images from the hero video slot.
+    const videos = items.filter((i) => looksLikeVideoUrl(i.url));
+    items = videos.length ? videos : items.filter((i) => looksLikeVideoUrl(i.url));
+    // Keep a single active clip — last / selected wins (stops duplicate stack).
+    const preferredId =
+      (Array.isArray(section?.selectedIds) &&
+        section!.selectedIds.find((id) => items.some((i) => i.id === id))) ||
+      items[items.length - 1]?.id;
+    const preferred =
+      items.find((i) => i.id === preferredId) || items[items.length - 1];
+    items = preferred ? [{ ...preferred }] : [];
+  } else {
+    items = items
+      .filter((i) => !looksLikeVideoUrl(i.url))
+      .slice(0, MAX_IMAGES_PER_SECTION);
+  }
+
+  if (!items.length && meta.kind !== 'video') {
     items = fallback.items.map((i) => ({ ...i }));
   }
 
@@ -76,13 +128,16 @@ export function normalizeImageSection(
     ? section!.selectedIds.filter((id) => itemIds.has(id))
     : [];
 
-  if (!selectedIds.length) {
+  if (!selectedIds.length && items.length) {
+    selectedIds = [items[0].id];
+  }
+  if (meta.kind === 'video' && items.length) {
     selectedIds = [items[0].id];
   }
 
   return {
     key,
-    label: section?.label?.trim() || meta.label,
+    label: meta.label,
     items,
     selectedIds,
     rotateDelaySec: isRotateDelay(section?.rotateDelaySec)
@@ -95,8 +150,19 @@ export function normalizeImageSection(
 export function migrateImageSections(
   settings: Partial<MobileAppSettings>
 ): ImageSectionConfig[] {
+  const heroSeed =
+    (typeof settings.home?.heroVideoUrl === 'string' &&
+    looksLikeVideoUrl(settings.home.heroVideoUrl)
+      ? settings.home.heroVideoUrl
+      : '') ||
+    (typeof settings.home?.heroImageUrl === 'string' &&
+    looksLikeVideoUrl(settings.home.heroImageUrl)
+      ? settings.home.heroImageUrl
+      : '') ||
+    '';
+
   const defaults = createDefaultImageSections({
-    hero: settings.home?.heroImageUrl,
+    hero: heroSeed,
     paywall: settings.paywall?.athletesImageUrl,
     trainPro: settings.trainPro?.bannerImageUrl,
   });
@@ -117,17 +183,21 @@ export function migrateImageSections(
     const url =
       legacy?.url ||
       (fallback.key === 'hero'
-        ? settings.home?.heroImageUrl
+        ? heroSeed
         : fallback.key === 'paywall'
           ? settings.paywall?.athletesImageUrl
           : settings.trainPro?.bannerImageUrl) ||
-      fallback.items[0].url;
-    const id = fallback.items[0].id;
-    return {
-      ...fallback,
-      items: [{ id, url }],
-      selectedIds: [id],
-    };
+      fallback.items[0]?.url ||
+      '';
+    const id = fallback.items[0]?.id || `${fallback.key}-1`;
+    return normalizeImageSection(
+      {
+        ...fallback,
+        items: url ? [{ id, url }] : [],
+        selectedIds: url ? [id] : [],
+      },
+      fallback
+    );
   });
 }
 
@@ -135,7 +205,27 @@ export function primaryUrlFromSection(section: ImageSectionConfig): string {
   const selected = section.items.filter((i) =>
     section.selectedIds.includes(i.id)
   );
-  return (selected[0] || section.items[0])?.url || '';
+  const pool = selected.length ? selected : section.items;
+  if (sectionKind(section.key) === 'video') {
+    const video = pool.find((i) => looksLikeVideoUrl(i.url));
+    return video?.url || pool[0]?.url || '';
+  }
+  const imageItem = pool.find((i) => !looksLikeVideoUrl(i.url));
+  if (imageItem) return imageItem.url || '';
+  return pool[0]?.url || '';
+}
+
+/** First selected video in a section. */
+export function primaryVideoUrlFromSection(
+  section: ImageSectionConfig | undefined
+): string {
+  if (!section) return '';
+  const selected = section.items.filter((i) =>
+    section.selectedIds.includes(i.id)
+  );
+  const pool = selected.length ? selected : section.items;
+  const video = pool.find((i) => looksLikeVideoUrl(i.url));
+  return video?.url?.trim() || '';
 }
 
 export function syncLegacyImages(
@@ -154,9 +244,24 @@ export function syncPrimaryUrls(sections: ImageSectionConfig[]) {
     sections.map((s) => [s.key, primaryUrlFromSection(s)])
   ) as Record<ImageSectionKey, string>;
   return {
-    heroImageUrl: map.hero || '',
+    // Hero image fallback stays empty when hero slot is video-only.
+    heroImageUrl: looksLikeVideoUrl(map.hero) ? '' : map.hero || '',
     athletesImageUrl: map.paywall || '',
     bannerImageUrl: map.trainPro || '',
+  };
+}
+
+/** Set / replace the single hero video (never append duplicates). */
+export function setHeroVideo(
+  section: ImageSectionConfig,
+  url: string
+): ImageSectionConfig {
+  const id = section.items[0]?.id || newId('hero');
+  return {
+    ...section,
+    label: SECTION_META.hero.label,
+    items: [{ id, url: url.trim() }],
+    selectedIds: [id],
   };
 }
 
@@ -164,10 +269,21 @@ export function addImageToSection(
   section: ImageSectionConfig,
   url: string
 ): ImageSectionConfig {
+  if (sectionKind(section.key) === 'video') {
+    return setHeroVideo(section, url);
+  }
+  // Skip duplicate URLs
+  if (section.items.some((i) => i.url === url)) return section;
   if (section.items.length >= MAX_IMAGES_PER_SECTION) return section;
   const id = newId(section.key);
   const items = [...section.items, { id, url }];
-  return { ...section, items };
+  return {
+    ...section,
+    items,
+    selectedIds: section.selectedIds.length
+      ? section.selectedIds
+      : [id],
+  };
 }
 
 export function replaceImageInSection(
@@ -175,6 +291,9 @@ export function replaceImageInSection(
   itemId: string,
   url: string
 ): ImageSectionConfig {
+  if (sectionKind(section.key) === 'video') {
+    return setHeroVideo(section, url);
+  }
   return {
     ...section,
     items: section.items.map((item) =>
@@ -187,6 +306,9 @@ export function removeImageFromSection(
   section: ImageSectionConfig,
   itemId: string
 ): ImageSectionConfig {
+  if (sectionKind(section.key) === 'video') {
+    return { ...section, items: [], selectedIds: [] };
+  }
   if (section.items.length <= 1) return section;
   const items = section.items.filter((i) => i.id !== itemId);
   let selectedIds = section.selectedIds.filter((id) => id !== itemId);
