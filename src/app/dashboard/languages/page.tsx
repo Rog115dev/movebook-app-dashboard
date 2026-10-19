@@ -77,15 +77,44 @@ function LanguagesPageInner() {
 
   const group = I18N_GROUPS.find((g) => g.id === groupId) ?? I18N_GROUPS[0];
   const groupKeys = useMemo(() => {
-    if (groupId !== 'faq' || !settings) return group.keys;
-    const fromSettings = Object.keys(settings.i18n?.en || {}).filter(
-      (k) => k === 'train.faqTitle' || /^train\.faq\d+[QA]$/.test(k)
-    );
-    return Array.from(new Set([...group.keys, ...fromSettings])).sort((a, b) => {
-      if (a === 'train.faqTitle') return -1;
-      if (b === 'train.faqTitle') return 1;
-      return a.localeCompare(b, undefined, { numeric: true });
-    });
+    if (!settings) return group.keys;
+    const enKeys = Object.keys(settings.i18n?.en || {});
+    const merge = (extra: string[]) =>
+      Array.from(new Set([...group.keys, ...extra])).sort((a, b) =>
+        a.localeCompare(b, undefined, { numeric: true })
+      );
+
+    if (groupId === 'faq') {
+      return merge(
+        enKeys.filter(
+          (k) => k === 'train.faqTitle' || /^train\.faq\d+[QA]$/.test(k)
+        )
+      );
+    }
+    if (groupId === 'features') {
+      return merge(enKeys.filter((k) => k.startsWith('features.')));
+    }
+    if (groupId === 'testimonials') {
+      return merge(
+        enKeys.filter(
+          (k) => k === 'features.loveSub' || k.startsWith('testimonials.')
+        )
+      );
+    }
+    if (groupId === 'plans') {
+      return merge(enKeys.filter((k) => k.startsWith('plans.')));
+    }
+    if (groupId === 'auth') {
+      return merge(enKeys.filter((k) => k.startsWith('auth.')));
+    }
+    if (groupId === 'audience') {
+      return merge(
+        enKeys.filter(
+          (k) => k.startsWith('audience.') || k.startsWith('countries.')
+        )
+      );
+    }
+    return group.keys;
   }, [group.keys, groupId, settings]);
 
   const progress = useMemo(
@@ -241,10 +270,11 @@ function LanguagesPageInner() {
     <div className="mx-auto max-w-4xl">
       <h1 className="text-3xl font-semibold">Languages</h1>
       <p className="mt-2 text-zinc-400">
-        Edit English first and save, then use{' '}
-        <span className="text-white">Apply Translation</span> to translate the
-        current English CMS text via the{' '}
-        <span className="text-white">browser Translator API</span> (Chrome 138+).
+        Manage every mobile string here (Home, Features, Plans, Auth, Audience,
+        etc.). Edit English first (or save from content editors), then use{' '}
+        <span className="text-white">Apply Translation</span> via the{' '}
+        <span className="text-white">browser Translator API</span> (Chrome 138+)
+        — not the desktop Movesbook translate API.
         {hasBrowserTranslator
           ? ' Browser translator detected.'
           : ' Browser translator not detected — seeds fallback will be used.'}

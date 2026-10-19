@@ -111,7 +111,15 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
         settings.featuresPage?.unlockSub?.trim() ||
         defaults.featuresPage.unlockSub,
       items: Array.isArray(settings.featuresPage?.items)
-        ? settings.featuresPage.items
+        ? settings.featuresPage.items.map((item, i) => ({
+            id: item.id || `unlock-${i + 1}`,
+            title: item.title || '',
+            description: item.description || '',
+            badge: item.badge || 'NEW',
+            audiences: Array.isArray(item.audiences)
+              ? item.audiences
+              : undefined,
+          }))
         : defaults.featuresPage.items,
     },
     testimonials: {
@@ -222,6 +230,22 @@ export function buildLocalizedConfig(
     locale,
     dir: locale === 'ar' ? 'rtl' : 'ltr',
     strings,
+    plans: settings.plans.map((plan) => {
+      const id = plan.id || 'plan';
+      return {
+        ...plan,
+        name: s(`plans.${id}.name`, plan.name),
+        subtitle: s(`plans.${id}.subtitle`, plan.subtitle),
+        cta: s(`plans.${id}.cta`, plan.cta),
+        badge: plan.badge
+          ? s(`plans.${id}.badge`, plan.badge)
+          : plan.badge,
+        features: (plan.features || []).map((f, i) => ({
+          ...f,
+          text: s(`plans.${id}.feature${i + 1}`, f.text),
+        })),
+      };
+    }),
     home: {
       ...settings.home,
       brandPrefix: s('home.brandPrefix', settings.home.brandPrefix),
@@ -254,6 +278,7 @@ export function buildLocalizedConfig(
     },
     paywall: {
       ...settings.paywall,
+      brandName: s('paywall.brandName', settings.paywall.brandName),
       brandSub: s('paywall.brandSub', settings.paywall.brandSub),
       claimDiscountLabel: s(
         'paywall.claimDiscount',

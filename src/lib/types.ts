@@ -146,11 +146,23 @@ export type TrainProSettings = {
   secureText: string;
 };
 
+export const UNLOCK_AUDIENCE_OPTIONS = [
+  'athlete',
+  'coaches',
+  'teams',
+  'clubs',
+  'groups',
+] as const;
+
+export type UnlockAudience = (typeof UNLOCK_AUDIENCE_OPTIONS)[number];
+
 export type UnlockFeatureItem = {
   id: string;
   title: string;
   description: string;
   badge: string;
+  /** Which user types see this feature. Empty = all. */
+  audiences?: UnlockAudience[];
 };
 
 /** Features screen — “Unlock everything you need” list */

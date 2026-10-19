@@ -6,6 +6,7 @@ import { SaveBar } from '@/components/SaveBar';
 import { fetchSettings, saveSettings } from '@/lib/api-client';
 import { formatPlanPrice } from '@/lib/currency';
 import { convertAmount, roundMoney } from '@/lib/fx';
+import { plansI18nKeys } from '@/lib/contentI18n';
 import type { CurrencyOption, PlanSettings, PricingSettings } from '@/lib/types';
 
 export default function PlansPage() {
@@ -135,9 +136,13 @@ export default function PlansPage() {
           price: formatPlanPrice(plan.amount || 0, currency),
         };
       });
-      await saveSettings({ plans: normalized, pricing });
+      await saveSettings({
+        plans: normalized,
+        pricing,
+        i18n: { en: plansI18nKeys(normalized) },
+      });
       setPlans(normalized);
-      setMessage('Plans & currencies saved.');
+      setMessage('Plans & currencies saved (English translations updated).');
     } catch {
       setMessage('Save failed.');
     } finally {

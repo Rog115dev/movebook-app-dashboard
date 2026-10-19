@@ -25,8 +25,24 @@ export default function PaywallPage() {
     setSaving(true);
     setMessage('');
     try {
-      await saveSettings({ paywall });
-      setMessage('Paywall saved.');
+      const en: Record<string, string> = {
+        'paywall.brandName': paywall.brandName,
+        'paywall.brandSub': paywall.brandSub,
+        'paywall.claimDiscount': paywall.claimDiscountLabel,
+        'paywall.startTrial': paywall.startTrialLabel,
+        'paywall.trust1': paywall.trustLine1,
+        'paywall.trust2': paywall.trustLine2,
+      };
+      paywall.features.forEach((f, i) => {
+        en[`paywall.feature${i + 1}`] = f.label;
+      });
+      paywall.tiers.forEach((tier) => {
+        if (tier.id === '1m') en['paywall.tier1m'] = tier.label;
+        if (tier.id === '3m') en['paywall.tier3m'] = tier.label;
+        if (tier.id === '12m') en['paywall.tier12m'] = tier.label;
+      });
+      await saveSettings({ paywall, i18n: { en } });
+      setMessage('Paywall saved (English translations updated).');
     } catch {
       setMessage('Save failed.');
     } finally {
