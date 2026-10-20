@@ -7,7 +7,7 @@ const MAIN_MENUS = [
   { href: '/dashboard/home', label: 'Home' },
   { href: '/dashboard/feature', label: 'Feature' },
   { href: '/dashboard/features-titles', label: 'Features titles' },
-  { href: '/dashboard/others', label: 'Others' },
+  { href: '/dashboard/generals', label: 'Generals' },
 ] as const;
 
 function isActive(pathname: string, href: string) {

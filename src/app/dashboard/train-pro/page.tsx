@@ -1,5 +1,5 @@
 ﻿import { redirect } from 'next/navigation';
 
 export default function LegacyRedirect() {
-  redirect('/dashboard/others/train-pro');
+  redirect('/dashboard/generals/train-pro');
 }

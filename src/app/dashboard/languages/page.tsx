@@ -1,5 +1,5 @@
 ﻿import { redirect } from 'next/navigation';
 
 export default function LegacyRedirect() {
-  redirect('/dashboard/others/languages');
+  redirect('/dashboard/generals/languages');
 }

@@ -99,7 +99,7 @@ export default function FaqPage() {
       <h1 className="text-2xl font-semibold">FAQ</h1>
       <p className="mt-2 text-zinc-400">
         Manage questions shown under TRAIN PRO. Translate other languages under{' '}
-        <span className="text-[#FF7800]">Others / Languages</span>.
+        <span className="text-[#FF7800]">Generals / Languages</span>.
       </p>
 
       <div className="mt-6">

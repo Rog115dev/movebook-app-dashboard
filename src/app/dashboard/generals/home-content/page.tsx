@@ -139,7 +139,7 @@ export default function HomePageEditor() {
         Brand, hero, and CTAs. Edit Why choose me under{' '}
         <span className="text-[#FF7800]">Home / Why choose me</span>. Translate
         other languages under{' '}
-        <span className="text-[#FF7800]">Others / Languages</span>.
+        <span className="text-[#FF7800]">Generals / Languages</span>.
       </p>
 
       <div className="mt-6 grid gap-4">

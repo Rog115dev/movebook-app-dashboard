@@ -152,7 +152,7 @@ export default function FeaturesPage() {
       <p className="mt-2 text-zinc-400">
         “Unlock everything you need” cards on the Features screen. Description
         appears when the user taps a card. Translate other languages under{' '}
-        <span className="text-[#FF7800]">Others / Languages</span>.
+        <span className="text-[#FF7800]">Generals / Languages</span>.
       </p>
 
       <div className="mt-6 space-y-4">

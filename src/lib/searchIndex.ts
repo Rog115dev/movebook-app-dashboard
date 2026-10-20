@@ -41,12 +41,12 @@ const SECTION_HITS: SearchHit[] = [
     ],
   },
   {
-    id: 'menu-others',
-    title: 'Others',
+    id: 'menu-generals',
+    title: 'Generals',
     desc: 'Overview, Colors, Languages, Paywall, and more',
-    href: '/dashboard/others',
+    href: '/dashboard/generals',
     category: 'Menu',
-    keywords: ['others', 'menu'],
+    keywords: ['generals', 'others', 'menu'],
   },
   {
     id: 'why-choose-me',
@@ -184,16 +184,16 @@ const SECTION_HITS: SearchHit[] = [
     id: 'overview',
     title: 'Overview',
     desc: 'Dashboard status and config version',
-    href: '/dashboard/others/overview',
-    category: 'Others',
+    href: '/dashboard/generals/overview',
+    category: 'Generals',
     keywords: ['overview', 'dashboard', 'status', 'version'],
   },
   {
     id: 'colors',
     title: 'Colors',
     desc: 'Brand orange, backgrounds, borders, accents',
-    href: '/dashboard/others/colors',
-    category: 'Others',
+    href: '/dashboard/generals/colors',
+    category: 'Generals',
     keywords: [
       'color',
       'palette',
@@ -209,8 +209,8 @@ const SECTION_HITS: SearchHit[] = [
     id: 'home-content',
     title: 'Home content',
     desc: 'Brand title, hero video, CTAs',
-    href: '/dashboard/others/home-content',
-    category: 'Others',
+    href: '/dashboard/generals/home-content',
+    category: 'Generals',
     keywords: [
       'home content',
       'hero',
@@ -229,8 +229,8 @@ const SECTION_HITS: SearchHit[] = [
     id: 'languages',
     title: 'Languages',
     desc: 'Translate strings for 12 locales + Apply Translation',
-    href: '/dashboard/others/languages',
-    category: 'Others',
+    href: '/dashboard/generals/languages',
+    category: 'Generals',
     keywords: [
       'language',
       'i18n',
@@ -246,8 +246,8 @@ const SECTION_HITS: SearchHit[] = [
     id: 'discount',
     title: 'Discount',
     desc: 'Promo CODE, discount %, expiration for Claim discount',
-    href: '/dashboard/others/discount',
-    category: 'Others',
+    href: '/dashboard/generals/discount',
+    category: 'Generals',
     keywords: [
       'discount',
       'promo',
@@ -263,24 +263,24 @@ const SECTION_HITS: SearchHit[] = [
     id: 'paywall',
     title: 'Paywall',
     desc: 'Offer tiers, discounts, trial copy, athletes image',
-    href: '/dashboard/others/paywall',
-    category: 'Others',
+    href: '/dashboard/generals/paywall',
+    category: 'Generals',
     keywords: ['paywall', 'trial', 'discount', 'tier', 'offer', 'billing'],
   },
   {
     id: 'train-pro',
     title: 'TRAIN PRO',
     desc: 'Headline, CTAs, guarantee',
-    href: '/dashboard/others/train-pro',
-    category: 'Others',
+    href: '/dashboard/generals/train-pro',
+    category: 'Generals',
     keywords: ['train', 'train pro', 'guarantee', 'headline'],
   },
   {
     id: 'images',
     title: 'Images & video',
     desc: 'Hero / paywall / TRAIN PRO image pools and rotation',
-    href: '/dashboard/others/images',
-    category: 'Others',
+    href: '/dashboard/generals/images',
+    category: 'Generals',
     keywords: [
       'image',
       'photo',
@@ -314,7 +314,7 @@ const COLOR_FIELDS: SearchHit[] = [
   id: `color-${key}`,
   title: key,
   desc: `Color token on Colors page`,
-  href: '/dashboard/others/colors',
+  href: '/dashboard/generals/colors',
   category: 'Color',
   keywords: [key, 'color', 'palette'],
 }));
@@ -336,7 +336,7 @@ function pageForI18nKey(key: string): { href: string; category: string } {
   }
   if (key.startsWith('home.')) {
     return {
-      href: '/dashboard/others/home-content',
+      href: '/dashboard/generals/home-content',
       category: 'Home field',
     };
   }
@@ -373,7 +373,7 @@ function pageForI18nKey(key: string): { href: string; category: string } {
   }
   if (key.startsWith('train.')) {
     return {
-      href: '/dashboard/others/train-pro',
+      href: '/dashboard/generals/train-pro',
       category: 'TRAIN PRO field',
     };
   }
@@ -384,7 +384,7 @@ function pageForI18nKey(key: string): { href: string; category: string } {
     };
   }
   if (key.startsWith('paywall.')) {
-    return { href: '/dashboard/others/paywall', category: 'Paywall field' };
+    return { href: '/dashboard/generals/paywall', category: 'Paywall field' };
   }
   if (key.startsWith('plans.')) {
     return {
@@ -394,7 +394,7 @@ function pageForI18nKey(key: string): { href: string; category: string } {
   }
   const group = groupForKey(key);
   return {
-    href: `/dashboard/others/languages?group=${encodeURIComponent(group)}&highlight=${encodeURIComponent(key)}`,
+    href: `/dashboard/generals/languages?group=${encodeURIComponent(group)}&highlight=${encodeURIComponent(key)}`,
     category: 'Language key',
   };
 }
@@ -402,7 +402,7 @@ function pageForI18nKey(key: string): { href: string; category: string } {
 const FIELD_HITS: SearchHit[] = Object.entries(ENGLISH_STRINGS).map(
   ([key, value]) => {
     const page = pageForI18nKey(key);
-    const langHref = `/dashboard/others/languages?group=${encodeURIComponent(
+    const langHref = `/dashboard/generals/languages?group=${encodeURIComponent(
       groupForKey(key)
     )}&highlight=${encodeURIComponent(key)}`;
     return {
@@ -437,7 +437,7 @@ const ALIAS_HITS: SearchHit[] = [
     id: 'alias-hero-image',
     title: 'Home hero image',
     desc: 'Upload / rotate images for the home hero',
-    href: '/dashboard/others/images',
+    href: '/dashboard/generals/images',
     category: 'Alias',
     keywords: ['hero image', 'break limits', 'banner', 'photo'],
   },
@@ -445,7 +445,7 @@ const ALIAS_HITS: SearchHit[] = [
     id: 'alias-apply-translation',
     title: 'Apply Translation',
     desc: 'Fill translations from browser translator / seeds',
-    href: '/dashboard/others/languages',
+    href: '/dashboard/generals/languages',
     category: 'Alias',
     keywords: ['apply translation', 'translate', 'auto translate', 'browser'],
   },
@@ -500,7 +500,7 @@ export function searchDashboard(query: string, limit = 40): SearchHit[] {
       hit.category === 'Home' ||
       hit.category === 'Feature' ||
       hit.category === 'Features titles' ||
-      hit.category === 'Others'
+      hit.category === 'Generals'
     ) {
       score += 2;
     }

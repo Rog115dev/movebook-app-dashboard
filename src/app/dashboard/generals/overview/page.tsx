@@ -3,7 +3,7 @@ import { readSettings } from '@/lib/settings';
 
 export const dynamic = 'force-dynamic';
 
-export default async function OthersOverviewPage() {
+export default async function GeneralsOverviewPage() {
   const settings = await readSettings();
 
   return (
