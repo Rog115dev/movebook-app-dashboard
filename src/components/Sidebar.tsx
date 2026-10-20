@@ -3,20 +3,16 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
-const LINKS = [
-  { href: '/dashboard', label: 'Overview' },
-  { href: '/dashboard/colors', label: 'Colors' },
-  { href: '/dashboard/home', label: 'Home content' },
-  { href: '/dashboard/faq', label: 'FAQ' },
-  { href: '/dashboard/features', label: 'Unlock features' },
-  { href: '/dashboard/testimonials', label: 'Testimonials' },
-  { href: '/dashboard/languages', label: 'Languages' },
-  { href: '/dashboard/plans', label: 'Plans' },
-  { href: '/dashboard/paywall', label: 'Paywall' },
-  { href: '/dashboard/discount', label: 'Discount' },
-  { href: '/dashboard/train-pro', label: 'TRAIN PRO' },
-  { href: '/dashboard/images', label: 'Images & video' },
-];
+const MAIN_MENUS = [
+  { href: '/dashboard/home', label: 'Home' },
+  { href: '/dashboard/feature', label: 'Feature' },
+  { href: '/dashboard/features-titles', label: 'Features titles' },
+  { href: '/dashboard/others', label: 'Others' },
+] as const;
+
+function isActive(pathname: string, href: string) {
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -42,16 +38,13 @@ export function Sidebar() {
         </p>
       </div>
       <nav className="flex flex-1 flex-col gap-1 p-3">
-        {LINKS.map((link) => {
-          const active =
-            link.href === '/dashboard'
-              ? pathname === '/dashboard'
-              : pathname.startsWith(link.href);
+        {MAIN_MENUS.map((link) => {
+          const active = isActive(pathname, link.href);
           return (
             <Link
               key={link.href}
               href={link.href}
-              className={`rounded-lg px-3 py-2 text-sm transition ${
+              className={`rounded-lg px-3 py-2.5 text-sm transition ${
                 active
                   ? 'bg-[#FF7800] font-medium text-black'
                   : 'text-zinc-300 hover:bg-zinc-900 hover:text-white'
