@@ -29,12 +29,12 @@ export function parseLegacyPrice(price: string): {
   currencyCode: string;
 } {
   const raw = (price || '').trim();
-  if (!raw) return { amount: 0, currencyCode: 'EUR' };
+  if (!raw) return { amount: 0, currencyCode: 'USD' };
 
   const upper = raw.toUpperCase();
-  let currencyCode = 'EUR';
-  if (raw.includes('€') || upper.includes('EUR')) currencyCode = 'EUR';
-  else if (raw.includes('$') || upper.includes('USD')) currencyCode = 'USD';
+  let currencyCode = 'USD';
+  if (raw.includes('$') || upper.includes('USD')) currencyCode = 'USD';
+  else if (raw.includes('€') || upper.includes('EUR')) currencyCode = 'EUR';
   else if (raw.includes('£') || upper.includes('GBP')) currencyCode = 'GBP';
   else if (upper.includes('CHF')) currencyCode = 'CHF';
   else if (upper.includes('JPY') || raw.includes('¥')) currencyCode = 'JPY';
@@ -52,20 +52,15 @@ export function normalizePlanPricing(
     typeof plan.amount === 'number' && Number.isFinite(plan.amount)
       ? plan.amount
       : parseLegacyPrice(plan.price || '').amount;
-  const currencyCode = (
-    plan.currencyCode ||
-    parseLegacyPrice(plan.price || '').currencyCode ||
-    'EUR'
-  )
-    .trim()
-    .toUpperCase();
+  // CMS entry currency is always USD; mobile converts for display by country.
+  const currencyCode = 'USD';
   const currency =
-    currencies.find((c) => c.code === currencyCode) ||
-    currencies.find((c) => c.code === 'EUR');
+    currencies.find((c) => c.code === 'USD') ||
+    ({ code: 'USD', symbol: '$', label: 'US Dollar' } as CurrencyOption);
   return {
     ...plan,
     amount,
-    currencyCode: currency?.code || 'EUR',
+    currencyCode,
     price: formatPlanPrice(amount, currency),
   };
 }

@@ -1,6 +1,6 @@
 {
-  "version": 6,
-  "updatedAt": "2026-10-15T13:18:39.567Z",
+  "version": 7,
+  "updatedAt": "2026-10-29T20:25:20.511Z",
   "defaultLocale": "en",
   "locales": [
     "en",
@@ -82,8 +82,33 @@
       "features.builtFor": "We built it just for you",
       "features.unlockTitle": "Unlock everything you need",
       "features.unlockSub": "Everything you want. All in one place.",
+      "features.unlock1Title": "AI Workout Plans",
+      "features.unlock1Desc": "Built around your goals and level.",
+      "features.unlock1Badge": "HOT",
+      "features.unlock2Title": "Exercise Videos",
+      "features.unlock2Desc": "500+ demos with form cues.",
+      "features.unlock2Badge": "HIGH QUALITY",
+      "features.unlock3Title": "Coach Mode",
+      "features.unlock3Desc": "Guidance that adapts as you train.",
+      "features.unlock3Badge": "NEW",
+      "features.unlock4Title": "Progress Tracking",
+      "features.unlock4Desc": "Compare planned vs completed work.",
+      "features.unlock4Badge": "EXCLUSIVE",
+      "features.unlock5Title": "Nutrition Guidance",
+      "features.unlock5Desc": "Meal plans and body analysis.",
+      "features.unlock5Badge": "VIP",
       "features.mostPopular": "MOST POPULAR",
       "features.planSuffix": "plan",
+      "features.loveSub": "Join FitAI Coach users who cannot get enough.",
+      "testimonials.1.code": "Mike Myers",
+      "testimonials.1.title": "Great training flow",
+      "testimonials.1.description": "Plans feel personalized and the video library is excellent. Progress tracking keeps me consistent week after week.",
+      "testimonials.2.code": "Shaun",
+      "testimonials.2.title": "Actually feels smart",
+      "testimonials.2.description": "Not robotic at all. I ended up using FitAI Coach way more than I expected — coaching tips are clear and useful.",
+      "testimonials.3.code": "Carlos Pearson",
+      "testimonials.3.title": "Production-level experience",
+      "testimonials.3.description": "Workout videos and structure feel polished. Closest thing to having a real coach in my pocket.",
       "paywall.brandSub": "Personalized AI Workout Plans",
       "paywall.claimDiscount": "Claim discount",
       "paywall.startTrial": "Start Free Trial",
@@ -91,6 +116,19 @@
       "paywall.trust1": "No commitment. Cancel anytime!",
       "paywall.trust2": "Top quality workouts",
       "paywall.discountApplied": "Claim discount applied to your offer.",
+      "paywall.enterDiscountCode": "Enter discount code",
+      "paywall.enterDiscountHint": "Type the current promo code to unlock your discount.",
+      "paywall.discountCodePlaceholder": "CODE",
+      "paywall.discountCodeRequired": "Please enter a discount code.",
+      "paywall.discountInvalid": "That code is not valid.",
+      "paywall.discountExpired": "That discount code has expired.",
+      "paywall.discountUnavailable": "No discount is available right now.",
+      "paywall.discountSuccess": "{percent}% discount applied to your offer.",
+      "paywall.discountActive": "{percent}% discount is active. Remove it to enter a different code.",
+      "paywall.discountAppliedShort": "{percent}% OFF",
+      "paywall.removeDiscount": "Remove",
+      "paywall.apply": "Apply",
+      "paywall.cancel": "Cancel",
       "paywall.feature1": "Customized plans",
       "paywall.feature2": "24/7 AI trainer",
       "paywall.feature3": "Progress tracking",
@@ -111,7 +149,143 @@
       "auth.passwordRequired": "Password is required",
       "auth.welcomeBack": "Welcome back",
       "auth.loginFailed": "Login failed",
-      "auth.checkCredentials": "Please check your credentials."
+      "auth.checkCredentials": "Please check your credentials.",
+      "auth.signupHeadline": "Create your",
+      "auth.signupFreeAccent": "free",
+      "auth.signupHeadlineEnd": "account",
+      "auth.signupSub": "Choose your country, sport, and role so we can show the right features and testimonials.",
+      "auth.fullName": "Full name",
+      "auth.username": "Username",
+      "auth.email": "Email",
+      "auth.placeholderName": "Alex Runner",
+      "auth.placeholderUsername": "alexrunner",
+      "auth.placeholderEmail": "you@email.com",
+      "auth.placeholderPassword": "At least 6 characters",
+      "auth.nameRequired": "Full name is required",
+      "auth.usernameRequired": "Username is required",
+      "auth.emailRequired": "Valid email is required",
+      "auth.passwordMin": "Password must be at least 6 characters",
+      "auth.countryRequired": "Please select your country",
+      "auth.userTypeRequired": "Please select your user type",
+      "auth.sportRequired": "Please select at least one sport",
+      "auth.sportLabel": "Sports",
+      "auth.sportPlaceholder": "Select your sports",
+      "auth.sportModalTitle": "Select sports",
+      "auth.sportSearch": "Search sports",
+      "auth.sportMultiHint": "Select one or more sports",
+      "auth.sportSelectedCount": "{count} sports selected",
+      "auth.audienceLabel": "I am",
+      "auth.signupFreeCta": "Sign up free",
+      "auth.signupSuccessTitle": "Account created",
+      "auth.signupSuccessBody": "Welcome to FitAI Coach.",
+      "auth.signupFailed": "Sign up failed",
+      "auth.tryAgain": "Please try again.",
+      "auth.signedInAs": "Signed in as {name}.",
+      "auth.country": "Country",
+      "auth.countryPlaceholder": "Select your country",
+      "auth.countryModalTitle": "Select country",
+      "auth.countrySearch": "Search country",
+      "onboarding.countryTitle": "Select your country",
+      "onboarding.countrySub": "We use your country for local pricing and a better experience. You can change this later when you sign up.",
+      "onboarding.continue": "Continue",
+      "audience.athlete": "Athlete",
+      "audience.coaches": "Coaches",
+      "audience.teams": "Teams",
+      "audience.clubs": "Clubs",
+      "audience.groups": "Groups",
+      "features.traitStrong": "Strong",
+      "features.traitFocused": "Focused",
+      "features.traitPersonalized": "Personalized",
+      "features.traitResults": "Results-driven",
+      "features.audienceHint": "Showing features for {role}",
+      "features.loveTitleBefore": "Users",
+      "features.loveAccent": "LOVE",
+      "features.loveTitleAfter": "us",
+      "features.realReview": "Real review",
+      "features.choosePlanTitle": "Choose the perfect plan for you",
+      "features.pricesIn": "Prices shown in {currency} for your country",
+      "features.stickyCta": "Get FitAI Coach",
+      "features.continueTitle": "Continue",
+      "features.continueBody": "Choose a plan below to continue.",
+      "features.a11yHideDesc": "Hide description",
+      "features.a11yShowDesc": "Show description",
+      "features.a11yGoBack": "Go back",
+      "home.a11yPlayVideo": "Play Break All Limits video",
+      "home.a11yToggleVideo": "Toggle hero video",
+      "paywall.brandName": "FitAI Coach",
+      "countries.US": "United States",
+      "countries.GB": "United Kingdom",
+      "countries.IT": "Italy",
+      "countries.FR": "France",
+      "countries.DE": "Germany",
+      "countries.ES": "Spain",
+      "countries.PT": "Portugal",
+      "countries.NL": "Netherlands",
+      "countries.BE": "Belgium",
+      "countries.CH": "Switzerland",
+      "countries.AT": "Austria",
+      "countries.IE": "Ireland",
+      "countries.CA": "Canada",
+      "countries.AU": "Australia",
+      "countries.BR": "Brazil",
+      "countries.IN": "India",
+      "countries.JP": "Japan",
+      "countries.CN": "China",
+      "countries.MX": "Mexico",
+      "countries.AR": "Argentina",
+      "countries.PL": "Poland",
+      "countries.SE": "Sweden",
+      "countries.NO": "Norway",
+      "countries.DK": "Denmark",
+      "countries.FI": "Finland",
+      "countries.RO": "Romania",
+      "countries.GR": "Greece",
+      "countries.CZ": "Czechia",
+      "countries.HU": "Hungary",
+      "countries.ZA": "South Africa",
+      "plans.free.name": "Free",
+      "plans.free.subtitle": "Use version free for 1 month",
+      "plans.free.cta": "Choose Free",
+      "plans.free.feature1": "Develop aerobic workout plan",
+      "plans.free.feature2": "Develop weight training plan",
+      "plans.free.feature3": "Develop circuit training plan",
+      "plans.free.feature4": "Develop weekly weight training plan",
+      "plans.free.feature5": "Download user-shared workout plans",
+      "plans.free.feature6": "Store workouts in the Annual Work Plan",
+      "plans.free.feature7": "Store completed work",
+      "plans.basic.name": "Basic",
+      "plans.basic.subtitle": "Annual subscription",
+      "plans.basic.cta": "Choose Basic",
+      "plans.basic.feature1": "All the features of the version free +",
+      "plans.basic.feature2": "500+ exercises with videos",
+      "plans.basic.feature3": "Version for male and female",
+      "plans.basic.feature4": "View targeted muscle areas",
+      "plans.basic.feature5": "Completed workouts compared with planned",
+      "plans.basic.feature6": "Access to library of workouts",
+      "plans.basic.feature7": "Create your own preparatory cycles",
+      "plans.premium.name": "Premium",
+      "plans.premium.subtitle": "Annual subscription",
+      "plans.premium.cta": "Choose Premium",
+      "plans.premium.feature1": "All the features of the version Basic +",
+      "plans.premium.feature2": "Statistics on workouts planned",
+      "plans.premium.feature3": "Statistics on workouts completed",
+      "plans.premium.feature4": "Full editor new exercises",
+      "plans.premium.feature5": "Training assistant",
+      "plans.premium.feature6": "Analyze your diet",
+      "plans.premium.feature7": "Create meal plans",
+      "plans.premium.feature8": "Body analysis",
+      "plans.pro.name": "Pro",
+      "plans.pro.subtitle": "Annual subscription",
+      "plans.pro.cta": "Choose Pro",
+      "plans.pro.badge": "Personal avatar",
+      "plans.pro.feature1": "All the features of the version Premium +",
+      "plans.pro.feature2": "Gps workout map tracking",
+      "plans.pro.feature3": "Heart rate tracking",
+      "plans.pro.feature4": "Advanced statistical analysis",
+      "plans.pro.feature5": "Actions tracking",
+      "plans.pro.feature6": "Intelligent assistant",
+      "plans.pro.feature7": "Self-learning",
+      "plans.pro.feature8": "AI training plan development"
     },
     "fr": {
       "common.back": "Retour",
@@ -1199,7 +1373,26 @@
     "loginPrompt": "Already have an account?",
     "loginLink": "Log in",
     "confidenceText": "We're confident that our premium experience will exceed your expectations, providing you with unique value and satisfaction.\n\nEnjoy the freedom to explore everything we offer, because your satisfaction is, and always will be, our top priority.",
-    "heroImageUrl": "/uploads/hero-break-limits.jpg"
+    "heroImageUrl": "/uploads/hero-break-limits.jpg",
+    "heroVideoUrl": "",
+    "heroVideoChosen": false,
+    "heroVideoSamples": [
+      {
+        "id": "sample-1",
+        "label": "Break All Limits — AI workout plans",
+        "url": "/uploads/sample-hero-1.mp4"
+      },
+      {
+        "id": "sample-2",
+        "label": "Train Smarter — Coach Mode",
+        "url": "/uploads/sample-hero-2.mp4"
+      },
+      {
+        "id": "sample-3",
+        "label": "Push Beyond — Progress tracking",
+        "url": "/uploads/sample-hero-3.mp4"
+      }
+    ]
   },
   "whyChooseMe": {
     "title": "Why Choose Me",
@@ -1221,6 +1414,61 @@
         "icon": "people-outline",
         "title": "Collaborative",
         "body": "Ability to listen to user needs and a collaborative approach to ensure project success and users satisfaction"
+      }
+    ]
+  },
+  "pricing": {
+    "baseCurrency": "EUR",
+    "currencies": [
+      {
+        "code": "EUR",
+        "symbol": "€",
+        "label": "Euro"
+      },
+      {
+        "code": "USD",
+        "symbol": "$",
+        "label": "US Dollar"
+      },
+      {
+        "code": "GBP",
+        "symbol": "£",
+        "label": "British Pound"
+      },
+      {
+        "code": "CHF",
+        "symbol": "CHF",
+        "label": "Swiss Franc"
+      },
+      {
+        "code": "JPY",
+        "symbol": "¥",
+        "label": "Japanese Yen"
+      },
+      {
+        "code": "CAD",
+        "symbol": "C$",
+        "label": "Canadian Dollar"
+      },
+      {
+        "code": "AUD",
+        "symbol": "A$",
+        "label": "Australian Dollar"
+      },
+      {
+        "code": "INR",
+        "symbol": "₹",
+        "label": "Indian Rupee"
+      },
+      {
+        "code": "BRL",
+        "symbol": "R$",
+        "label": "Brazilian Real"
+      },
+      {
+        "code": "CNY",
+        "symbol": "¥",
+        "label": "Chinese Yuan"
       }
     ]
   },
@@ -1260,7 +1508,9 @@
           "text": "Store completed work",
           "included": true
         }
-      ]
+      ],
+      "amount": 0,
+      "currencyCode": "EUR"
     },
     {
       "id": "basic",
@@ -1297,7 +1547,9 @@
           "text": "Create your own preparatory cycles",
           "included": true
         }
-      ]
+      ],
+      "amount": 36,
+      "currencyCode": "EUR"
     },
     {
       "id": "premium",
@@ -1338,7 +1590,9 @@
           "text": "Body analysis",
           "included": true
         }
-      ]
+      ],
+      "amount": 73,
+      "currencyCode": "EUR"
     },
     {
       "id": "pro",
@@ -1382,7 +1636,9 @@
           "included": true,
           "highlight": true
         }
-      ]
+      ],
+      "amount": 109,
+      "currencyCode": "EUR"
     }
   ],
   "paywall": {
@@ -1437,6 +1693,11 @@
         "popular": true
       }
     ]
+  },
+  "discount": {
+    "code": "FITAI50",
+    "percent": 50,
+    "expiresOn": "2027-12-31"
   },
   "trainPro": {
     "headlineOrange": "TRAIN PRO: ",
@@ -1511,29 +1772,470 @@
     "guaranteeLine": "SATISFACTION GUARANTEE",
     "secureText": "Pay Safe & Secure"
   },
+  "featuresPage": {
+    "unlockTitle": "Unlock everything you need",
+    "unlockSub": "Everything you want. All in one place.",
+    "backgroundColor": "#161616",
+    "textColor": "#FFFFFF",
+    "items": [
+      {
+        "id": "ai-plans",
+        "title": "AI Workout Plans",
+        "description": "Built around your goals and level.",
+        "badge": "HOT",
+        "audiences": [
+          "athlete",
+          "coaches",
+          "teams",
+          "clubs",
+          "groups"
+        ]
+      },
+      {
+        "id": "videos",
+        "title": "Exercise Videos",
+        "description": "500+ demos with form cues.",
+        "badge": "HIGH QUALITY",
+        "audiences": [
+          "athlete",
+          "coaches",
+          "teams",
+          "clubs",
+          "groups"
+        ]
+      },
+      {
+        "id": "coach",
+        "title": "Coach Mode",
+        "description": "Guidance that adapts as you train.",
+        "badge": "NEW",
+        "audiences": [
+          "athlete",
+          "coaches",
+          "teams",
+          "clubs",
+          "groups"
+        ]
+      },
+      {
+        "id": "progress",
+        "title": "Progress Tracking",
+        "description": "Compare planned vs completed work.",
+        "badge": "EXCLUSIVE",
+        "audiences": [
+          "athlete",
+          "coaches",
+          "teams",
+          "clubs",
+          "groups"
+        ]
+      },
+      {
+        "id": "nutrition",
+        "title": "Nutrition Guidance",
+        "description": "Meal plans and body analysis.",
+        "badge": "VIP",
+        "audiences": [
+          "athlete",
+          "coaches",
+          "teams",
+          "clubs",
+          "groups"
+        ]
+      }
+    ]
+  },
+  "sports": [
+    {
+      "id": "swimming",
+      "name": "Swimming"
+    },
+    {
+      "id": "running",
+      "name": "Running"
+    },
+    {
+      "id": "cycling",
+      "name": "Cycling"
+    },
+    {
+      "id": "weights",
+      "name": "Weights"
+    },
+    {
+      "id": "soccer",
+      "name": "Soccer"
+    },
+    {
+      "id": "basketball",
+      "name": "Basketball"
+    },
+    {
+      "id": "tennis",
+      "name": "Tennis"
+    },
+    {
+      "id": "volleyball",
+      "name": "Volleyball"
+    },
+    {
+      "id": "boxing",
+      "name": "Boxing"
+    },
+    {
+      "id": "martial-arts",
+      "name": "Martial Arts"
+    },
+    {
+      "id": "rowing",
+      "name": "Rowing"
+    },
+    {
+      "id": "yoga",
+      "name": "Yoga"
+    },
+    {
+      "id": "gymnastics",
+      "name": "Gymnastics"
+    },
+    {
+      "id": "skiing",
+      "name": "Skiing"
+    },
+    {
+      "id": "surfing",
+      "name": "Surfing"
+    },
+    {
+      "id": "golf",
+      "name": "Golf"
+    },
+    {
+      "id": "baseball",
+      "name": "Baseball"
+    },
+    {
+      "id": "ice-hockey",
+      "name": "Ice Hockey"
+    },
+    {
+      "id": "rugby",
+      "name": "Rugby"
+    },
+    {
+      "id": "mountain-climbing",
+      "name": "Mountain Climbing"
+    },
+    {
+      "id": "american-football",
+      "name": "American Football"
+    },
+    {
+      "id": "archery",
+      "name": "Archery"
+    },
+    {
+      "id": "artistic-gymnastics",
+      "name": "Artistic Gymnastics"
+    },
+    {
+      "id": "athletics",
+      "name": "Athletics"
+    },
+    {
+      "id": "badminton",
+      "name": "Badminton"
+    },
+    {
+      "id": "billiards",
+      "name": "Billiards"
+    },
+    {
+      "id": "boating",
+      "name": "Boating"
+    },
+    {
+      "id": "bowling",
+      "name": "Bowling"
+    },
+    {
+      "id": "calisthenics",
+      "name": "Calisthenics"
+    },
+    {
+      "id": "canoe",
+      "name": "Canoe"
+    },
+    {
+      "id": "cycling-tourism",
+      "name": "Cycling Tourism"
+    },
+    {
+      "id": "classic-dance",
+      "name": "Classic Dance"
+    },
+    {
+      "id": "cricket",
+      "name": "Cricket"
+    },
+    {
+      "id": "cross-country-skiing",
+      "name": "Cross-Country Skiing"
+    },
+    {
+      "id": "crossfit",
+      "name": "CrossFit"
+    },
+    {
+      "id": "cyclocross",
+      "name": "Cyclocross"
+    },
+    {
+      "id": "dance",
+      "name": "Dance"
+    },
+    {
+      "id": "dips",
+      "name": "Dips"
+    },
+    {
+      "id": "diving",
+      "name": "Diving"
+    },
+    {
+      "id": "downhill-skiing",
+      "name": "Downhill Skiing"
+    },
+    {
+      "id": "fencing",
+      "name": "Fencing"
+    },
+    {
+      "id": "field-hockey",
+      "name": "Field Hockey"
+    },
+    {
+      "id": "fishing",
+      "name": "Fishing"
+    },
+    {
+      "id": "freestyle-wrestling",
+      "name": "Freestyle Wrestling"
+    },
+    {
+      "id": "handball",
+      "name": "Handball"
+    },
+    {
+      "id": "hang-gliding",
+      "name": "Hang Gliding"
+    },
+    {
+      "id": "hiking",
+      "name": "Hiking"
+    },
+    {
+      "id": "horse-racing",
+      "name": "Horse Racing"
+    },
+    {
+      "id": "ice-skating",
+      "name": "Ice Skating"
+    },
+    {
+      "id": "jumps",
+      "name": "Jumps"
+    },
+    {
+      "id": "kayak",
+      "name": "Kayak"
+    },
+    {
+      "id": "kickboxing",
+      "name": "Kickboxing"
+    },
+    {
+      "id": "lifting",
+      "name": "Lifting"
+    },
+    {
+      "id": "modern-dance",
+      "name": "Modern Dance"
+    },
+    {
+      "id": "motoring",
+      "name": "Motoring"
+    },
+    {
+      "id": "mountain-bike",
+      "name": "Mountain Bike"
+    },
+    {
+      "id": "mtb",
+      "name": "MTB"
+    },
+    {
+      "id": "pilates",
+      "name": "Pilates"
+    },
+    {
+      "id": "ping-pong",
+      "name": "Ping Pong"
+    },
+    {
+      "id": "polo",
+      "name": "Polo"
+    },
+    {
+      "id": "powerlifting",
+      "name": "Powerlifting"
+    },
+    {
+      "id": "racquetball",
+      "name": "Racquetball"
+    },
+    {
+      "id": "rhythmic-gymnastics",
+      "name": "Rhythmic Gymnastics"
+    },
+    {
+      "id": "sailing",
+      "name": "Sailing"
+    },
+    {
+      "id": "shot-put",
+      "name": "Shot Put"
+    },
+    {
+      "id": "skateboard",
+      "name": "Skateboard"
+    },
+    {
+      "id": "skating",
+      "name": "Skating"
+    },
+    {
+      "id": "ski-jump",
+      "name": "Ski Jump"
+    },
+    {
+      "id": "ski-slalom",
+      "name": "Ski Slalom"
+    },
+    {
+      "id": "snorkeling",
+      "name": "Snorkeling"
+    },
+    {
+      "id": "snowboard",
+      "name": "Snowboard"
+    },
+    {
+      "id": "spartan-race",
+      "name": "Spartan Race"
+    },
+    {
+      "id": "spinning",
+      "name": "Spinning"
+    },
+    {
+      "id": "stretching",
+      "name": "Stretching"
+    },
+    {
+      "id": "tango",
+      "name": "Tango"
+    },
+    {
+      "id": "technical-training",
+      "name": "Technical Training"
+    },
+    {
+      "id": "throws",
+      "name": "Throws"
+    },
+    {
+      "id": "trekking",
+      "name": "Trekking"
+    },
+    {
+      "id": "triathlon",
+      "name": "Triathlon"
+    },
+    {
+      "id": "walking",
+      "name": "Walking"
+    },
+    {
+      "id": "water-polo",
+      "name": "Water Polo"
+    },
+    {
+      "id": "water-ski",
+      "name": "Water Ski"
+    },
+    {
+      "id": "windsurf",
+      "name": "Windsurf"
+    }
+  ],
+  "testimonials": {
+    "subtitle": "Join FitAI Coach users who cannot get enough.",
+    "carouselDelaySec": 5,
+    "items": [
+      {
+        "id": "mike-myers",
+        "code": "Mike Myers",
+        "pictureUrl": "",
+        "logoUrl": "",
+        "borderColor": "#FF7800",
+        "title": "Great training flow",
+        "description": "Plans feel personalized and the video library is excellent. Progress tracking keeps me consistent week after week.",
+        "showInPresentation": true,
+        "showInMenu": true,
+        "countries": [],
+        "languages": [],
+        "audiences": [],
+        "sports": []
+      },
+      {
+        "id": "shaun",
+        "code": "Shaun",
+        "pictureUrl": "",
+        "logoUrl": "",
+        "borderColor": "#FF7800",
+        "title": "Actually feels smart",
+        "description": "Not robotic at all. I ended up using FitAI Coach way more than I expected — coaching tips are clear and useful.",
+        "showInPresentation": true,
+        "showInMenu": true,
+        "countries": [],
+        "languages": [],
+        "audiences": [],
+        "sports": []
+      },
+      {
+        "id": "carlos-pearson",
+        "code": "Carlos Pearson",
+        "pictureUrl": "",
+        "logoUrl": "",
+        "borderColor": "#FF7800",
+        "title": "Production-level experience",
+        "description": "Workout videos and structure feel polished. Closest thing to having a real coach in my pocket.",
+        "showInPresentation": true,
+        "showInMenu": true,
+        "countries": [],
+        "languages": [],
+        "audiences": [],
+        "sports": []
+      }
+    ]
+  },
   "imageSections": [
     {
       "key": "hero",
-      "label": "Home hero image",
-      "items": [
-        {
-          "id": "hero-1",
-          "url": "/uploads/hero-break-limits.jpg"
-        },
-        {
-          "id": "hero-2",
-          "url": "/uploads/hero-sample-2.jpg"
-        },
-        {
-          "id": "hero-3",
-          "url": "/uploads/hero-sample-3.jpg"
-        }
-      ],
-      "selectedIds": [
-        "hero-1",
-        "hero-2",
-        "hero-3"
-      ],
+      "label": "Home hero video",
+      "items": [],
+      "selectedIds": [],
       "rotateDelaySec": 5
     },
     {
@@ -1588,8 +2290,8 @@
     {
       "id": "hero",
       "key": "heroBreakLimits",
-      "label": "Home hero image",
-      "url": "/uploads/hero-break-limits.jpg"
+      "label": "Home hero video",
+      "url": ""
     },
     {
       "id": "paywall",

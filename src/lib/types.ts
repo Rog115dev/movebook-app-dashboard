@@ -76,9 +76,9 @@ export type PlanSettings = {
    * Mobile may convert via FX from amount + currencyCode.
    */
   price: string;
-  /** Numeric amount in `currencyCode` (admin entry currency). */
+  /** Numeric amount in USD (admin always enters USD). */
   amount: number;
-  /** Currency of `amount` (default EUR as app base). */
+  /** Currency of `amount` — always USD for CMS entry. */
   currencyCode: string;
   subtitle: string;
   cta: string;
@@ -87,9 +87,10 @@ export type PlanSettings = {
   features: PlanFeature[];
 };
 
-/** App pricing config — base currency is EUR for FX conversion. */
+/** App pricing config — CMS amounts are USD; mobile converts for display. */
 export type PricingSettings = {
-  baseCurrency: 'EUR';
+  baseCurrency: 'USD';
+  /** Kept for mobile symbol lookup; not edited in CMS. */
   currencies: CurrencyOption[];
 };
 
@@ -105,6 +106,8 @@ export type PaywallTier = {
 export type PaywallFeature = {
   icon: string;
   label: string;
+  /** When true, kept in CMS but hidden on mobile. */
+  disabled?: boolean;
 };
 
 export type PaywallSettings = {
@@ -178,12 +181,18 @@ export type UnlockFeatureItem = {
   badge: string;
   /** Which user types see this feature. Empty = all. */
   audiences?: UnlockAudience[];
+  /** When true, kept in CMS but hidden on mobile. */
+  disabled?: boolean;
 };
 
 /** Features screen — “Unlock everything you need” list */
 export type FeaturesPageSettings = {
   unlockTitle: string;
   unlockSub: string;
+  /** Feature card background (hex) */
+  backgroundColor: string;
+  /** Feature section / card title text (hex) */
+  textColor: string;
   items: UnlockFeatureItem[];
 };
 

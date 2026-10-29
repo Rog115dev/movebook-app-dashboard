@@ -106,11 +106,12 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
         settings.pricing.currencies.length > 0
           ? settings.pricing.currencies.map((c) => ({
               code: (c.code || '').trim().toUpperCase(),
-              symbol: (c.symbol || c.code || '').trim() || '€',
+              symbol: (c.symbol || c.code || '').trim() || '$',
               label: (c.label || c.code || '').trim() || c.code,
             }))
           : [...DEFAULT_CURRENCIES];
-      return { baseCurrency: 'EUR' as const, currencies };
+      // Keep currency list for mobile display symbols; CMS amounts are USD.
+      return { baseCurrency: 'USD' as const, currencies };
     })(),
     plans: (() => {
       const currencies =
@@ -125,9 +126,14 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
     paywall: {
       ...defaults.paywall,
       ...(settings.paywall || {}),
-      features: settings.paywall?.features?.length
+      features: (settings.paywall?.features?.length
         ? settings.paywall.features
-        : defaults.paywall.features,
+        : defaults.paywall.features
+      ).map((f) => ({
+        icon: f.icon || 'star-outline',
+        label: f.label || '',
+        disabled: Boolean(f.disabled),
+      })),
       tiers: settings.paywall?.tiers?.length
         ? settings.paywall.tiers
         : defaults.paywall.tiers,
@@ -173,6 +179,12 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
       unlockSub:
         settings.featuresPage?.unlockSub?.trim() ||
         defaults.featuresPage.unlockSub,
+      backgroundColor:
+        settings.featuresPage?.backgroundColor?.trim() ||
+        defaults.featuresPage.backgroundColor,
+      textColor:
+        settings.featuresPage?.textColor?.trim() ||
+        defaults.featuresPage.textColor,
       items: Array.isArray(settings.featuresPage?.items)
         ? settings.featuresPage.items.map((item, i) => ({
             id: item.id || `unlock-${i + 1}`,
@@ -182,6 +194,7 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
             audiences: Array.isArray(item.audiences)
               ? item.audiences
               : undefined,
+            disabled: Boolean(item.disabled),
           }))
         : defaults.featuresPage.items,
     },

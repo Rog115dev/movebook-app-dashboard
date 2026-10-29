@@ -1,4 +1,5 @@
 import type { MobileAppSettings } from './types';
+import { DEFAULT_COLORS } from './colorDefaults';
 import { createDefaultI18n, LOCALES } from './i18n';
 import {
   createDefaultImageSections,
@@ -14,23 +15,7 @@ export function createDefaultSettings(): MobileAppSettings {
     defaultLocale: 'en',
     locales: [...LOCALES],
     i18n: createDefaultI18n(),
-    colors: {
-      bg: '#0A0A0A',
-      bgElevated: '#141414',
-      bgCard: '#161616',
-      white: '#FFFFFF',
-      whiteMuted: 'rgba(255,255,255,0.78)',
-      whiteDim: 'rgba(255,255,255,0.52)',
-      orange: '#FF7800',
-      orangeHot: '#FF8F2A',
-      gold: '#FF7800',
-      goldSoft: '#FFA04A',
-      red: '#E53935',
-      border: 'rgba(255,255,255,0.16)',
-      borderSoft: 'rgba(255,120,0,0.28)',
-      borderOrange: 'rgba(255,120,0,0.95)',
-      black: '#000000',
-    },
+    colors: { ...DEFAULT_COLORS },
     home: {
       brandPrefix: 'Movesbook ',
       brandAccent: 'FitAI',
@@ -91,16 +76,16 @@ export function createDefaultSettings(): MobileAppSettings {
       ],
     },
     pricing: {
-      baseCurrency: 'EUR',
+      baseCurrency: 'USD',
       currencies: [...DEFAULT_CURRENCIES],
     },
     plans: [
       {
         id: 'free',
         name: 'Free',
-        price: '€ 0',
+        price: '$ 0',
         amount: 0,
-        currencyCode: 'EUR',
+        currencyCode: 'USD',
         subtitle: 'Use version free for 1 month',
         cta: 'Choose Free',
         features: [
@@ -116,9 +101,9 @@ export function createDefaultSettings(): MobileAppSettings {
       {
         id: 'basic',
         name: 'Basic',
-        price: '€ 36',
+        price: '$ 36',
         amount: 36,
-        currencyCode: 'EUR',
+        currencyCode: 'USD',
         subtitle: 'Annual subscription',
         cta: 'Choose Basic',
         features: [
@@ -134,9 +119,9 @@ export function createDefaultSettings(): MobileAppSettings {
       {
         id: 'premium',
         name: 'Premium',
-        price: '€ 73',
+        price: '$ 73',
         amount: 73,
-        currencyCode: 'EUR',
+        currencyCode: 'USD',
         subtitle: 'Annual subscription',
         cta: 'Choose Premium',
         features: [
@@ -153,9 +138,9 @@ export function createDefaultSettings(): MobileAppSettings {
       {
         id: 'pro',
         name: 'Pro',
-        price: '€ 109',
+        price: '$ 109',
         amount: 109,
-        currencyCode: 'EUR',
+        currencyCode: 'USD',
         subtitle: 'Annual subscription',
         cta: 'Choose Pro',
         badge: 'Personal avatar',
@@ -185,10 +170,18 @@ export function createDefaultSettings(): MobileAppSettings {
       trustLine2: 'Top quality workouts',
       athletesImageUrl: '/uploads/paywall-athletes.jpg',
       features: [
-        { icon: 'clipboard-outline', label: 'Customized plans' },
-        { icon: 'headset-outline', label: '24/7 AI trainer' },
-        { icon: 'stats-chart-outline', label: 'Progress tracking' },
-        { icon: 'barbell-outline', label: 'Unlimited workouts' },
+        { icon: 'clipboard-outline', label: 'Customized plans', disabled: false },
+        { icon: 'headset-outline', label: '24/7 AI trainer', disabled: false },
+        {
+          icon: 'stats-chart-outline',
+          label: 'Progress tracking',
+          disabled: false,
+        },
+        {
+          icon: 'barbell-outline',
+          label: 'Unlimited workouts',
+          disabled: false,
+        },
       ],
       tiers: [
         {
@@ -298,6 +291,8 @@ export function createDefaultSettings(): MobileAppSettings {
     featuresPage: {
       unlockTitle: 'Unlock everything you need',
       unlockSub: 'Everything you want. All in one place.',
+      backgroundColor: '#161616',
+      textColor: '#FFFFFF',
       items: [
         {
           id: 'ai-plans',

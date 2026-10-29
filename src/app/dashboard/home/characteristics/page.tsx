@@ -1,7 +1,8 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { Field } from '@/components/Field';
+import { IconPicker } from '@/components/IconPicker';
 import { SaveBar } from '@/components/SaveBar';
 import { fetchSettings, saveSettings } from '@/lib/api-client';
 import type { TrainFeature, TrainProSettings } from '@/lib/types';
@@ -58,39 +59,44 @@ export default function CharacteristicsPage() {
         Function, Nutrition Guidance).
       </p>
 
-      <div className="mt-6 space-y-3">
+      <div className="mt-6 space-y-4">
         {features.map((f, idx) => (
           <div
             key={idx}
-            className="grid gap-3 rounded-xl border border-zinc-800 bg-zinc-900/40 p-4"
+            className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4"
           >
-            <Field
-              label="Title"
-              value={f.title}
-              onChange={(v) => {
-                const next = [...features];
-                next[idx] = { ...f, title: v };
-                setFeatures(next);
-              }}
-            />
-            <Field
-              label="Description"
-              value={f.description}
-              onChange={(v) => {
-                const next = [...features];
-                next[idx] = { ...f, description: v };
-                setFeatures(next);
-              }}
-            />
-            <Field
-              label="Icon"
-              value={f.icon}
-              onChange={(v) => {
-                const next = [...features];
-                next[idx] = { ...f, icon: v };
-                setFeatures(next);
-              }}
-            />
+            <p className="mb-3 text-sm font-medium text-zinc-300">
+              Card {idx + 1}
+            </p>
+            <div className="grid gap-3">
+              <Field
+                label="Title"
+                value={f.title}
+                onChange={(v) => {
+                  const next = [...features];
+                  next[idx] = { ...f, title: v };
+                  setFeatures(next);
+                }}
+              />
+              <Field
+                label="Description"
+                value={f.description}
+                onChange={(v) => {
+                  const next = [...features];
+                  next[idx] = { ...f, description: v };
+                  setFeatures(next);
+                }}
+              />
+              <IconPicker
+                label="Icon"
+                value={f.icon || 'clipboard-outline'}
+                onChange={(icon) => {
+                  const next = [...features];
+                  next[idx] = { ...f, icon };
+                  setFeatures(next);
+                }}
+              />
+            </div>
           </div>
         ))}
       </div>

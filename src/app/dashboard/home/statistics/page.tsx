@@ -1,7 +1,8 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { Field } from '@/components/Field';
+import { IconPicker } from '@/components/IconPicker';
 import { SaveBar } from '@/components/SaveBar';
 import { fetchSettings, saveSettings } from '@/lib/api-client';
 import type { TrainProSettings, TrainStat } from '@/lib/types';
@@ -54,42 +55,50 @@ export default function StatisticsPage() {
     <div className="max-w-3xl">
       <h1 className="text-2xl font-semibold">Statistics</h1>
       <p className="mt-2 text-zinc-400">
-        Home metric tiles (workouts, calories, hours, satisfaction).
+        Home metric tiles (workouts, calories, hours, satisfaction). Pick an
+        icon from the map — no technical names needed.
       </p>
 
-      <div className="mt-6 space-y-3">
+      <div className="mt-6 space-y-4">
         {stats.map((stat, idx) => (
           <div
             key={idx}
-            className="grid gap-3 rounded-xl border border-zinc-800 bg-zinc-900/40 p-4 sm:grid-cols-3"
+            className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4"
           >
-            <Field
-              label="Value"
-              value={stat.value}
-              onChange={(v) => {
-                const next = [...stats];
-                next[idx] = { ...stat, value: v };
-                setStats(next);
-              }}
-            />
-            <Field
-              label="Label"
-              value={stat.label}
-              onChange={(v) => {
-                const next = [...stats];
-                next[idx] = { ...stat, label: v };
-                setStats(next);
-              }}
-            />
-            <Field
-              label="Icon"
-              value={stat.icon}
-              onChange={(v) => {
-                const next = [...stats];
-                next[idx] = { ...stat, icon: v };
-                setStats(next);
-              }}
-            />
+            <p className="mb-3 text-sm font-medium text-zinc-300">
+              Stat {idx + 1}
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field
+                label="Value"
+                value={stat.value}
+                onChange={(v) => {
+                  const next = [...stats];
+                  next[idx] = { ...stat, value: v };
+                  setStats(next);
+                }}
+              />
+              <Field
+                label="Label"
+                value={stat.label}
+                onChange={(v) => {
+                  const next = [...stats];
+                  next[idx] = { ...stat, label: v };
+                  setStats(next);
+                }}
+              />
+            </div>
+            <div className="mt-3">
+              <IconPicker
+                label="Icon"
+                value={stat.icon || 'barbell-outline'}
+                onChange={(icon) => {
+                  const next = [...stats];
+                  next[idx] = { ...stat, icon };
+                  setStats(next);
+                }}
+              />
+            </div>
           </div>
         ))}
       </div>

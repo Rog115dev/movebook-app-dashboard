@@ -68,6 +68,52 @@ function blankItem(): TestimonialItem {
   };
 }
 
+function initialsFromCode(code: string) {
+  const parts = code.trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return '?';
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return `${parts[0][0] || ''}${parts[1][0] || ''}`.toUpperCase();
+}
+
+function TestimonialAvatar({
+  code,
+  pictureUrl,
+  borderColor,
+  size = 'md',
+}: {
+  code: string;
+  pictureUrl: string;
+  borderColor: string;
+  size?: 'sm' | 'md' | 'lg';
+}) {
+  const dim = size === 'lg' ? 'h-20 w-20' : size === 'sm' ? 'h-10 w-10' : 'h-14 w-14';
+  const text = size === 'lg' ? 'text-xl' : size === 'sm' ? 'text-xs' : 'text-sm';
+  const src = pictureUrl.trim();
+
+  return (
+    <div
+      className={`relative shrink-0 overflow-hidden rounded-full border-2 bg-zinc-800 ${dim}`}
+      style={{ borderColor: borderColor || '#FF7800' }}
+      title={code || 'Reviewer'}
+    >
+      {src ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={src}
+          alt={code || 'Reviewer photo'}
+          className="h-full w-full object-cover"
+        />
+      ) : (
+        <span
+          className={`flex h-full w-full items-center justify-center font-semibold text-[#FF7800] ${text}`}
+        >
+          {initialsFromCode(code)}
+        </span>
+      )}
+    </div>
+  );
+}
+
 export default function TestimonialsPage() {
   const [page, setPage] = useState<TestimonialsSettings | null>(null);
   const [sports, setSports] = useState<SportCatalogItem[]>([]);
@@ -338,12 +384,28 @@ export default function TestimonialsPage() {
         {page.items.map((item, index) => (
           <div
             key={item.id || `t-${index}`}
-            className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4"
+            className="rounded-xl border border-zinc-700/60 p-4"
+            style={{
+              backgroundColor: index % 2 === 0 ? 'rgb(55, 56, 68)' : 'rgb(27, 28, 34)',
+            }}
           >
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-              <p className="text-sm font-medium text-zinc-200">
-                Review {index + 1}
-              </p>
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-3">
+                <TestimonialAvatar
+                  code={item.code}
+                  pictureUrl={item.pictureUrl}
+                  borderColor={item.borderColor}
+                  size="md"
+                />
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-white">
+                    {item.code?.trim() || `Review ${index + 1}`}
+                  </p>
+                  <p className="truncate text-xs text-zinc-500">
+                    {item.title?.trim() || 'No title yet'}
+                  </p>
+                </div>
+              </div>
               <div className="flex flex-wrap gap-2">
                 <button
                   type="button"
@@ -388,51 +450,90 @@ export default function TestimonialsPage() {
                 onChange={(description) => updateItem(index, { description })}
                 multiline
               />
-              <Field
-                label="Photo URL (person)"
-                value={item.pictureUrl}
-                onChange={(pictureUrl) => updateItem(index, { pictureUrl })}
-                hint="Avatar on the review card."
-              />
-              <label className="inline-flex cursor-pointer rounded-lg border border-zinc-700 px-3 py-2 text-sm text-zinc-200 hover:border-[#FF7800]">
-                {uploadingKey === `${index}-pictureUrl`
-                  ? 'Uploading…'
-                  : 'Upload photo'}
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  disabled={Boolean(uploadingKey)}
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) uploadImage(index, 'pictureUrl', file);
-                    e.target.value = '';
-                  }}
-                />
-              </label>
 
-              <Field
-                label="Logo URL"
-                value={item.logoUrl}
-                onChange={(logoUrl) => updateItem(index, { logoUrl })}
-                hint="Separate logo shown on the mobile card (not the person photo)."
-              />
-              <label className="inline-flex cursor-pointer rounded-lg border border-zinc-700 px-3 py-2 text-sm text-zinc-200 hover:border-[#FF7800]">
-                {uploadingKey === `${index}-logoUrl`
-                  ? 'Uploading…'
-                  : 'Upload logo'}
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  disabled={Boolean(uploadingKey)}
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) uploadImage(index, 'logoUrl', file);
-                    e.target.value = '';
-                  }}
-                />
-              </label>
+              <div className="rounded-xl border border-zinc-800 bg-zinc-950/50 p-3">
+                <p className="mb-2 text-xs uppercase tracking-wide text-zinc-500">
+                  Person photo
+                </p>
+                <div className="flex flex-wrap items-center gap-4">
+                  <TestimonialAvatar
+                    code={item.code}
+                    pictureUrl={item.pictureUrl}
+                    borderColor={item.borderColor}
+                    size="lg"
+                  />
+                  <div className="min-w-0 flex-1 space-y-2">
+                    <Field
+                      label="Photo URL"
+                      value={item.pictureUrl}
+                      onChange={(pictureUrl) =>
+                        updateItem(index, { pictureUrl })
+                      }
+                      hint="Shown on the review card so you can recognize who was added."
+                    />
+                    <label className="inline-flex cursor-pointer rounded-lg border border-zinc-700 px-3 py-2 text-sm text-zinc-200 hover:border-[#FF7800]">
+                      {uploadingKey === `${index}-pictureUrl`
+                        ? 'Uploading…'
+                        : 'Upload photo'}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        disabled={Boolean(uploadingKey)}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) uploadImage(index, 'pictureUrl', file);
+                          e.target.value = '';
+                        }}
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-zinc-800 bg-zinc-950/50 p-3">
+                <p className="mb-2 text-xs uppercase tracking-wide text-zinc-500">
+                  Logo
+                </p>
+                <div className="flex flex-wrap items-center gap-4">
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-zinc-700 bg-zinc-900">
+                    {item.logoUrl?.trim() ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={item.logoUrl.trim()}
+                        alt={`${item.code || 'Review'} logo`}
+                        className="h-full w-full object-contain p-1"
+                      />
+                    ) : (
+                      <span className="text-[10px] text-zinc-600">No logo</span>
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1 space-y-2">
+                    <Field
+                      label="Logo URL"
+                      value={item.logoUrl}
+                      onChange={(logoUrl) => updateItem(index, { logoUrl })}
+                      hint="Separate brand logo on the mobile card."
+                    />
+                    <label className="inline-flex cursor-pointer rounded-lg border border-zinc-700 px-3 py-2 text-sm text-zinc-200 hover:border-[#FF7800]">
+                      {uploadingKey === `${index}-logoUrl`
+                        ? 'Uploading…'
+                        : 'Upload logo'}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        disabled={Boolean(uploadingKey)}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) uploadImage(index, 'logoUrl', file);
+                          e.target.value = '';
+                        }}
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
 
               <Field
                 label="Border color"
