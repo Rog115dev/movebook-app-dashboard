@@ -100,7 +100,10 @@ export default function ImagesPage() {
       ...section,
       items: section.items.map((item) =>
         item.id === itemId
-          ? { ...item, sports: [...new Set(nextSports.filter(Boolean))] }
+          ? {
+              ...item,
+              sports: Array.from(new Set(nextSports.filter(Boolean))),
+            }
           : item
       ),
     }));

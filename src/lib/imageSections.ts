@@ -57,13 +57,13 @@ function newId(prefix: string) {
 
 function normalizeSports(raw: unknown): string[] {
   if (!Array.isArray(raw)) return [];
-  return [
-    ...new Set(
+  return Array.from(
+    new Set(
       raw
         .map((s) => String(s || '').trim())
         .filter(Boolean)
-    ),
-  ];
+    )
+  );
 }
 
 function normalizePoolItem(item: ImagePoolItem): ImagePoolItem {
