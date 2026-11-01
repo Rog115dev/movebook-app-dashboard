@@ -189,7 +189,7 @@ export default function TestimonialsPage() {
       setMessage('Enter a sport name to add.');
       return;
     }
-    let id = slugifySportName(name);
+    const id = slugifySportName(name);
     if (!id) {
       setMessage('Sport name is invalid.');
       return;

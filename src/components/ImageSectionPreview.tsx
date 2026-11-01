@@ -20,12 +20,14 @@ export function ImageSectionPreview({ section }: Props) {
     );
   }, [section]);
 
+  const urlsKey = useMemo(() => urls.join('|'), [urls]);
+  const sectionKey = section?.key;
   const [index, setIndex] = useState(0);
   const isVideoSection = section ? sectionKind(section.key) === 'video' : false;
 
   useEffect(() => {
     setIndex(0);
-  }, [section?.key, urls.join('|')]);
+  }, [sectionKey, urlsKey]);
 
   useEffect(() => {
     if (isVideoSection || urls.length < 2 || !section) return;
