@@ -1,11 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Allow large hero video uploads (default body limits reject most MP4s).
-  experimental: {
-    serverActions: {
-      bodySizeLimit: '100mb',
-    },
-  },
+  // Bind / public IP access: do not invent absolute redirect hosts.
+  // Keep trailingSlash off so redirects stay simple path locations.
+  trailingSlash: false,
+  poweredByHeader: false,
 };
 
 export default nextConfig;

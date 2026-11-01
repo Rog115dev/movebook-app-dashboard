@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ImageSectionPreview } from '@/components/ImageSectionPreview';
@@ -6,8 +6,6 @@ import { MultiCheckDropdown } from '@/components/MultiCheckDropdown';
 import { SaveBar } from '@/components/SaveBar';
 import { fetchSettings, saveSettings } from '@/lib/api-client';
 import {
-  MAX_HERO_VIDEOS,
-  MAX_IMAGES_PER_SECTION,
   migrateImageSections,
   primaryVideoUrlFromSection,
   removeImageFromSection,
@@ -210,9 +208,9 @@ export default function ImagesPage() {
       <h1 className="text-2xl font-semibold">Images & video</h1>
       <p className="mt-2 text-zinc-400">
         Home hero is a{' '}
-        <span className="text-[#FF7800]">video playlist</span> (up to{' '}
-        {MAX_HERO_VIDEOS}). Selected clips play in a circular cycle — each
-        plays for its full length. Paywall and TRAIN PRO are image pools —
+        <span className="text-[#FF7800]">video playlist</span> with no add
+        limit. Selected clips play in a circular cycle — each plays for its
+        full length. Paywall and TRAIN PRO are image pools (no add limit) —
         set <span className="text-[#FF7800]">Type of sport</span> on each
         image so mobile only shows ones matching the visitor’s selected
         sports (empty = all sports).
@@ -224,8 +222,7 @@ export default function ImagesPage() {
             const kind = sectionKind(section.key);
             const isVideo = kind === 'video';
             const multi = !isVideo && section.selectedIds.length >= 2;
-            const maxItems = isVideo ? MAX_HERO_VIDEOS : MAX_IMAGES_PER_SECTION;
-            const canAdd = section.items.length < maxItems;
+            const canAdd = true;
             return (
               <section
                 key={section.key}
@@ -243,12 +240,12 @@ export default function ImagesPage() {
                   <p className="mt-1 text-xs text-zinc-500">
                     {isVideo
                       ? section.items.length
-                        ? `${section.selectedIds.length} in cycle Â· ${section.items.length}/${MAX_HERO_VIDEOS}`
+                        ? `${section.selectedIds.length} in cycle · ${section.items.length} video${section.items.length === 1 ? '' : 's'}`
                         : 'No videos yet'
-                      : `${section.items.length}/${MAX_IMAGES_PER_SECTION}${
+                      : `${section.items.length} image${section.items.length === 1 ? '' : 's'}${
                           multi
-                            ? ` Â· random ${section.rotateDelaySec}s`
-                            : ' Â· fixed'
+                            ? ` · random ${section.rotateDelaySec}s`
+                            : ' · fixed'
                         }`}
                   </p>
                 </div>
@@ -428,12 +425,8 @@ export default function ImagesPage() {
                     </span>
                     <span className="mt-1 text-[11px] text-zinc-500">
                       {isVideo
-                        ? canAdd
-                          ? `MP4 / WebM / MOV Â· ${MAX_HERO_VIDEOS - section.items.length} slots left`
-                          : 'Maximum 9 videos'
-                        : canAdd
-                          ? `Up to ${MAX_IMAGES_PER_SECTION - section.items.length} more`
-                          : 'Maximum 9 reached'}
+                        ? 'MP4 / WebM / MOV · no limit'
+                        : 'No limit — add for each sport / user targeting'}
                     </span>
                     <input
                       type="file"
@@ -443,7 +436,7 @@ export default function ImagesPage() {
                           : 'image/*'
                       }
                       className="hidden"
-                      disabled={!canAdd || busyKey !== null}
+                      disabled={busyKey !== null}
                       onChange={(e) => {
                         const file = e.target.files?.[0];
                         e.target.value = '';

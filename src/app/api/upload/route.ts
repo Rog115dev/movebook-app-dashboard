@@ -4,8 +4,6 @@ import path from 'path';
 import { getSession } from '@/lib/auth';
 import {
   addImageToSection,
-  MAX_HERO_VIDEOS,
-  MAX_IMAGES_PER_SECTION,
   primaryVideoUrlFromSection,
   replaceImageInSection,
   sectionKind,
@@ -83,19 +81,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Section not found' }, { status: 404 });
   }
 
-  const maxItems =
-    kind === 'video' ? MAX_HERO_VIDEOS : MAX_IMAGES_PER_SECTION;
-  if (
-    mode === 'add' &&
-    sections[index].items.length >= maxItems
-  ) {
-    return NextResponse.json(
-      {
-        error: `Maximum ${maxItems} ${kind === 'video' ? 'videos' : 'images'} per section`,
-      },
-      { status: 400 }
-    );
-  }
+  // No per-section count cap (needed for many sports / user-type variants).
 
   const bytes = Buffer.from(await file.arrayBuffer());
   const ext = extensionForFile(file);

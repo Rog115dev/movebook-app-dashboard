@@ -9,9 +9,13 @@ import type {
 import { ROTATE_DELAYS } from './types';
 import { looksLikeVideoUrl } from './mediaUrl';
 
-export const MAX_IMAGES_PER_SECTION = 9;
+/**
+ * No hard cap — pools need many assets for 5 user types × 10+ sports.
+ * Kept as Infinity so older UI checks (`length < MAX_*`) still allow adds.
+ */
+export const MAX_IMAGES_PER_SECTION = Number.POSITIVE_INFINITY;
 /** Home hero video playlist (circular playback on mobile). */
-export const MAX_HERO_VIDEOS = 9;
+export const MAX_HERO_VIDEOS = Number.POSITIVE_INFINITY;
 
 const SECTION_META: Record<
   ImageSectionKey,
@@ -107,8 +111,8 @@ export function createDefaultImageSections(urls?: {
 }
 
 /**
- * Hero section: video playlist (deduped URLs, up to MAX_HERO_VIDEOS).
- * Image sections: 1–9 images.
+ * Hero section: video playlist (deduped URLs, no count cap).
+ * Image sections: image pools (deduped URLs, no count cap).
  */
 export function normalizeImageSection(
   section: Partial<ImageSectionConfig> | undefined,
@@ -125,13 +129,9 @@ export function normalizeImageSection(
   items = dedupeByUrl(items);
 
   if (meta.kind === 'video') {
-    items = items
-      .filter((i) => looksLikeVideoUrl(i.url))
-      .slice(0, MAX_HERO_VIDEOS);
+    items = items.filter((i) => looksLikeVideoUrl(i.url));
   } else {
-    items = items
-      .filter((i) => !looksLikeVideoUrl(i.url))
-      .slice(0, MAX_IMAGES_PER_SECTION);
+    items = items.filter((i) => !looksLikeVideoUrl(i.url));
   }
 
   if (!items.length && meta.kind !== 'video') {
@@ -278,7 +278,6 @@ export function addHeroVideo(
     selected.add(existing.id);
     return { ...section, selectedIds: Array.from(selected) };
   }
-  if (section.items.length >= MAX_HERO_VIDEOS) return section;
   const id = newId('hero');
   return {
     ...section,
@@ -296,7 +295,6 @@ export function addImageToSection(
     return addHeroVideo(section, url);
   }
   if (section.items.some((i) => i.url === url)) return section;
-  if (section.items.length >= MAX_IMAGES_PER_SECTION) return section;
   const id = newId(section.key);
   const items = [...section.items, { id, url, sports: [] }];
   return {

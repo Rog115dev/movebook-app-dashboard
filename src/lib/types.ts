@@ -257,7 +257,7 @@ export type ImagePoolItem = {
   sports?: string[];
 };
 
-/** Per-screen image pool: 1–9 images, select 1 (fixed) or 2+ (random rotate). */
+/** Per-screen image/video pool (no hard count cap). Select 1 (fixed) or 2+ (random rotate). */
 export type ImageSectionConfig = {
   key: ImageSectionKey;
   label: string;
