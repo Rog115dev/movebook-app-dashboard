@@ -68,6 +68,16 @@ export type CurrencyOption = {
   label: string;
 };
 
+export const UNLOCK_AUDIENCE_OPTIONS = [
+  'athlete',
+  'coaches',
+  'teams',
+  'clubs',
+  'groups',
+] as const;
+
+export type UnlockAudience = (typeof UNLOCK_AUDIENCE_OPTIONS)[number];
+
 export type PlanSettings = {
   id: string;
   name: string;
@@ -85,6 +95,12 @@ export type PlanSettings = {
   badge?: string;
   badgeDenied?: boolean;
   features: PlanFeature[];
+  /**
+   * Which user types see this version card.
+   * Matrix plans use a single audience (Athlete / Coach / Team / Club / Group).
+   * Empty = all (legacy).
+   */
+  audiences?: UnlockAudience[];
 };
 
 /** App pricing config — CMS amounts are USD; mobile converts for display. */
@@ -147,6 +163,8 @@ export type TrainFeature = {
 export type FaqItem = {
   q: string;
   a: string;
+  /** Which user types see this FAQ. Empty = all. */
+  audiences?: UnlockAudience[];
 };
 
 export type TrainProSettings = {
@@ -163,16 +181,6 @@ export type TrainProSettings = {
   guaranteeLine: string;
   secureText: string;
 };
-
-export const UNLOCK_AUDIENCE_OPTIONS = [
-  'athlete',
-  'coaches',
-  'teams',
-  'clubs',
-  'groups',
-] as const;
-
-export type UnlockAudience = (typeof UNLOCK_AUDIENCE_OPTIONS)[number];
 
 export type UnlockFeatureItem = {
   id: string;
@@ -245,6 +253,8 @@ export type TestimonialsSettings = {
 export type ImagePoolItem = {
   id: string;
   url: string;
+  /** Sport catalog ids. Empty = all sports. Used for image pools (not hero video). */
+  sports?: string[];
 };
 
 /** Per-screen image pool: 1–9 images, select 1 (fixed) or 2+ (random rotate). */

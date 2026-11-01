@@ -6,17 +6,18 @@ import { SaveBar } from '@/components/SaveBar';
 import { fetchSettings, saveSettings } from '@/lib/api-client';
 import { DEFAULT_CURRENCIES } from '@/lib/currency';
 import { plansI18nKeys } from '@/lib/contentI18n';
+import { ensurePlanMatrix } from '@/lib/planMatrix';
 import type { PlanSettings } from '@/lib/types';
 
 export default function PlansPage() {
   const [plans, setPlans] = useState<PlanSettings[]>([]);
-  const [selectedPlanId, setSelectedPlanId] = useState('free');
+  const [selectedPlanId, setSelectedPlanId] = useState('free-athlete');
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
 
   async function load() {
     const s = await fetchSettings();
-    const next = s.plans.map((p) => ({
+    const next = ensurePlanMatrix(s.plans).map((p) => ({
       ...p,
       currencyCode: 'USD' as const,
       amount: Number.isFinite(p.amount) ? p.amount : 0,
@@ -51,7 +52,7 @@ export default function PlansPage() {
     setSaving(true);
     setMessage('');
     try {
-      const normalized = plans.map((plan) => ({
+      const normalized = ensurePlanMatrix(plans).map((plan) => ({
         ...plan,
         amount: Number.isFinite(plan.amount) ? plan.amount : 0,
         currencyCode: 'USD',
@@ -82,9 +83,10 @@ export default function PlansPage() {
     <div className="max-w-4xl">
       <h1 className="text-2xl font-semibold">Version details</h1>
       <p className="mt-2 text-zinc-400">
-        Free · Basic · Premium · Pro — same mobile plan cards. Also editable
-        under <span className="text-[#FF7800]">Generals → Paywall</span>. Prices
-        in USD; mobile converts after country selection.
+        Free · Base · Premium · Professional for each user type (Athlete /
+        Coach / Team / Club / Group). Also under{' '}
+        <span className="text-[#FF7800]">Generals → Paywall</span>. Prices in
+        USD; mobile converts after country selection.
       </p>
 
       <div className="mt-6">

@@ -1,16 +1,23 @@
 'use client';
 
+import { useMemo } from 'react';
 import { Field } from '@/components/Field';
 import { formatPlanPrice } from '@/lib/currency';
-import type { PlanSettings } from '@/lib/types';
+import {
+  PLAN_USER_TYPES,
+  PLAN_VERSIONS,
+  audienceLabel,
+  parsePlanMatrixId,
+  planMatrixId,
+  type PlanVersionKey,
+} from '@/lib/planMatrix';
+import type { PlanSettings, UnlockAudience } from '@/lib/types';
 
 const USD = { code: 'USD', symbol: '$', label: 'US Dollar' } as const;
 
 function formatUsd(amount: number) {
   return formatPlanPrice(amount, USD);
 }
-
-const PLAN_ORDER = ['free', 'basic', 'premium', 'pro'] as const;
 
 type Props = {
   plans: PlanSettings[];
@@ -25,18 +32,22 @@ export function PlanEditor({
   onSelect,
   onChange,
 }: Props) {
-  const ordered = PLAN_ORDER.map(
-    (id) => plans.find((p) => p.id === id) || null
-  ).filter(Boolean) as PlanSettings[];
-  const tabs = ordered.length
-    ? ordered
-    : [...plans].sort(
-        (a, b) =>
-          PLAN_ORDER.indexOf(a.id as (typeof PLAN_ORDER)[number]) -
-          PLAN_ORDER.indexOf(b.id as (typeof PLAN_ORDER)[number])
-      );
-  const idx = plans.findIndex((p) => p.id === selectedId);
+  const parsed = parsePlanMatrixId(selectedId);
+  const userType: UnlockAudience = parsed.audience || 'athlete';
+  const version: PlanVersionKey = parsed.version || 'free';
+  const activeId = planMatrixId(version, userType);
+  const idx = plans.findIndex((p) => p.id === activeId);
   const plan = idx >= 0 ? plans[idx] : null;
+
+  function selectUserType(next: UnlockAudience) {
+    onSelect(planMatrixId(version, next));
+  }
+
+  function selectVersion(next: PlanVersionKey) {
+    onSelect(planMatrixId(next, userType));
+  }
+
+  const versionTabs = useMemo(() => PLAN_VERSIONS, []);
 
   if (!plans.length) {
     return <p className="text-sm text-zinc-500">No plans loaded.</p>;
@@ -44,27 +55,59 @@ export function PlanEditor({
 
   return (
     <div>
+      <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
+        Type of user
+      </p>
       <div
         className="flex flex-wrap gap-2 rounded-xl border border-zinc-800 bg-zinc-950/60 p-2"
         role="tablist"
-        aria-label="Plan version"
+        aria-label="Type of user"
       >
-        {tabs.map((p) => {
-          const active = p.id === selectedId;
+        {PLAN_USER_TYPES.map((t) => {
+          const active = t.id === userType;
           return (
             <button
-              key={p.id}
+              key={t.id}
               type="button"
               role="tab"
               aria-selected={active}
-              onClick={() => onSelect(p.id)}
+              onClick={() => selectUserType(t.id)}
               className={`min-w-[4.5rem] flex-1 rounded-lg px-3 py-2.5 text-sm font-semibold transition ${
                 active
                   ? 'bg-[#FF7800] text-black'
                   : 'border border-zinc-700 text-zinc-300 hover:border-[#FF7800]/50 hover:text-white'
               }`}
             >
-              {p.name || p.id}
+              {t.label}
+            </button>
+          );
+        })}
+      </div>
+
+      <p className="mb-2 mt-5 text-xs font-medium uppercase tracking-wide text-zinc-500">
+        Version for {audienceLabel(userType)}
+      </p>
+      <div
+        className="flex flex-wrap gap-2 rounded-xl border border-zinc-800 bg-zinc-950/60 p-2"
+        role="tablist"
+        aria-label="Plan version"
+      >
+        {versionTabs.map((v) => {
+          const active = v.key === version;
+          return (
+            <button
+              key={v.key}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              onClick={() => selectVersion(v.key)}
+              className={`min-w-[4.5rem] flex-1 rounded-lg px-3 py-2.5 text-sm font-semibold transition ${
+                active
+                  ? 'bg-[#FF7800] text-black'
+                  : 'border border-zinc-700 text-zinc-300 hover:border-[#FF7800]/50 hover:text-white'
+              }`}
+            >
+              {v.label}
             </button>
           );
         })}
@@ -72,8 +115,13 @@ export function PlanEditor({
 
       {plan && idx >= 0 ? (
         <div className="mt-4 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-5">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <h3 className="text-lg font-medium text-[#FF7800]">{plan.name}</h3>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <h3 className="text-lg font-medium text-[#FF7800]">
+              {plan.name}{' '}
+              <span className="text-sm font-normal text-zinc-400">
+                · {audienceLabel(userType)}
+              </span>
+            </h3>
             <span className="text-xs text-zinc-500">id: {plan.id}</span>
           </div>
 
@@ -139,6 +187,13 @@ export function PlanEditor({
             </label>
           </div>
 
+          <p className="mt-4 rounded-lg border border-zinc-800 bg-zinc-950/50 px-3 py-2 text-xs text-zinc-400">
+            User type for this card:{' '}
+            <span className="text-[#FF7800]">{audienceLabel(userType)}</span>
+            . Mobile shows these 4 versions only when the visitor selected this
+            role on the first form.
+          </p>
+
           <h4 className="mb-2 mt-5 text-sm font-medium text-zinc-300">
             Features (one per line — matches mobile plan cards)
           </h4>
@@ -157,11 +212,6 @@ export function PlanEditor({
             rows={9}
             className="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-white outline-none ring-[#FF7800] focus:ring-2"
           />
-          <p className="mt-2 text-xs text-zinc-500">
-            Tip: mark a line as highlight in defaults or keep existing highlight
-            flags when editing text in place (e.g. Pro “AI training plan
-            development”).
-          </p>
 
           <div className="mt-4 space-y-2">
             <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
@@ -198,7 +248,11 @@ export function PlanEditor({
             )}
           </div>
         </div>
-      ) : null}
+      ) : (
+        <p className="mt-4 text-sm text-zinc-500">
+          Plan {activeId} not found — save once to expand the 4×5 matrix.
+        </p>
+      )}
     </div>
   );
 }

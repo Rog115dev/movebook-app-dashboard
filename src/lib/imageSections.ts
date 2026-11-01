@@ -51,14 +51,34 @@ function newId(prefix: string) {
     .slice(2, 7)}`;
 }
 
+function normalizeSports(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  return [
+    ...new Set(
+      raw
+        .map((s) => String(s || '').trim())
+        .filter(Boolean)
+    ),
+  ];
+}
+
+function normalizePoolItem(item: ImagePoolItem): ImagePoolItem {
+  return {
+    id: String(item.id || '').trim(),
+    url: String(item.url || '').trim(),
+    sports: normalizeSports(item.sports),
+  };
+}
+
 function dedupeByUrl(items: ImagePoolItem[]): ImagePoolItem[] {
   const seen = new Set<string>();
   const out: ImagePoolItem[] = [];
   for (const item of items) {
-    const url = (item.url || '').trim();
-    if (!url || seen.has(url)) continue;
+    const normalized = normalizePoolItem(item);
+    const url = normalized.url;
+    if (!url || !normalized.id || seen.has(url)) continue;
     seen.add(url);
-    out.push({ ...item, url });
+    out.push(normalized);
   }
   return out;
 }
@@ -73,7 +93,7 @@ export function createDefaultImageSections(urls?: {
     return {
       key,
       label: SECTION_META[key].label,
-      items: [{ id, url }],
+      items: [{ id, url, sports: [] }],
       selectedIds: [id],
       rotateDelaySec: 5,
     };
@@ -97,7 +117,9 @@ export function normalizeImageSection(
   const key = (section?.key || fallback.key) as ImageSectionKey;
   const meta = SECTION_META[key] || SECTION_META[fallback.key];
   let items = Array.isArray(section?.items)
-    ? section!.items.filter((i): i is ImagePoolItem => Boolean(i?.id && i?.url))
+    ? section!.items
+        .filter((i): i is ImagePoolItem => Boolean(i?.id && i?.url))
+        .map(normalizePoolItem)
     : [];
 
   items = dedupeByUrl(items);
@@ -261,7 +283,7 @@ export function addHeroVideo(
   return {
     ...section,
     label: SECTION_META.hero.label,
-    items: [...section.items, { id, url: trimmed }],
+    items: [...section.items, { id, url: trimmed, sports: [] }],
     selectedIds: [...section.selectedIds, id],
   };
 }
@@ -276,7 +298,7 @@ export function addImageToSection(
   if (section.items.some((i) => i.url === url)) return section;
   if (section.items.length >= MAX_IMAGES_PER_SECTION) return section;
   const id = newId(section.key);
-  const items = [...section.items, { id, url }];
+  const items = [...section.items, { id, url, sports: [] }];
   return {
     ...section,
     items,

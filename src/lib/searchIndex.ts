@@ -41,9 +41,33 @@ const SECTION_HITS: SearchHit[] = [
     ],
   },
   {
+    id: 'menu-overview',
+    title: 'Overview',
+    desc: 'Dashboard status and quick search',
+    href: '/dashboard/overview',
+    category: 'Menu',
+    keywords: ['overview', 'dashboard', 'status', 'menu'],
+  },
+  {
+    id: 'menu-colors',
+    title: 'Colors',
+    desc: 'Brand palette used across the mobile app',
+    href: '/dashboard/colors',
+    category: 'Menu',
+    keywords: ['colors', 'palette', 'theme', 'menu'],
+  },
+  {
+    id: 'menu-languages',
+    title: 'Languages',
+    desc: 'Translate strings for all presentation locales',
+    href: '/dashboard/languages',
+    category: 'Menu',
+    keywords: ['languages', 'i18n', 'translate', 'menu'],
+  },
+  {
     id: 'menu-generals',
     title: 'Generals',
-    desc: 'Overview, Colors, Languages, Paywall, and more',
+    desc: 'Home content, Paywall, Discount, TRAIN PRO, Images',
     href: '/dashboard/generals',
     category: 'Menu',
     keywords: ['generals', 'others', 'menu'],
@@ -184,16 +208,16 @@ const SECTION_HITS: SearchHit[] = [
     id: 'overview',
     title: 'Overview',
     desc: 'Dashboard status and config version',
-    href: '/dashboard/generals/overview',
-    category: 'Generals',
+    href: '/dashboard/overview',
+    category: 'Overview',
     keywords: ['overview', 'dashboard', 'status', 'version'],
   },
   {
     id: 'colors',
     title: 'Colors',
     desc: 'Brand orange, backgrounds, borders, accents',
-    href: '/dashboard/generals/colors',
-    category: 'Generals',
+    href: '/dashboard/colors',
+    category: 'Colors',
     keywords: [
       'color',
       'palette',
@@ -229,8 +253,8 @@ const SECTION_HITS: SearchHit[] = [
     id: 'languages',
     title: 'Languages',
     desc: 'Translate strings for 12 locales + Apply Translation',
-    href: '/dashboard/generals/languages',
-    category: 'Generals',
+    href: '/dashboard/languages',
+    category: 'Languages',
     keywords: [
       'language',
       'i18n',
@@ -314,7 +338,7 @@ const COLOR_FIELDS: SearchHit[] = [
   id: `color-${key}`,
   title: key,
   desc: `Color token on Colors page`,
-  href: '/dashboard/generals/colors',
+  href: '/dashboard/colors',
   category: 'Color',
   keywords: [key, 'color', 'palette'],
 }));
@@ -394,7 +418,7 @@ function pageForI18nKey(key: string): { href: string; category: string } {
   }
   const group = groupForKey(key);
   return {
-    href: `/dashboard/generals/languages?group=${encodeURIComponent(group)}&highlight=${encodeURIComponent(key)}`,
+    href: `/dashboard/languages?group=${encodeURIComponent(group)}&highlight=${encodeURIComponent(key)}`,
     category: 'Language key',
   };
 }
@@ -402,7 +426,7 @@ function pageForI18nKey(key: string): { href: string; category: string } {
 const FIELD_HITS: SearchHit[] = Object.entries(ENGLISH_STRINGS).map(
   ([key, value]) => {
     const page = pageForI18nKey(key);
-    const langHref = `/dashboard/generals/languages?group=${encodeURIComponent(
+    const langHref = `/dashboard/languages?group=${encodeURIComponent(
       groupForKey(key)
     )}&highlight=${encodeURIComponent(key)}`;
     return {
@@ -445,7 +469,7 @@ const ALIAS_HITS: SearchHit[] = [
     id: 'alias-apply-translation',
     title: 'Apply Translation',
     desc: 'Fill translations from browser translator / seeds',
-    href: '/dashboard/generals/languages',
+    href: '/dashboard/languages',
     category: 'Alias',
     keywords: ['apply translation', 'translate', 'auto translate', 'browser'],
   },

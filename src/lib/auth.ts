@@ -8,7 +8,7 @@ function secret() {
 }
 
 function expectedUser() {
-  return process.env.ADMIN_USERNAME || 'admin';
+  return process.env.ADMIN_USERNAME || 'superadmin';
 }
 
 function expectedPass() {

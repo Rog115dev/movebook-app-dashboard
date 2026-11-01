@@ -15,6 +15,7 @@ import type {
 } from './types';
 import { ROTATE_DELAYS, UNLOCK_AUDIENCE_OPTIONS } from './types';
 import { DEFAULT_CURRENCIES, normalizePlanPricing } from './currency';
+import { ensurePlanMatrix } from './planMatrix';
 import { normalizeSports } from './sports';
 import { looksLikeVideoUrl } from './mediaUrl';
 
@@ -119,8 +120,9 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
         settings.pricing.currencies.length > 0
           ? settings.pricing.currencies
           : DEFAULT_CURRENCIES;
-      return (settings.plans?.length ? settings.plans : defaults.plans).map(
-        (plan) => normalizePlanPricing(plan, currencies)
+      const source = settings.plans?.length ? settings.plans : defaults.plans;
+      return ensurePlanMatrix(source).map((plan) =>
+        normalizePlanPricing(plan, currencies)
       );
     })(),
     paywall: {
@@ -165,7 +167,17 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
       faqTitle:
         settings.trainPro?.faqTitle?.trim() || defaults.trainPro.faqTitle,
       faqs: Array.isArray(settings.trainPro?.faqs)
-        ? settings.trainPro.faqs
+        ? settings.trainPro.faqs.map((f) => ({
+            q: String(f?.q || ''),
+            a: String(f?.a || ''),
+            audiences: Array.isArray(f?.audiences)
+              ? f.audiences
+                  .map((a) => String(a).trim().toLowerCase())
+                  .filter((a): a is UnlockAudience =>
+                    (UNLOCK_AUDIENCE_OPTIONS as readonly string[]).includes(a)
+                  )
+              : [],
+          }))
         : defaults.trainPro.faqs,
       bannerImageUrl:
         primary.bannerImageUrl || defaults.trainPro.bannerImageUrl,
@@ -352,6 +364,7 @@ export function buildLocalizedConfig(
         badge: plan.badge
           ? s(`plans.${id}.badge`, plan.badge)
           : plan.badge,
+        audiences: Array.isArray(plan.audiences) ? plan.audiences : [],
         features: (plan.features || []).map((f, i) => ({
           ...f,
           text: s(`plans.${id}.feature${i + 1}`, f.text),
@@ -441,6 +454,7 @@ export function buildLocalizedConfig(
       faqs: settings.trainPro.faqs.map((f, i) => ({
         q: s(`train.faq${i + 1}Q`, f.q),
         a: s(`train.faq${i + 1}A`, f.a),
+        audiences: Array.isArray(f.audiences) ? f.audiences : [],
       })),
     },
     featuresPage: {

@@ -1,7 +1,8 @@
-﻿'use client';
+'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ImageSectionPreview } from '@/components/ImageSectionPreview';
+import { MultiCheckDropdown } from '@/components/MultiCheckDropdown';
 import { SaveBar } from '@/components/SaveBar';
 import { fetchSettings, saveSettings } from '@/lib/api-client';
 import {
@@ -17,16 +18,23 @@ import type {
   ImageSectionConfig,
   ImageSectionKey,
   RotateDelaySec,
+  SportCatalogItem,
 } from '@/lib/types';
 import { ROTATE_DELAYS } from '@/lib/types';
 
 export default function ImagesPage() {
   const [sections, setSections] = useState<ImageSectionConfig[]>([]);
+  const [sports, setSports] = useState<SportCatalogItem[]>([]);
   const [previewKey, setPreviewKey] = useState<ImageSectionKey>('hero');
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [busyKey, setBusyKey] = useState<string | null>(null);
   const uploadLock = useRef(false);
+
+  const sportOptions = useMemo(
+    () => sports.map((sp) => ({ value: sp.id, label: sp.name })),
+    [sports]
+  );
 
   async function load() {
     const s = await fetchSettings();
@@ -35,6 +43,7 @@ export default function ImagesPage() {
         ? s.imageSections
         : migrateImageSections(s);
     setSections(next);
+    setSports(Array.isArray(s.sports) ? s.sports.map((sp) => ({ ...sp })) : []);
     setPreviewKey(next[0]?.key || 'hero');
   }
 
@@ -82,6 +91,21 @@ export default function ImagesPage() {
     rotateDelaySec: RotateDelaySec
   ) {
     updateSection(sectionKey, (section) => ({ ...section, rotateDelaySec }));
+  }
+
+  function setItemSports(
+    sectionKey: ImageSectionConfig['key'],
+    itemId: string,
+    nextSports: string[]
+  ) {
+    updateSection(sectionKey, (section) => ({
+      ...section,
+      items: section.items.map((item) =>
+        item.id === itemId
+          ? { ...item, sports: [...new Set(nextSports.filter(Boolean))] }
+          : item
+      ),
+    }));
   }
 
   function removeItem(sectionKey: ImageSectionConfig['key'], itemId: string) {
@@ -188,7 +212,10 @@ export default function ImagesPage() {
         Home hero is a{' '}
         <span className="text-[#FF7800]">video playlist</span> (up to{' '}
         {MAX_HERO_VIDEOS}). Selected clips play in a circular cycle — each
-        plays for its full length. Paywall and TRAIN PRO stay image pools.
+        plays for its full length. Paywall and TRAIN PRO are image pools —
+        set <span className="text-[#FF7800]">Type of sport</span> on each
+        image so mobile only shows ones matching the visitor’s selected
+        sports (empty = all sports).
       </p>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_280px]">
@@ -311,6 +338,26 @@ export default function ImagesPage() {
                               ? 'Include in cycle'
                               : 'Use in presentation'}
                           </label>
+                          {!isVideo ? (
+                            <div
+                              className="relative z-10"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <MultiCheckDropdown
+                                label="Type of sport"
+                                options={sportOptions}
+                                values={item.sports || []}
+                                onChange={(next) =>
+                                  setItemSports(section.key, item.id, next)
+                                }
+                                hint={
+                                  sportOptions.length
+                                    ? 'Empty = all sports'
+                                    : 'Add sports under Feature → Testimonials first'
+                                }
+                              />
+                            </div>
+                          ) : null}
                           <div className="flex flex-wrap gap-2">
                             <button
                               type="button"

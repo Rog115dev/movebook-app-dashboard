@@ -7,6 +7,7 @@ import { SaveBar } from '@/components/SaveBar';
 import { fetchSettings, saveSettings } from '@/lib/api-client';
 import { plansI18nKeys } from '@/lib/contentI18n';
 import { DEFAULT_CURRENCIES } from '@/lib/currency';
+import { ensurePlanMatrix } from '@/lib/planMatrix';
 import type { PaywallSettings, PaywallTier, PlanSettings } from '@/lib/types';
 
 /** Extract a numeric amount from legacy strings like "0.50 USD", "$28.00". */
@@ -92,7 +93,7 @@ function normalizeTiers(tiers: PaywallTier[]): PaywallTier[] {
 }
 
 function normalizePlans(plans: PlanSettings[]): PlanSettings[] {
-  return plans.map((plan) => ({
+  return ensurePlanMatrix(plans).map((plan) => ({
     ...plan,
     amount: Number.isFinite(plan.amount) ? plan.amount : 0,
     currencyCode: 'USD',
@@ -103,7 +104,7 @@ function normalizePlans(plans: PlanSettings[]): PlanSettings[] {
 export default function PaywallPage() {
   const [paywall, setPaywall] = useState<PaywallSettings | null>(null);
   const [plans, setPlans] = useState<PlanSettings[]>([]);
-  const [selectedPlanId, setSelectedPlanId] = useState('free');
+  const [selectedPlanId, setSelectedPlanId] = useState('free-athlete');
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -192,7 +193,9 @@ export default function PaywallPage() {
         })),
       });
       setPlans(cleanedPlans);
-      setMessage('Paywall + Free/Basic/Premium/Pro plans saved (USD).');
+      setMessage(
+        'Paywall + Free/Base/Premium/Professional × user types saved (USD).'
+      );
     } catch {
       setMessage('Save failed.');
     } finally {
@@ -206,16 +209,21 @@ export default function PaywallPage() {
     <div className="max-w-3xl">
       <h1 className="text-2xl font-semibold">Paywall</h1>
       <p className="mt-2 text-zinc-400">
-        Edit the mobile plan cards (
-        <span className="text-[#FF7800]">Free · Basic · Premium · Pro</span>
-        ) and subscription duration tiers. Prices are USD; mobile converts after
-        country selection.
+        Edit mobile version cards:{' '}
+        <span className="text-[#FF7800]">
+          Free · Base · Premium · Professional
+        </span>{' '}
+        for each user type (
+        <span className="text-[#FF7800]">
+          Athlete · Coach · Team · Club · Group
+        </span>
+        ). Prices are USD; mobile converts after country selection.
       </p>
 
       <h2 className="mt-10 text-xl font-semibold">Version plans</h2>
       <p className="mt-1 text-sm text-zinc-500">
-        Same cards as “Choose the perfect plan for you” on mobile. Select a
-        plan to edit name, price, features, badge, and highlights.
+        Pick the type of user, then the version. Mobile shows only the 4
+        versions that match the role chosen on the first form.
       </p>
       <div className="mt-4">
         <PlanEditor

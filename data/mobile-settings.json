@@ -1,6 +1,6 @@
 {
-  "version": 7,
-  "updatedAt": "2026-10-29T20:25:20.511Z",
+  "version": 10,
+  "updatedAt": "2026-11-01T19:25:53.377Z",
   "defaultLocale": "en",
   "locales": [
     "en",
@@ -1418,7 +1418,7 @@
     ]
   },
   "pricing": {
-    "baseCurrency": "EUR",
+    "baseCurrency": "USD",
     "currencies": [
       {
         "code": "EUR",
@@ -1476,7 +1476,7 @@
     {
       "id": "free",
       "name": "Free",
-      "price": "€ 0",
+      "price": "$ 0",
       "subtitle": "Use version free for 1 month",
       "cta": "Choose Free",
       "features": [
@@ -1510,12 +1510,12 @@
         }
       ],
       "amount": 0,
-      "currencyCode": "EUR"
+      "currencyCode": "USD"
     },
     {
       "id": "basic",
       "name": "Basic",
-      "price": "€ 36",
+      "price": "$ 36",
       "subtitle": "Annual subscription",
       "cta": "Choose Basic",
       "features": [
@@ -1549,12 +1549,12 @@
         }
       ],
       "amount": 36,
-      "currencyCode": "EUR"
+      "currencyCode": "USD"
     },
     {
       "id": "premium",
       "name": "Premium",
-      "price": "€ 73",
+      "price": "$ 73",
       "subtitle": "Annual subscription",
       "cta": "Choose Premium",
       "features": [
@@ -1592,12 +1592,12 @@
         }
       ],
       "amount": 73,
-      "currencyCode": "EUR"
+      "currencyCode": "USD"
     },
     {
       "id": "pro",
       "name": "Pro",
-      "price": "€ 109",
+      "price": "$ 109",
       "subtitle": "Annual subscription",
       "cta": "Choose Pro",
       "badge": "Personal avatar",
@@ -1638,7 +1638,7 @@
         }
       ],
       "amount": 109,
-      "currencyCode": "EUR"
+      "currencyCode": "USD"
     }
   ],
   "paywall": {
@@ -1652,19 +1652,23 @@
     "features": [
       {
         "icon": "clipboard-outline",
-        "label": "Customized plans"
+        "label": "Customized plans",
+        "disabled": false
       },
       {
         "icon": "headset-outline",
-        "label": "24/7 AI trainer"
+        "label": "24/7 AI trainer",
+        "disabled": false
       },
       {
         "icon": "stats-chart-outline",
-        "label": "Progress tracking"
+        "label": "Progress tracking",
+        "disabled": false
       },
       {
         "icon": "barbell-outline",
-        "label": "Unlimited workouts"
+        "label": "Unlimited workouts",
+        "disabled": false
       }
     ],
     "tiers": [
@@ -1753,19 +1757,23 @@
     "faqs": [
       {
         "q": "How does personalized training work?",
-        "a": "FitAI builds plans from your goals, level, and available equipment, then adapts as you complete sessions."
+        "a": "FitAI builds plans from your goals, level, and available equipment, then adapts as you complete sessions.",
+        "audiences": []
       },
       {
         "q": "Can I customize my program?",
-        "a": "Yes. Swap exercises, adjust volume, and save your own cycles while keeping coach-ready structure."
+        "a": "Yes. Swap exercises, adjust volume, and save your own cycles while keeping coach-ready structure.",
+        "audiences": []
       },
       {
         "q": "Can I track nutrition?",
-        "a": "Premium and Pro unlock meal plans, diet analysis, and body metrics alongside workout tracking."
+        "a": "Premium and Pro unlock meal plans, diet analysis, and body metrics alongside workout tracking.",
+        "audiences": []
       },
       {
         "q": "What's included in the trial?",
-        "a": "Start with the Free month: aerobic, weights, circuit planning, shared downloads, and annual plan storage."
+        "a": "Start with the Free month: aerobic, weights, circuit planning, shared downloads, and annual plan storage.",
+        "audiences": []
       }
     ],
     "guaranteeBest": "Best",
@@ -1789,7 +1797,8 @@
           "teams",
           "clubs",
           "groups"
-        ]
+        ],
+        "disabled": false
       },
       {
         "id": "videos",
@@ -1802,7 +1811,8 @@
           "teams",
           "clubs",
           "groups"
-        ]
+        ],
+        "disabled": false
       },
       {
         "id": "coach",
@@ -1815,7 +1825,8 @@
           "teams",
           "clubs",
           "groups"
-        ]
+        ],
+        "disabled": false
       },
       {
         "id": "progress",
@@ -1828,7 +1839,8 @@
           "teams",
           "clubs",
           "groups"
-        ]
+        ],
+        "disabled": false
       },
       {
         "id": "nutrition",
@@ -1841,7 +1853,8 @@
           "teams",
           "clubs",
           "groups"
-        ]
+        ],
+        "disabled": false
       }
     ]
   },
@@ -2244,15 +2257,18 @@
       "items": [
         {
           "id": "paywall-1",
-          "url": "/uploads/paywall-athletes.jpg"
+          "url": "/uploads/paywall-athletes.jpg",
+          "sports": []
         },
         {
           "id": "paywall-2",
-          "url": "/uploads/paywall-sample-2.jpg"
+          "url": "/uploads/paywall-sample-2.jpg",
+          "sports": []
         },
         {
           "id": "paywall-3",
-          "url": "/uploads/paywall-sample-3.jpg"
+          "url": "/uploads/paywall-sample-3.jpg",
+          "sports": []
         }
       ],
       "selectedIds": [
@@ -2267,15 +2283,18 @@
       "items": [
         {
           "id": "trainPro-1",
-          "url": "/uploads/train-pro.jpg"
+          "url": "/uploads/train-pro.jpg",
+          "sports": []
         },
         {
           "id": "trainPro-2",
-          "url": "/uploads/train-sample-2.jpg"
+          "url": "/uploads/train-sample-2.jpg",
+          "sports": []
         },
         {
           "id": "trainPro-3",
-          "url": "/uploads/train-sample-3.jpg"
+          "url": "/uploads/train-sample-3.jpg",
+          "sports": []
         }
       ],
       "selectedIds": [

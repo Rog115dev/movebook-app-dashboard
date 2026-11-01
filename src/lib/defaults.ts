@@ -6,6 +6,7 @@ import {
   syncLegacyImages,
 } from './imageSections';
 import { DEFAULT_CURRENCIES } from './currency';
+import { createDefaultPlanMatrix } from './planMatrix';
 import { createDefaultSports } from './sports';
 
 export function createDefaultSettings(): MobileAppSettings {
@@ -79,88 +80,7 @@ export function createDefaultSettings(): MobileAppSettings {
       baseCurrency: 'USD',
       currencies: [...DEFAULT_CURRENCIES],
     },
-    plans: [
-      {
-        id: 'free',
-        name: 'Free',
-        price: '$ 0',
-        amount: 0,
-        currencyCode: 'USD',
-        subtitle: 'Use version free for 1 month',
-        cta: 'Choose Free',
-        features: [
-          { text: 'Develop aerobic workout plan', included: true },
-          { text: 'Develop weight training plan', included: true },
-          { text: 'Develop circuit training plan', included: true },
-          { text: 'Develop weekly weight training plan', included: true },
-          { text: 'Download user-shared workout plans', included: true },
-          { text: 'Store workouts in the Annual Work Plan', included: true },
-          { text: 'Store completed work', included: true },
-        ],
-      },
-      {
-        id: 'basic',
-        name: 'Basic',
-        price: '$ 36',
-        amount: 36,
-        currencyCode: 'USD',
-        subtitle: 'Annual subscription',
-        cta: 'Choose Basic',
-        features: [
-          { text: 'All the features of the version free +', included: true },
-          { text: '500+ exercises with videos', included: true },
-          { text: 'Version for male and female', included: true },
-          { text: 'View targeted muscle areas', included: true },
-          { text: 'Completed workouts compared with planned', included: true },
-          { text: 'Access to library of workouts', included: true },
-          { text: 'Create your own preparatory cycles', included: true },
-        ],
-      },
-      {
-        id: 'premium',
-        name: 'Premium',
-        price: '$ 73',
-        amount: 73,
-        currencyCode: 'USD',
-        subtitle: 'Annual subscription',
-        cta: 'Choose Premium',
-        features: [
-          { text: 'All the features of the version Basic +', included: true },
-          { text: 'Statistics on workouts planned', included: true },
-          { text: 'Statistics on workouts completed', included: true },
-          { text: 'Full editor new exercises', included: true },
-          { text: 'Training assistant', included: true },
-          { text: 'Analyze your diet', included: true },
-          { text: 'Create meal plans', included: true },
-          { text: 'Body analysis', included: true },
-        ],
-      },
-      {
-        id: 'pro',
-        name: 'Pro',
-        price: '$ 109',
-        amount: 109,
-        currencyCode: 'USD',
-        subtitle: 'Annual subscription',
-        cta: 'Choose Pro',
-        badge: 'Personal avatar',
-        badgeDenied: true,
-        features: [
-          { text: 'All the features of the version Premium +', included: true },
-          { text: 'Gps workout map tracking', included: true },
-          { text: 'Heart rate tracking', included: true },
-          { text: 'Advanced statistical analysis', included: true },
-          { text: 'Actions tracking', included: true },
-          { text: 'Intelligent assistant', included: true },
-          { text: 'Self-learning', included: true },
-          {
-            text: 'AI training plan development',
-            included: true,
-            highlight: true,
-          },
-        ],
-      },
-    ],
+    plans: createDefaultPlanMatrix(),
     paywall: {
       brandName: 'FitAI Coach',
       brandSub: 'Personalized AI Workout Plans',
@@ -270,18 +190,22 @@ export function createDefaultSettings(): MobileAppSettings {
         {
           q: 'How does personalized training work?',
           a: 'FitAI builds plans from your goals, level, and available equipment, then adapts as you complete sessions.',
+          audiences: [],
         },
         {
           q: 'Can I customize my program?',
           a: 'Yes. Swap exercises, adjust volume, and save your own cycles while keeping coach-ready structure.',
+          audiences: [],
         },
         {
           q: 'Can I track nutrition?',
           a: 'Premium and Pro unlock meal plans, diet analysis, and body metrics alongside workout tracking.',
+          audiences: [],
         },
         {
           q: "What's included in the trial?",
           a: 'Start with the Free month: aerobic, weights, circuit planning, shared downloads, and annual plan storage.',
+          audiences: [],
         },
       ],
       guaranteeBest: 'Best',

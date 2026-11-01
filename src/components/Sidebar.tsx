@@ -7,6 +7,9 @@ const MAIN_MENUS = [
   { href: '/dashboard/home', label: 'Home' },
   { href: '/dashboard/feature', label: 'Feature' },
   { href: '/dashboard/features-titles', label: 'Features titles' },
+  { href: '/dashboard/overview', label: 'Overview' },
+  { href: '/dashboard/colors', label: 'Colors' },
+  { href: '/dashboard/languages', label: 'Languages' },
   { href: '/dashboard/generals', label: 'Generals' },
 ] as const;
 

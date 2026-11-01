@@ -1,10 +1,30 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { Field } from '@/components/Field';
+import { MultiCheckDropdown } from '@/components/MultiCheckDropdown';
 import { SaveBar } from '@/components/SaveBar';
 import { fetchSettings, saveSettings } from '@/lib/api-client';
-import type { FaqItem, TrainProSettings } from '@/lib/types';
+import type {
+  FaqItem,
+  TrainProSettings,
+  UnlockAudience,
+} from '@/lib/types';
+import { UNLOCK_AUDIENCE_OPTIONS } from '@/lib/types';
+
+const AUDIENCE_OPTIONS = UNLOCK_AUDIENCE_OPTIONS.map((id) => ({
+  value: id,
+  label:
+    id === 'athlete'
+      ? 'Athlete'
+      : id === 'coaches'
+        ? 'Coach'
+        : id === 'teams'
+          ? 'Team'
+          : id === 'clubs'
+            ? 'Club'
+            : 'Group',
+}));
 
 function faqI18nKeys(faqTitle: string, faqs: FaqItem[]) {
   const en: Record<string, string> = {
@@ -15,6 +35,15 @@ function faqI18nKeys(faqTitle: string, faqs: FaqItem[]) {
     en[`train.faq${index + 1}A`] = item.a;
   });
   return en;
+}
+
+function normalizeAudiences(raw: unknown): UnlockAudience[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((a) => String(a).trim().toLowerCase())
+    .filter((a): a is UnlockAudience =>
+      (UNLOCK_AUDIENCE_OPTIONS as readonly string[]).includes(a)
+    );
 }
 
 export default function FaqPage() {
@@ -28,7 +57,15 @@ export default function FaqPage() {
     const s = await fetchSettings();
     setTrainPro(s.trainPro);
     setFaqTitle(s.trainPro.faqTitle || 'FAQ');
-    setFaqs(s.trainPro.faqs?.length ? s.trainPro.faqs.map((f) => ({ ...f })) : []);
+    setFaqs(
+      s.trainPro.faqs?.length
+        ? s.trainPro.faqs.map((f) => ({
+            q: f.q || '',
+            a: f.a || '',
+            audiences: normalizeAudiences(f.audiences),
+          }))
+        : []
+    );
   }
 
   useEffect(() => {
@@ -44,7 +81,7 @@ export default function FaqPage() {
   }
 
   function addFaq() {
-    setFaqs((prev) => [...prev, { q: '', a: '' }]);
+    setFaqs((prev) => [...prev, { q: '', a: '', audiences: [] }]);
   }
 
   function removeFaq(index: number) {
@@ -65,7 +102,11 @@ export default function FaqPage() {
   async function onSave() {
     if (!trainPro) return;
     const cleaned = faqs
-      .map((f) => ({ q: f.q.trim(), a: f.a.trim() }))
+      .map((f) => ({
+        q: f.q.trim(),
+        a: f.a.trim(),
+        audiences: normalizeAudiences(f.audiences),
+      }))
       .filter((f) => f.q || f.a);
 
     setSaving(true);
@@ -98,8 +139,11 @@ export default function FaqPage() {
     <div className="max-w-3xl">
       <h1 className="text-2xl font-semibold">FAQ</h1>
       <p className="mt-2 text-zinc-400">
-        Manage questions shown under TRAIN PRO. Translate other languages under{' '}
-        <span className="text-[#FF7800]">Generals / Languages</span>.
+        Manage questions under TRAIN PRO. Set{' '}
+        <span className="text-[#FF7800]">Type of user</span> so mobile only
+        shows FAQs that match the role chosen on the first form. Empty =
+        visible to everyone. Translate other languages under{' '}
+        <span className="text-[#FF7800]">Languages</span>.
       </p>
 
       <div className="mt-6">
@@ -111,6 +155,10 @@ export default function FaqPage() {
           <div
             key={`faq-${index}`}
             className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4"
+            style={{
+              backgroundColor:
+                index % 2 === 0 ? 'rgb(55, 56, 68)' : 'rgb(27, 28, 34)',
+            }}
           >
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
               <p className="text-sm font-medium text-zinc-200">
@@ -153,6 +201,19 @@ export default function FaqPage() {
                 value={item.a}
                 multiline
                 onChange={(v) => updateFaq(index, { a: v })}
+              />
+            </div>
+            <div className="mt-3">
+              <MultiCheckDropdown
+                label="Type of user"
+                options={AUDIENCE_OPTIONS}
+                values={item.audiences || []}
+                onChange={(audiences) =>
+                  updateFaq(index, {
+                    audiences: audiences as UnlockAudience[],
+                  })
+                }
+                hint="Empty = all user types. Mobile shows this FAQ only when the visitor’s selected role matches."
               />
             </div>
           </div>
