@@ -318,9 +318,9 @@ export default function HomePageEditor() {
                 key={videoUrl}
                 src={videoUrl}
                 controls
-                muted
                 playsInline
                 preload="metadata"
+                autoPlay
                 className="max-h-56 w-full object-contain bg-black"
                 onLoadedData={() => setPreviewError(false)}
                 onError={() => setPreviewError(true)}

@@ -71,10 +71,10 @@ export function ImageSectionPreview({ section }: Props) {
                   key={active}
                   src={active}
                   className="h-full w-full object-cover"
-                  muted
                   autoPlay
                   loop
                   playsInline
+                  controls
                 />
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element

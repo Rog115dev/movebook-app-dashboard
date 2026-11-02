@@ -1,6 +1,6 @@
 {
-  "version": 10,
-  "updatedAt": "2026-11-01T19:25:53.377Z",
+  "version": 12,
+  "updatedAt": "2026-11-02T20:55:38.694Z",
   "defaultLocale": "en",
   "locales": [
     "en",
@@ -1374,8 +1374,8 @@
     "loginLink": "Log in",
     "confidenceText": "We're confident that our premium experience will exceed your expectations, providing you with unique value and satisfaction.\n\nEnjoy the freedom to explore everything we offer, because your satisfaction is, and always will be, our top priority.",
     "heroImageUrl": "/uploads/hero-break-limits.jpg",
-    "heroVideoUrl": "",
-    "heroVideoChosen": false,
+    "heroVideoUrl": "/uploads/hero-new-1793652929919.mp4",
+    "heroVideoChosen": true,
     "heroVideoSamples": [
       {
         "id": "sample-1",
@@ -1474,11 +1474,13 @@
   },
   "plans": [
     {
-      "id": "free",
       "name": "Free",
       "price": "$ 0",
+      "amount": 0,
+      "currencyCode": "USD",
       "subtitle": "Use version free for 1 month",
       "cta": "Choose Free",
+      "id": "free-athlete",
       "features": [
         {
           "text": "Develop aerobic workout plan",
@@ -1509,15 +1511,18 @@
           "included": true
         }
       ],
-      "amount": 0,
-      "currencyCode": "USD"
+      "audiences": [
+        "athlete"
+      ]
     },
     {
-      "id": "basic",
       "name": "Basic",
       "price": "$ 36",
+      "amount": 36,
+      "currencyCode": "USD",
       "subtitle": "Annual subscription",
       "cta": "Choose Basic",
+      "id": "basic-athlete",
       "features": [
         {
           "text": "All the features of the version free +",
@@ -1548,15 +1553,18 @@
           "included": true
         }
       ],
-      "amount": 36,
-      "currencyCode": "USD"
+      "audiences": [
+        "athlete"
+      ]
     },
     {
-      "id": "premium",
       "name": "Premium",
       "price": "$ 73",
+      "amount": 73,
+      "currencyCode": "USD",
       "subtitle": "Annual subscription",
       "cta": "Choose Premium",
+      "id": "premium-athlete",
       "features": [
         {
           "text": "All the features of the version Basic +",
@@ -1591,17 +1599,20 @@
           "included": true
         }
       ],
-      "amount": 73,
-      "currencyCode": "USD"
+      "audiences": [
+        "athlete"
+      ]
     },
     {
-      "id": "pro",
       "name": "Pro",
       "price": "$ 109",
+      "amount": 109,
+      "currencyCode": "USD",
       "subtitle": "Annual subscription",
       "cta": "Choose Pro",
       "badge": "Personal avatar",
       "badgeDenied": true,
+      "id": "pro-athlete",
       "features": [
         {
           "text": "All the features of the version Premium +",
@@ -1637,8 +1648,725 @@
           "highlight": true
         }
       ],
+      "audiences": [
+        "athlete"
+      ]
+    },
+    {
+      "name": "Free",
+      "price": "$ 0",
+      "amount": 0,
+      "currencyCode": "USD",
+      "subtitle": "Use version free for 1 month",
+      "cta": "Choose Free",
+      "id": "free-coaches",
+      "features": [
+        {
+          "text": "Develop aerobic workout plan",
+          "included": true
+        },
+        {
+          "text": "Develop weight training plan",
+          "included": true
+        },
+        {
+          "text": "Develop circuit training plan",
+          "included": true
+        },
+        {
+          "text": "Develop weekly weight training plan",
+          "included": true
+        },
+        {
+          "text": "Download user-shared workout plans",
+          "included": true
+        },
+        {
+          "text": "Store workouts in the Annual Work Plan",
+          "included": true
+        },
+        {
+          "text": "Store completed work",
+          "included": true
+        }
+      ],
+      "audiences": [
+        "coaches"
+      ]
+    },
+    {
+      "name": "Basic",
+      "price": "$ 36",
+      "amount": 36,
+      "currencyCode": "USD",
+      "subtitle": "Annual subscription",
+      "cta": "Choose Basic",
+      "id": "basic-coaches",
+      "features": [
+        {
+          "text": "All the features of the version free +",
+          "included": true
+        },
+        {
+          "text": "500+ exercises with videos",
+          "included": true
+        },
+        {
+          "text": "Version for male and female",
+          "included": true
+        },
+        {
+          "text": "View targeted muscle areas",
+          "included": true
+        },
+        {
+          "text": "Completed workouts compared with planned",
+          "included": true
+        },
+        {
+          "text": "Access to library of workouts",
+          "included": true
+        },
+        {
+          "text": "Create your own preparatory cycles",
+          "included": true
+        }
+      ],
+      "audiences": [
+        "coaches"
+      ]
+    },
+    {
+      "name": "Premium",
+      "price": "$ 73",
+      "amount": 73,
+      "currencyCode": "USD",
+      "subtitle": "Annual subscription",
+      "cta": "Choose Premium",
+      "id": "premium-coaches",
+      "features": [
+        {
+          "text": "All the features of the version Basic +",
+          "included": true
+        },
+        {
+          "text": "Statistics on workouts planned",
+          "included": true
+        },
+        {
+          "text": "Statistics on workouts completed",
+          "included": true
+        },
+        {
+          "text": "Full editor new exercises",
+          "included": true
+        },
+        {
+          "text": "Training assistant",
+          "included": true
+        },
+        {
+          "text": "Analyze your diet",
+          "included": true
+        },
+        {
+          "text": "Create meal plans",
+          "included": true
+        },
+        {
+          "text": "Body analysis",
+          "included": true
+        }
+      ],
+      "audiences": [
+        "coaches"
+      ]
+    },
+    {
+      "name": "Pro",
+      "price": "$ 109",
       "amount": 109,
-      "currencyCode": "USD"
+      "currencyCode": "USD",
+      "subtitle": "Annual subscription",
+      "cta": "Choose Pro",
+      "badge": "Personal avatar",
+      "badgeDenied": true,
+      "id": "pro-coaches",
+      "features": [
+        {
+          "text": "All the features of the version Premium +",
+          "included": true
+        },
+        {
+          "text": "Gps workout map tracking",
+          "included": true
+        },
+        {
+          "text": "Heart rate tracking",
+          "included": true
+        },
+        {
+          "text": "Advanced statistical analysis",
+          "included": true
+        },
+        {
+          "text": "Actions tracking",
+          "included": true
+        },
+        {
+          "text": "Intelligent assistant",
+          "included": true
+        },
+        {
+          "text": "Self-learning",
+          "included": true
+        },
+        {
+          "text": "AI training plan development",
+          "included": true,
+          "highlight": true
+        }
+      ],
+      "audiences": [
+        "coaches"
+      ]
+    },
+    {
+      "name": "Free",
+      "price": "$ 0",
+      "amount": 0,
+      "currencyCode": "USD",
+      "subtitle": "Use version free for 1 month",
+      "cta": "Choose Free",
+      "id": "free-teams",
+      "features": [
+        {
+          "text": "Develop aerobic workout plan",
+          "included": true
+        },
+        {
+          "text": "Develop weight training plan",
+          "included": true
+        },
+        {
+          "text": "Develop circuit training plan",
+          "included": true
+        },
+        {
+          "text": "Develop weekly weight training plan",
+          "included": true
+        },
+        {
+          "text": "Download user-shared workout plans",
+          "included": true
+        },
+        {
+          "text": "Store workouts in the Annual Work Plan",
+          "included": true
+        },
+        {
+          "text": "Store completed work",
+          "included": true
+        }
+      ],
+      "audiences": [
+        "teams"
+      ]
+    },
+    {
+      "name": "Basic",
+      "price": "$ 36",
+      "amount": 36,
+      "currencyCode": "USD",
+      "subtitle": "Annual subscription",
+      "cta": "Choose Basic",
+      "id": "basic-teams",
+      "features": [
+        {
+          "text": "All the features of the version free +",
+          "included": true
+        },
+        {
+          "text": "500+ exercises with videos",
+          "included": true
+        },
+        {
+          "text": "Version for male and female",
+          "included": true
+        },
+        {
+          "text": "View targeted muscle areas",
+          "included": true
+        },
+        {
+          "text": "Completed workouts compared with planned",
+          "included": true
+        },
+        {
+          "text": "Access to library of workouts",
+          "included": true
+        },
+        {
+          "text": "Create your own preparatory cycles",
+          "included": true
+        }
+      ],
+      "audiences": [
+        "teams"
+      ]
+    },
+    {
+      "name": "Premium",
+      "price": "$ 73",
+      "amount": 73,
+      "currencyCode": "USD",
+      "subtitle": "Annual subscription",
+      "cta": "Choose Premium",
+      "id": "premium-teams",
+      "features": [
+        {
+          "text": "All the features of the version Basic +",
+          "included": true
+        },
+        {
+          "text": "Statistics on workouts planned",
+          "included": true
+        },
+        {
+          "text": "Statistics on workouts completed",
+          "included": true
+        },
+        {
+          "text": "Full editor new exercises",
+          "included": true
+        },
+        {
+          "text": "Training assistant",
+          "included": true
+        },
+        {
+          "text": "Analyze your diet",
+          "included": true
+        },
+        {
+          "text": "Create meal plans",
+          "included": true
+        },
+        {
+          "text": "Body analysis",
+          "included": true
+        }
+      ],
+      "audiences": [
+        "teams"
+      ]
+    },
+    {
+      "name": "Pro",
+      "price": "$ 109",
+      "amount": 109,
+      "currencyCode": "USD",
+      "subtitle": "Annual subscription",
+      "cta": "Choose Pro",
+      "badge": "Personal avatar",
+      "badgeDenied": true,
+      "id": "pro-teams",
+      "features": [
+        {
+          "text": "All the features of the version Premium +",
+          "included": true
+        },
+        {
+          "text": "Gps workout map tracking",
+          "included": true
+        },
+        {
+          "text": "Heart rate tracking",
+          "included": true
+        },
+        {
+          "text": "Advanced statistical analysis",
+          "included": true
+        },
+        {
+          "text": "Actions tracking",
+          "included": true
+        },
+        {
+          "text": "Intelligent assistant",
+          "included": true
+        },
+        {
+          "text": "Self-learning",
+          "included": true
+        },
+        {
+          "text": "AI training plan development",
+          "included": true,
+          "highlight": true
+        }
+      ],
+      "audiences": [
+        "teams"
+      ]
+    },
+    {
+      "name": "Free",
+      "price": "$ 0",
+      "amount": 0,
+      "currencyCode": "USD",
+      "subtitle": "Use version free for 1 month",
+      "cta": "Choose Free",
+      "id": "free-clubs",
+      "features": [
+        {
+          "text": "Develop aerobic workout plan",
+          "included": true
+        },
+        {
+          "text": "Develop weight training plan",
+          "included": true
+        },
+        {
+          "text": "Develop circuit training plan",
+          "included": true
+        },
+        {
+          "text": "Develop weekly weight training plan",
+          "included": true
+        },
+        {
+          "text": "Download user-shared workout plans",
+          "included": true
+        },
+        {
+          "text": "Store workouts in the Annual Work Plan",
+          "included": true
+        },
+        {
+          "text": "Store completed work",
+          "included": true
+        }
+      ],
+      "audiences": [
+        "clubs"
+      ]
+    },
+    {
+      "name": "Basic",
+      "price": "$ 36",
+      "amount": 36,
+      "currencyCode": "USD",
+      "subtitle": "Annual subscription",
+      "cta": "Choose Basic",
+      "id": "basic-clubs",
+      "features": [
+        {
+          "text": "All the features of the version free +",
+          "included": true
+        },
+        {
+          "text": "500+ exercises with videos",
+          "included": true
+        },
+        {
+          "text": "Version for male and female",
+          "included": true
+        },
+        {
+          "text": "View targeted muscle areas",
+          "included": true
+        },
+        {
+          "text": "Completed workouts compared with planned",
+          "included": true
+        },
+        {
+          "text": "Access to library of workouts",
+          "included": true
+        },
+        {
+          "text": "Create your own preparatory cycles",
+          "included": true
+        }
+      ],
+      "audiences": [
+        "clubs"
+      ]
+    },
+    {
+      "name": "Premium",
+      "price": "$ 73",
+      "amount": 73,
+      "currencyCode": "USD",
+      "subtitle": "Annual subscription",
+      "cta": "Choose Premium",
+      "id": "premium-clubs",
+      "features": [
+        {
+          "text": "All the features of the version Basic +",
+          "included": true
+        },
+        {
+          "text": "Statistics on workouts planned",
+          "included": true
+        },
+        {
+          "text": "Statistics on workouts completed",
+          "included": true
+        },
+        {
+          "text": "Full editor new exercises",
+          "included": true
+        },
+        {
+          "text": "Training assistant",
+          "included": true
+        },
+        {
+          "text": "Analyze your diet",
+          "included": true
+        },
+        {
+          "text": "Create meal plans",
+          "included": true
+        },
+        {
+          "text": "Body analysis",
+          "included": true
+        }
+      ],
+      "audiences": [
+        "clubs"
+      ]
+    },
+    {
+      "name": "Pro",
+      "price": "$ 109",
+      "amount": 109,
+      "currencyCode": "USD",
+      "subtitle": "Annual subscription",
+      "cta": "Choose Pro",
+      "badge": "Personal avatar",
+      "badgeDenied": true,
+      "id": "pro-clubs",
+      "features": [
+        {
+          "text": "All the features of the version Premium +",
+          "included": true
+        },
+        {
+          "text": "Gps workout map tracking",
+          "included": true
+        },
+        {
+          "text": "Heart rate tracking",
+          "included": true
+        },
+        {
+          "text": "Advanced statistical analysis",
+          "included": true
+        },
+        {
+          "text": "Actions tracking",
+          "included": true
+        },
+        {
+          "text": "Intelligent assistant",
+          "included": true
+        },
+        {
+          "text": "Self-learning",
+          "included": true
+        },
+        {
+          "text": "AI training plan development",
+          "included": true,
+          "highlight": true
+        }
+      ],
+      "audiences": [
+        "clubs"
+      ]
+    },
+    {
+      "name": "Free",
+      "price": "$ 0",
+      "amount": 0,
+      "currencyCode": "USD",
+      "subtitle": "Use version free for 1 month",
+      "cta": "Choose Free",
+      "id": "free-groups",
+      "features": [
+        {
+          "text": "Develop aerobic workout plan",
+          "included": true
+        },
+        {
+          "text": "Develop weight training plan",
+          "included": true
+        },
+        {
+          "text": "Develop circuit training plan",
+          "included": true
+        },
+        {
+          "text": "Develop weekly weight training plan",
+          "included": true
+        },
+        {
+          "text": "Download user-shared workout plans",
+          "included": true
+        },
+        {
+          "text": "Store workouts in the Annual Work Plan",
+          "included": true
+        },
+        {
+          "text": "Store completed work",
+          "included": true
+        }
+      ],
+      "audiences": [
+        "groups"
+      ]
+    },
+    {
+      "name": "Basic",
+      "price": "$ 36",
+      "amount": 36,
+      "currencyCode": "USD",
+      "subtitle": "Annual subscription",
+      "cta": "Choose Basic",
+      "id": "basic-groups",
+      "features": [
+        {
+          "text": "All the features of the version free +",
+          "included": true
+        },
+        {
+          "text": "500+ exercises with videos",
+          "included": true
+        },
+        {
+          "text": "Version for male and female",
+          "included": true
+        },
+        {
+          "text": "View targeted muscle areas",
+          "included": true
+        },
+        {
+          "text": "Completed workouts compared with planned",
+          "included": true
+        },
+        {
+          "text": "Access to library of workouts",
+          "included": true
+        },
+        {
+          "text": "Create your own preparatory cycles",
+          "included": true
+        }
+      ],
+      "audiences": [
+        "groups"
+      ]
+    },
+    {
+      "name": "Premium",
+      "price": "$ 73",
+      "amount": 73,
+      "currencyCode": "USD",
+      "subtitle": "Annual subscription",
+      "cta": "Choose Premium",
+      "id": "premium-groups",
+      "features": [
+        {
+          "text": "All the features of the version Basic +",
+          "included": true
+        },
+        {
+          "text": "Statistics on workouts planned",
+          "included": true
+        },
+        {
+          "text": "Statistics on workouts completed",
+          "included": true
+        },
+        {
+          "text": "Full editor new exercises",
+          "included": true
+        },
+        {
+          "text": "Training assistant",
+          "included": true
+        },
+        {
+          "text": "Analyze your diet",
+          "included": true
+        },
+        {
+          "text": "Create meal plans",
+          "included": true
+        },
+        {
+          "text": "Body analysis",
+          "included": true
+        }
+      ],
+      "audiences": [
+        "groups"
+      ]
+    },
+    {
+      "name": "Pro",
+      "price": "$ 109",
+      "amount": 109,
+      "currencyCode": "USD",
+      "subtitle": "Annual subscription",
+      "cta": "Choose Pro",
+      "badge": "Personal avatar",
+      "badgeDenied": true,
+      "id": "pro-groups",
+      "features": [
+        {
+          "text": "All the features of the version Premium +",
+          "included": true
+        },
+        {
+          "text": "Gps workout map tracking",
+          "included": true
+        },
+        {
+          "text": "Heart rate tracking",
+          "included": true
+        },
+        {
+          "text": "Advanced statistical analysis",
+          "included": true
+        },
+        {
+          "text": "Actions tracking",
+          "included": true
+        },
+        {
+          "text": "Intelligent assistant",
+          "included": true
+        },
+        {
+          "text": "Self-learning",
+          "included": true
+        },
+        {
+          "text": "AI training plan development",
+          "included": true,
+          "highlight": true
+        }
+      ],
+      "audiences": [
+        "groups"
+      ]
     }
   ],
   "paywall": {
@@ -2247,8 +2975,22 @@
     {
       "key": "hero",
       "label": "Home hero video",
-      "items": [],
-      "selectedIds": [],
+      "items": [
+        {
+          "id": "hero-mvzqn6ap-tbe4c",
+          "url": "/uploads/hero-new-1793652929919.mp4",
+          "sports": []
+        },
+        {
+          "id": "hero-mvzqnd1e-fkimi",
+          "url": "/uploads/hero-new-1793652938684.mp4",
+          "sports": []
+        }
+      ],
+      "selectedIds": [
+        "hero-mvzqn6ap-tbe4c",
+        "hero-mvzqnd1e-fkimi"
+      ],
       "rotateDelaySec": 5
     },
     {
@@ -2310,7 +3052,7 @@
       "id": "hero",
       "key": "heroBreakLimits",
       "label": "Home hero video",
-      "url": ""
+      "url": "/uploads/hero-new-1793652929919.mp4"
     },
     {
       "id": "paywall",
