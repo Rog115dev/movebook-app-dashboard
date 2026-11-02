@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { getSession } from '@/lib/auth';
+import {
+  ensureMp4FastStart,
+  shouldFastStartVideo,
+} from '@/lib/mp4Faststart';
 
 export const runtime = 'nodejs';
 /** Allow long uploads for large MP4s */
@@ -67,8 +71,11 @@ export async function POST(req: Request) {
     );
   }
 
-  const bytes = Buffer.from(await file.arrayBuffer());
+  let bytes = Buffer.from(await file.arrayBuffer());
   const ext = extensionForFile(file);
+  if (shouldFastStartVideo(ext) || shouldFastStartVideo(file.name || '')) {
+    bytes = ensureMp4FastStart(bytes);
+  }
   const filename = `${folder || 'asset'}-${Date.now()}${ext}`;
   const uploadDir = path.join(process.cwd(), 'public', 'uploads');
   await fs.mkdir(uploadDir, { recursive: true });

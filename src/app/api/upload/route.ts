@@ -11,9 +11,16 @@ import {
   syncPrimaryUrls,
 } from '@/lib/imageSections';
 import { looksLikeVideoUrl } from '@/lib/mediaUrl';
+import {
+  ensureMp4FastStart,
+  shouldFastStartVideo,
+} from '@/lib/mp4Faststart';
 import { patchSettings, readSettings } from '@/lib/settings';
 import type { ImageSectionKey } from '@/lib/types';
 import { IMAGE_SECTION_KEYS } from '@/lib/types';
+
+export const runtime = 'nodejs';
+export const maxDuration = 120;
 
 function extensionForFile(file: File): string {
   const fromName = path.extname(file.name || '').toLowerCase();
@@ -83,8 +90,11 @@ export async function POST(req: Request) {
 
   // No per-section count cap (needed for many sports / user-type variants).
 
-  const bytes = Buffer.from(await file.arrayBuffer());
+  let bytes = Buffer.from(await file.arrayBuffer());
   const ext = extensionForFile(file);
+  if (shouldFastStartVideo(ext) || shouldFastStartVideo(file.name || '')) {
+    bytes = ensureMp4FastStart(bytes);
+  }
   const safeKey = `${sectionKey}${itemId ? `-${itemId}` : '-new'}`.replace(
     /[^a-zA-Z0-9_-]/g,
     '-'
