@@ -7,18 +7,30 @@ import { SaveBar } from '@/components/SaveBar';
 import { fetchSettings, saveSettings } from '@/lib/api-client';
 import {
   migrateImageSections,
-  primaryVideoUrlFromSection,
   removeImageFromSection,
   sectionKind,
 } from '@/lib/imageSections';
+import { LOCALES, LOCALE_LABELS } from '@/lib/i18n';
 import { looksLikeVideoUrl } from '@/lib/mediaUrl';
+import { PLAN_USER_TYPES } from '@/lib/planMatrix';
 import type {
   ImageSectionConfig,
   ImageSectionKey,
   RotateDelaySec,
   SportCatalogItem,
+  UnlockAudience,
 } from '@/lib/types';
-import { ROTATE_DELAYS } from '@/lib/types';
+import { ROTATE_DELAYS, UNLOCK_AUDIENCE_OPTIONS } from '@/lib/types';
+
+const audienceOptions = PLAN_USER_TYPES.map((t) => ({
+  value: t.id,
+  label: t.label,
+}));
+
+const languageOptions = LOCALES.map((code) => ({
+  value: code,
+  label: LOCALE_LABELS[code],
+}));
 
 export default function ImagesPage() {
   const [sections, setSections] = useState<ImageSectionConfig[]>([]);
@@ -40,9 +52,10 @@ export default function ImagesPage() {
       s.imageSections?.length > 0
         ? s.imageSections
         : migrateImageSections(s);
-    setSections(next);
+    const imagesOnly = next.filter((sec) => sectionKind(sec.key) === 'image');
+    setSections(imagesOnly);
     setSports(Array.isArray(s.sports) ? s.sports.map((sp) => ({ ...sp })) : []);
-    setPreviewKey(next[0]?.key || 'hero');
+    setPreviewKey(imagesOnly[0]?.key || 'paywall');
   }
 
   useEffect(() => {
@@ -109,6 +122,46 @@ export default function ImagesPage() {
     }));
   }
 
+  function setItemAudiences(
+    sectionKey: ImageSectionConfig['key'],
+    itemId: string,
+    nextAudiences: string[]
+  ) {
+    updateSection(sectionKey, (section) => ({
+      ...section,
+      items: section.items.map((item) =>
+        item.id === itemId
+          ? {
+              ...item,
+              audiences: nextAudiences.filter((v): v is UnlockAudience =>
+                (UNLOCK_AUDIENCE_OPTIONS as readonly string[]).includes(v)
+              ),
+            }
+          : item
+      ),
+    }));
+  }
+
+  function setItemLanguages(
+    sectionKey: ImageSectionConfig['key'],
+    itemId: string,
+    nextLanguages: string[]
+  ) {
+    updateSection(sectionKey, (section) => ({
+      ...section,
+      items: section.items.map((item) =>
+        item.id === itemId
+          ? {
+              ...item,
+              languages: Array.from(
+                new Set(nextLanguages.map((l) => l.trim().toLowerCase()).filter(Boolean))
+              ),
+            }
+          : item
+      ),
+    }));
+  }
+
   function removeItem(sectionKey: ImageSectionConfig['key'], itemId: string) {
     updateSection(sectionKey, (section) =>
       removeImageFromSection(section, itemId)
@@ -136,18 +189,19 @@ export default function ImagesPage() {
       const res = await fetch('/api/upload', { method: 'POST', body: form });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Upload failed');
-      const next =
+      const uploaded =
         data.settings?.imageSections?.length > 0
           ? data.settings.imageSections
           : migrateImageSections(data.settings || {});
-      setSections(next);
-      const kind = sectionKind(section.key);
+      setSections(
+        uploaded.filter(
+          (sec: ImageSectionConfig) => sectionKind(sec.key) === 'image'
+        )
+      );
       setMessage(
-        kind === 'video'
-          ? 'Hero video saved (single clip).'
-          : mode === 'add'
-            ? `Added image to ${section.label}`
-            : `Replaced image in ${section.label}`
+        mode === 'add'
+          ? `Added image to ${section.label}`
+          : `Replaced image in ${section.label}`
       );
     } catch (err) {
       setMessage(err instanceof Error ? err.message : 'Upload failed.');
@@ -171,16 +225,41 @@ export default function ImagesPage() {
             `${section.label}: select at least 1 image to display`
           );
         }
+        for (const item of section.items) {
+          if (!(item.languages || []).length) {
+            throw new Error(
+              `${section.label}: each image needs at least 1 language`
+            );
+          }
+          if (!(item.sports || []).length) {
+            throw new Error(
+              `${section.label}: each image needs at least 1 sport (so swim ≠ football)`
+            );
+          }
+          if (!(item.audiences || []).length) {
+            throw new Error(
+              `${section.label}: each image needs at least 1 type of visitor`
+            );
+          }
+        }
       }
       const current = await fetchSettings();
-      const hero = sections.find((s) => s.key === 'hero');
-      const heroVideoUrl = primaryVideoUrlFromSection(hero);
+      const existing =
+        current.imageSections?.length > 0
+          ? current.imageSections
+          : migrateImageSections(current);
+      // Preserve hero videos managed on the Videos page.
+      const merged = existing.map((sec) => {
+        if (sectionKind(sec.key) === 'video') return sec;
+        return sections.find((s) => s.key === sec.key) || sec;
+      });
+      for (const sec of sections) {
+        if (!merged.some((s) => s.key === sec.key)) merged.push(sec);
+      }
       const final = await saveSettings({
-        imageSections: sections,
+        imageSections: merged,
         home: {
           ...current.home,
-          heroVideoUrl: heroVideoUrl || '',
-          heroVideoChosen: Boolean(heroVideoUrl),
           heroImageUrl: looksLikeVideoUrl(current.home.heroImageUrl)
             ? ''
             : current.home.heroImageUrl,
@@ -190,8 +269,8 @@ export default function ImagesPage() {
         final.imageSections?.length > 0
           ? final.imageSections
           : migrateImageSections(final);
-      setSections(next);
-      setMessage('Media settings saved.');
+      setSections(next.filter((sec) => sectionKind(sec.key) === 'image'));
+      setMessage('Image settings saved.');
     } catch (err) {
       setMessage(err instanceof Error ? err.message : 'Save failed.');
     } finally {
@@ -208,15 +287,14 @@ export default function ImagesPage() {
 
   return (
     <div className="mx-auto max-w-7xl">
-      <h1 className="text-2xl font-semibold">Images & video</h1>
+      <h1 className="text-2xl font-semibold">Images</h1>
       <p className="mt-2 text-zinc-400">
-        Home hero is a{' '}
-        <span className="text-[#FF7800]">video playlist</span> with no add
-        limit. Selected clips play in a circular cycle — each plays for its
-        full length. Paywall and TRAIN PRO are image pools (no add limit) —
-        set <span className="text-[#FF7800]">Type of sport</span> on each
-        image so mobile only shows ones matching the visitor’s selected
-        sports (empty = all sports).
+        Paywall and TRAIN PRO image pools. Each image must target{' '}
+        <span className="text-[#FF7800]">language(s)</span>,{' '}
+        <span className="text-[#FF7800]">sport(s)</span>, and{' '}
+        <span className="text-[#FF7800]">type of visitor</span> — mobile shows
+        it only when the visitor matches. Hero clips are under{' '}
+        <span className="text-[#FF7800]">Generals → Videos</span>.
       </p>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_280px]">
@@ -340,9 +418,19 @@ export default function ImagesPage() {
                           </label>
                           {!isVideo ? (
                             <div
-                              className="relative z-10"
+                              className="relative z-10 space-y-2"
                               onClick={(e) => e.stopPropagation()}
                             >
+                              <MultiCheckDropdown
+                                label="Language"
+                                options={languageOptions}
+                                values={item.languages || []}
+                                onChange={(next) =>
+                                  setItemLanguages(section.key, item.id, next)
+                                }
+                                emptyLabel="None selected"
+                                hint="Required — show only for visitors who chose one of these languages"
+                              />
                               <MultiCheckDropdown
                                 label="Type of sport"
                                 options={sportOptions}
@@ -350,11 +438,22 @@ export default function ImagesPage() {
                                 onChange={(next) =>
                                   setItemSports(section.key, item.id, next)
                                 }
+                                emptyLabel="None selected"
                                 hint={
                                   sportOptions.length
-                                    ? 'Empty = all sports'
+                                    ? 'Required — swim visitors must not see football images'
                                     : 'Add sports under Feature → Testimonials first'
                                 }
+                              />
+                              <MultiCheckDropdown
+                                label="Type of visitor"
+                                options={audienceOptions}
+                                values={item.audiences || []}
+                                onChange={(next) =>
+                                  setItemAudiences(section.key, item.id, next)
+                                }
+                                emptyLabel="None selected"
+                                hint="Required — Athlete, Coach, Teams, Clubs, Groups"
                               />
                             </div>
                           ) : null}

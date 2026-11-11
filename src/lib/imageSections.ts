@@ -5,9 +5,11 @@ import type {
   ImageSectionKey,
   MobileAppSettings,
   RotateDelaySec,
+  UnlockAudience,
 } from './types';
-import { ROTATE_DELAYS } from './types';
+import { ROTATE_DELAYS, UNLOCK_AUDIENCE_OPTIONS } from './types';
 import { looksLikeVideoUrl } from './mediaUrl';
+import { isLocaleCode } from './i18n';
 
 /**
  * No hard cap — pools need many assets for 5 user types × 10+ sports.
@@ -66,11 +68,59 @@ function normalizeSports(raw: unknown): string[] {
   );
 }
 
+function normalizeCountries(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  return Array.from(
+    new Set(
+      raw
+        .map((c) => String(c || '').trim().toUpperCase())
+        .filter((c) => c.length === 2)
+    )
+  );
+}
+
+function normalizeAudiences(raw: unknown): UnlockAudience[] {
+  if (!Array.isArray(raw)) return [];
+  return Array.from(
+    new Set(
+      raw
+        .map((a) => String(a || '').trim())
+        .filter((a): a is UnlockAudience =>
+          (UNLOCK_AUDIENCE_OPTIONS as readonly string[]).includes(a)
+        )
+    )
+  );
+}
+
+function normalizeLanguage(raw: unknown): string | undefined {
+  const v = String(raw || '')
+    .trim()
+    .toLowerCase();
+  if (!v) return undefined;
+  return isLocaleCode(v) ? v : undefined;
+}
+
+function normalizeLanguages(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  return Array.from(
+    new Set(
+      raw
+        .map((l) => String(l || '').trim().toLowerCase())
+        .filter((l) => isLocaleCode(l))
+    )
+  );
+}
+
 function normalizePoolItem(item: ImagePoolItem): ImagePoolItem {
+  const language = normalizeLanguage(item.language);
   return {
     id: String(item.id || '').trim(),
     url: String(item.url || '').trim(),
     sports: normalizeSports(item.sports),
+    languages: normalizeLanguages(item.languages),
+    countries: normalizeCountries(item.countries),
+    audiences: normalizeAudiences(item.audiences),
+    ...(language ? { language } : {}),
   };
 }
 
@@ -282,7 +332,17 @@ export function addHeroVideo(
   return {
     ...section,
     label: SECTION_META.hero.label,
-    items: [...section.items, { id, url: trimmed, sports: [] }],
+    items: [
+      ...section.items,
+      {
+        id,
+        url: trimmed,
+        sports: [],
+        countries: [],
+        audiences: [],
+        language: 'en',
+      },
+    ],
     selectedIds: [...section.selectedIds, id],
   };
 }

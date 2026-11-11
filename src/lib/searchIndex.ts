@@ -67,7 +67,7 @@ const SECTION_HITS: SearchHit[] = [
   {
     id: 'menu-generals',
     title: 'Generals',
-    desc: 'Home content, Paywall, Discount, TRAIN PRO, Images',
+    desc: 'Home content, Paywall, Discount, TRAIN PRO, Images, Videos',
     href: '/dashboard/generals',
     category: 'Menu',
     keywords: ['generals', 'others', 'menu'],
@@ -301,8 +301,8 @@ const SECTION_HITS: SearchHit[] = [
   },
   {
     id: 'images',
-    title: 'Images & video',
-    desc: 'Hero / paywall / TRAIN PRO image pools and rotation',
+    title: 'Images',
+    desc: 'Paywall / TRAIN PRO image pools and rotation',
     href: '/dashboard/generals/images',
     category: 'Generals',
     keywords: [
@@ -310,10 +310,27 @@ const SECTION_HITS: SearchHit[] = [
       'photo',
       'upload',
       'banner',
-      'hero',
       'rotate',
       'gallery',
       'add images',
+    ],
+  },
+  {
+    id: 'videos',
+    title: 'Videos',
+    desc: 'Hero presentation videos by language, visitor type, country, sport',
+    href: '/dashboard/generals/videos',
+    category: 'Generals',
+    keywords: [
+      'video',
+      'hero',
+      'mp4',
+      'language',
+      'visitor',
+      'athlete',
+      'coach',
+      'playlist',
+      'presentation',
     ],
   },
 ];
@@ -460,11 +477,26 @@ const ALIAS_HITS: SearchHit[] = [
   {
     id: 'alias-hero-image',
     title: 'Home hero image',
-    desc: 'Upload / rotate images for the home hero',
+    desc: 'Paywall / TRAIN PRO images (hero clips are under Videos)',
     href: '/dashboard/generals/images',
     category: 'Alias',
     keywords: ['hero image', 'break limits', 'banner', 'photo'],
   },
+  {
+    id: 'alias-hero-video',
+    title: 'Home hero video',
+    desc: 'Upload presentation videos filtered by language & visitor type',
+    href: '/dashboard/generals/videos',
+    category: 'Alias',
+    keywords: [
+      'hero video',
+      'presentation video',
+      'mp4',
+      'language video',
+      'visitor video',
+    ],
+  },
+
   {
     id: 'alias-apply-translation',
     title: 'Apply Translation',

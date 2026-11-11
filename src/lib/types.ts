@@ -253,8 +253,24 @@ export type TestimonialsSettings = {
 export type ImagePoolItem = {
   id: string;
   url: string;
-  /** Sport catalog ids. Empty = all sports. Used for image pools (not hero video). */
+  /** Sport catalog ids. Empty = all sports (legacy). Videos/images should set 1+. */
   sports?: string[];
+  /**
+   * Hero video only: exactly one locale code (en, it, …).
+   * Mobile never plays a video whose language ≠ visitor language.
+   */
+  language?: string;
+  /**
+   * Image pools: one or more locale codes.
+   * Mobile shows the image only if the visitor language is in this list.
+   */
+  languages?: string[];
+  /**
+   * Hero video: ISO country codes. Empty = ignore country (match by language only).
+   */
+  countries?: string[];
+  /** Visitor types (Athlete / Coach / Team / Club / Group). */
+  audiences?: UnlockAudience[];
 };
 
 /** Per-screen image/video pool (no hard count cap). Select 1 (fixed) or 2+ (random rotate). */

@@ -5,7 +5,8 @@ const TABS = [
   { href: '/dashboard/generals/paywall', label: 'Paywall' },
   { href: '/dashboard/generals/discount', label: 'Discount' },
   { href: '/dashboard/generals/train-pro', label: 'TRAIN PRO' },
-  { href: '/dashboard/generals/images', label: 'Images & video' },
+  { href: '/dashboard/generals/images', label: 'Images' },
+  { href: '/dashboard/generals/videos', label: 'Videos' },
 ];
 
 export default function GeneralsSectionLayout({
