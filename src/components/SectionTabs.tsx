@@ -24,23 +24,36 @@ export function SectionTabs({ title, description, tabs }: Props) {
         <p className="mt-2 text-sm text-zinc-400">{description}</p>
       ) : null}
       <div className="mt-5 flex flex-wrap gap-2">
-        {tabs.map((tab) => {
-          const active =
-            pathname === tab.href || pathname.startsWith(`${tab.href}/`);
-          return (
-            <Link
-              key={tab.href}
-              href={tab.href}
-              className={`rounded-lg px-3.5 py-2 text-sm transition ${
-                active
-                  ? 'bg-[#FF7800] font-medium text-black'
-                  : 'border border-zinc-700 text-zinc-300 hover:border-[#FF7800] hover:text-white'
-              }`}
-            >
-              {tab.label}
-            </Link>
-          );
-        })}
+        {(() => {
+          // Prefer the longest matching href so parent tabs (e.g. Overview)
+          // do not stay active on nested routes.
+          let bestHref: string | null = null;
+          let bestLen = -1;
+          for (const tab of tabs) {
+            const matches =
+              pathname === tab.href || pathname.startsWith(`${tab.href}/`);
+            if (matches && tab.href.length > bestLen) {
+              bestHref = tab.href;
+              bestLen = tab.href.length;
+            }
+          }
+          return tabs.map((tab) => {
+            const active = tab.href === bestHref;
+            return (
+              <Link
+                key={tab.href}
+                href={tab.href}
+                className={`rounded-lg px-3.5 py-2 text-sm transition ${
+                  active
+                    ? 'bg-[#FF7800] font-medium text-black'
+                    : 'border border-zinc-700 text-zinc-300 hover:border-[#FF7800] hover:text-white'
+                }`}
+              >
+                {tab.label}
+              </Link>
+            );
+          });
+        })()}
       </div>
     </div>
   );

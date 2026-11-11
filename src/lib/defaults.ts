@@ -7,6 +7,7 @@ import {
 } from './imageSections';
 import { DEFAULT_CURRENCIES } from './currency';
 import { createDefaultPlanMatrix } from './planMatrix';
+import { createDefaultMarketing } from './marketing';
 import { createDefaultSports } from './sports';
 
 export function createDefaultSettings(): MobileAppSettings {
@@ -317,5 +318,6 @@ export function createDefaultSettings(): MobileAppSettings {
         trainPro: '/uploads/train-pro.jpg',
       })
     ),
+    marketing: createDefaultMarketing(),
   };
 }

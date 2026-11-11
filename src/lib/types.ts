@@ -1,4 +1,5 @@
 import type { I18nMap, LocaleCode } from './i18n';
+import type { MarketingSettings } from './marketing';
 
 export type ColorSettings = {
   bg: string;
@@ -312,4 +313,6 @@ export type MobileAppSettings = {
   /** @deprecated Prefer imageSections; kept for legacy clients */
   images: ImageAsset[];
   imageSections: ImageSectionConfig[];
+  /** Marketing media pools (Avatars / Reels / Checks). */
+  marketing: MarketingSettings;
 };

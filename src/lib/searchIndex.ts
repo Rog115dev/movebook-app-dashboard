@@ -333,6 +333,46 @@ const SECTION_HITS: SearchHit[] = [
       'presentation',
     ],
   },
+  {
+    id: 'marketing',
+    title: 'Manage marketing',
+    desc: 'Avatars, Reels, Checks — images & videos with targeting',
+    href: '/dashboard/marketing',
+    category: 'Marketing',
+    keywords: [
+      'marketing',
+      'manage marketing',
+      'avatars',
+      'reels',
+      'checks',
+      'promo',
+      'campaign',
+    ],
+  },
+  {
+    id: 'marketing-avatars',
+    title: 'Avatars',
+    desc: 'Marketing avatar images and videos',
+    href: '/dashboard/marketing/avatars',
+    category: 'Marketing',
+    keywords: ['avatars', 'avatar', 'marketing images', 'marketing videos'],
+  },
+  {
+    id: 'marketing-reels',
+    title: 'Reels',
+    desc: 'Marketing reel images and videos',
+    href: '/dashboard/marketing/reels',
+    category: 'Marketing',
+    keywords: ['reels', 'reel', 'short video', 'marketing'],
+  },
+  {
+    id: 'marketing-checks',
+    title: 'Checks',
+    desc: 'Marketing check images and videos',
+    href: '/dashboard/marketing/checks',
+    category: 'Marketing',
+    keywords: ['checks', 'check', 'marketing'],
+  },
 ];
 
 const COLOR_FIELDS: SearchHit[] = [

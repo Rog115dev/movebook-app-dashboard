@@ -16,6 +16,7 @@ import type {
 import { ROTATE_DELAYS, UNLOCK_AUDIENCE_OPTIONS } from './types';
 import { DEFAULT_CURRENCIES, normalizePlanPricing } from './currency';
 import { ensurePlanMatrix } from './planMatrix';
+import { normalizeMarketingSettings } from './marketing';
 import { normalizeSports } from './sports';
 import { looksLikeVideoUrl } from './mediaUrl';
 
@@ -262,6 +263,7 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
     },
     imageSections,
     images: syncLegacyImages(imageSections),
+    marketing: normalizeMarketingSettings(settings.marketing),
   };
 }
 

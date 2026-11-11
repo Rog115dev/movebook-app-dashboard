@@ -11,6 +11,7 @@ const MAIN_MENUS = [
   { href: '/dashboard/colors', label: 'Colors' },
   { href: '/dashboard/languages', label: 'Languages' },
   { href: '/dashboard/generals', label: 'Generals' },
+  { href: '/dashboard/marketing', label: 'Marketing' },
 ] as const;
 
 function isActive(pathname: string, href: string) {
