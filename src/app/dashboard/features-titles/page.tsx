@@ -4,10 +4,12 @@ import { useEffect, useState } from 'react';
 import { Field } from '@/components/Field';
 import { IconPicker } from '@/components/IconPicker';
 import { SaveBar } from '@/components/SaveBar';
+import { useConfirm } from '@/hooks/useConfirm';
 import { fetchSettings, saveSettings } from '@/lib/api-client';
 import type { PaywallFeature, PaywallSettings } from '@/lib/types';
 
 export default function FeaturesTitlesPage() {
+  const { confirm, confirmDialog } = useConfirm();
   const [paywall, setPaywall] = useState<PaywallSettings | null>(null);
   const [features, setFeatures] = useState<PaywallFeature[]>([]);
   const [saving, setSaving] = useState(false);
@@ -47,7 +49,12 @@ export default function FeaturesTitlesPage() {
     ]);
   }
 
-  function removeItem(index: number) {
+  async function removeItem(index: number) {
+    const ok = await confirm({
+      title: 'Remove title',
+      message: 'Remove this feature title? It will stay gone after you Save.',
+    });
+    if (!ok) return;
     setFeatures((prev) => prev.filter((_, i) => i !== index));
   }
 
@@ -208,6 +215,7 @@ export default function FeaturesTitlesPage() {
         onSave={onSave}
         onReset={() => load()}
       />
+      {confirmDialog}
     </div>
   );
 }

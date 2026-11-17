@@ -1,7 +1,7 @@
 'use client';
 
-import { MarketingMediaManager } from '@/components/MarketingMediaManager';
+import { MarketingReelsManager } from '@/components/MarketingReelsManager';
 
 export default function MarketingReelsPage() {
-  return <MarketingMediaManager sectionKey="reels" />;
+  return <MarketingReelsManager />;
 }

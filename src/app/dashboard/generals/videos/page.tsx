@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { ImageSectionPreview } from '@/components/ImageSectionPreview';
 import { MultiCheckDropdown } from '@/components/MultiCheckDropdown';
 import { SaveBar } from '@/components/SaveBar';
@@ -56,6 +57,7 @@ export default function VideosPage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [busyKey, setBusyKey] = useState<string | null>(null);
+  const [pendingRemoveId, setPendingRemoveId] = useState<string | null>(null);
   const uploadLock = useRef(false);
 
   // Admin browse filters — Language (1) + Type of Visitor (multi)
@@ -126,7 +128,14 @@ export default function VideosPage() {
     updateHero((section) => ({ ...section, selectedIds: [itemId] }));
   }
 
-  function removeItem(itemId: string) {
+  function requestRemoveItem(itemId: string) {
+    setPendingRemoveId(itemId);
+  }
+
+  function confirmRemoveItem() {
+    if (!pendingRemoveId) return;
+    const itemId = pendingRemoveId;
+    setPendingRemoveId(null);
     updateHero((section) => removeImageFromSection(section, itemId));
   }
 
@@ -437,7 +446,7 @@ export default function VideosPage() {
                     </label>
                     <button
                       type="button"
-                      onClick={() => removeItem(item.id)}
+                      onClick={() => requestRemoveItem(item.id)}
                       className="rounded-lg border border-red-900/50 px-2 py-1 text-[11px] text-red-300"
                     >
                       Remove
@@ -487,6 +496,15 @@ export default function VideosPage() {
         message={message}
         onSave={onSave}
         onReset={() => load()}
+      />
+
+      <ConfirmDialog
+        open={Boolean(pendingRemoveId)}
+        title="Remove video"
+        message="Remove this video? It will stay gone after you Save."
+        confirmLabel="Remove"
+        onConfirm={confirmRemoveItem}
+        onCancel={() => setPendingRemoveId(null)}
       />
     </div>
   );

@@ -61,7 +61,8 @@ export function browserTranslatorSupported() {
 
 async function getTranslator(
   targetLanguage: string,
-  onProgress?: (pct: number) => void
+  onProgress?: (pct: number) => void,
+  sourceLanguage = 'en'
 ): Promise<BrowserTranslator> {
   const Translator = window.Translator;
   if (!Translator) {
@@ -70,11 +71,11 @@ async function getTranslator(
     );
   }
 
-  const options = { sourceLanguage: 'en', targetLanguage };
+  const options = { sourceLanguage, targetLanguage };
   const availability = await Translator.availability(options);
   if (availability === 'unavailable') {
     throw new Error(
-      `Browser cannot translate to "${targetLanguage}". Try another language or Chrome flags.`
+      `Browser cannot translate ${sourceLanguage} → "${targetLanguage}". Try another language or Chrome flags.`
     );
   }
 
@@ -86,6 +87,33 @@ async function getTranslator(
       });
     },
   });
+}
+
+/**
+ * Translate a free-text string between CMS locales (Chrome on-device Translator).
+ * Used by Reels "Copy with translation on…".
+ */
+export async function translateTextWithBrowser(
+  sourceLocale: LocaleCode,
+  targetLocale: LocaleCode,
+  text: string,
+  onProgress?: (message: string) => void
+): Promise<string> {
+  const source = String(text || '').trim();
+  if (!source) return '';
+  if (sourceLocale === targetLocale) return source;
+
+  const sourceLanguage = TRANSLATOR_LANG[sourceLocale] || sourceLocale;
+  const targetLanguage = TRANSLATOR_LANG[targetLocale] || targetLocale;
+  onProgress?.(
+    `Preparing translator (${sourceLanguage} → ${targetLanguage})…`
+  );
+  const translator = await getTranslator(
+    targetLanguage,
+    (pct) => onProgress?.(`Downloading language pack… ${pct}%`),
+    sourceLanguage
+  );
+  return (await translator.translate(source)).trim();
 }
 
 /**

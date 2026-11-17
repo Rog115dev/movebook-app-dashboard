@@ -1,6 +1,7 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { ImageSectionPreview } from '@/components/ImageSectionPreview';
 import { MultiCheckDropdown } from '@/components/MultiCheckDropdown';
 import { SaveBar } from '@/components/SaveBar';
@@ -39,6 +40,10 @@ export default function ImagesPage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [busyKey, setBusyKey] = useState<string | null>(null);
+  const [pendingRemove, setPendingRemove] = useState<{
+    sectionKey: ImageSectionConfig['key'];
+    itemId: string;
+  } | null>(null);
   const uploadLock = useRef(false);
 
   const sportOptions = useMemo(
@@ -162,7 +167,17 @@ export default function ImagesPage() {
     }));
   }
 
-  function removeItem(sectionKey: ImageSectionConfig['key'], itemId: string) {
+  function requestRemoveItem(
+    sectionKey: ImageSectionConfig['key'],
+    itemId: string
+  ) {
+    setPendingRemove({ sectionKey, itemId });
+  }
+
+  function confirmRemoveItem() {
+    if (!pendingRemove) return;
+    const { sectionKey, itemId } = pendingRemove;
+    setPendingRemove(null);
     updateSection(sectionKey, (section) =>
       removeImageFromSection(section, itemId)
     );
@@ -498,7 +513,7 @@ export default function ImagesPage() {
                               disabled={!canRemove}
                               onClick={(e) => {
                                 e.stopPropagation();
-                                removeItem(section.key, item.id);
+                                requestRemoveItem(section.key, item.id);
                               }}
                               className="rounded-lg border border-red-900/50 px-2 py-1 text-[11px] text-red-300 disabled:opacity-35"
                             >
@@ -560,6 +575,15 @@ export default function ImagesPage() {
         message={message}
         onSave={onSave}
         onReset={() => load()}
+      />
+
+      <ConfirmDialog
+        open={Boolean(pendingRemove)}
+        title="Remove image"
+        message="Remove this image? It will stay gone after you Save."
+        confirmLabel="Remove"
+        onConfirm={confirmRemoveItem}
+        onCancel={() => setPendingRemove(null)}
       />
     </div>
   );

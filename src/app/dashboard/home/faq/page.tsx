@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Field } from '@/components/Field';
 import { MultiCheckDropdown } from '@/components/MultiCheckDropdown';
 import { SaveBar } from '@/components/SaveBar';
+import { useConfirm } from '@/hooks/useConfirm';
 import { fetchSettings, saveSettings } from '@/lib/api-client';
 import type {
   FaqItem,
@@ -47,6 +48,7 @@ function normalizeAudiences(raw: unknown): UnlockAudience[] {
 }
 
 export default function FaqPage() {
+  const { confirm, confirmDialog } = useConfirm();
   const [trainPro, setTrainPro] = useState<TrainProSettings | null>(null);
   const [faqTitle, setFaqTitle] = useState('FAQ');
   const [faqs, setFaqs] = useState<FaqItem[]>([]);
@@ -84,7 +86,12 @@ export default function FaqPage() {
     setFaqs((prev) => [...prev, { q: '', a: '', audiences: [] }]);
   }
 
-  function removeFaq(index: number) {
+  async function removeFaq(index: number) {
+    const ok = await confirm({
+      title: 'Remove question',
+      message: 'Remove this FAQ question? It will stay gone after you Save.',
+    });
+    if (!ok) return;
     setFaqs((prev) => prev.filter((_, i) => i !== index));
   }
 
@@ -234,6 +241,7 @@ export default function FaqPage() {
         onSave={onSave}
         onReset={() => load()}
       />
+      {confirmDialog}
     </div>
   );
 }

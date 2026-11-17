@@ -1,9 +1,10 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useMemo, useState } from 'react';
 import { Field } from '@/components/Field';
 import { MultiCheckDropdown } from '@/components/MultiCheckDropdown';
 import { SaveBar } from '@/components/SaveBar';
+import { useConfirm } from '@/hooks/useConfirm';
 import { fetchSettings, saveSettings } from '@/lib/api-client';
 import { COUNTRY_OPTIONS } from '@/lib/countries';
 import { LOCALES, LOCALE_LABELS, type LocaleCode } from '@/lib/i18n';
@@ -115,6 +116,7 @@ function TestimonialAvatar({
 }
 
 export default function TestimonialsPage() {
+  const { confirm, confirmDialog } = useConfirm();
   const [page, setPage] = useState<TestimonialsSettings | null>(null);
   const [sports, setSports] = useState<SportCatalogItem[]>([]);
   const [newSportName, setNewSportName] = useState('');
@@ -164,7 +166,12 @@ export default function TestimonialsPage() {
     });
   }
 
-  function removeItem(index: number) {
+  async function removeItem(index: number) {
+    const ok = await confirm({
+      title: 'Remove testimonial',
+      message: 'Remove this testimonial? It will stay gone after you Save.',
+    });
+    if (!ok) return;
     setPage((prev) => {
       if (!prev) return prev;
       return { ...prev, items: prev.items.filter((_, i) => i !== index) };
@@ -203,7 +210,14 @@ export default function TestimonialsPage() {
     setMessage(`Added sport “${name}”. Save to persist.`);
   }
 
-  function removeSport(id: string) {
+  async function removeSport(id: string) {
+    const ok = await confirm({
+      title: 'Delete sport',
+      message:
+        'Delete this sport? It will also be removed from testimonials that use it.',
+      confirmLabel: 'Delete',
+    });
+    if (!ok) return;
     setSports((prev) => prev.filter((s) => s.id !== id));
     setPage((prev) => {
       if (!prev) return prev;
@@ -615,6 +629,7 @@ export default function TestimonialsPage() {
         onSave={onSave}
         onReset={() => load()}
       />
+      {confirmDialog}
     </div>
   );
 }

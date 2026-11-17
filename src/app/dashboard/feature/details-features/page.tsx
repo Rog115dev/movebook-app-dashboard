@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { ColorField } from '@/components/ColorField';
 import { Field } from '@/components/Field';
 import { SaveBar } from '@/components/SaveBar';
+import { useConfirm } from '@/hooks/useConfirm';
 import { fetchSettings, saveSettings } from '@/lib/api-client';
 import { unlockFeaturesI18nKeys } from '@/lib/contentI18n';
 import type {
@@ -36,6 +37,7 @@ function toggleAudience(
 }
 
 export default function FeaturesPage() {
+  const { confirm, confirmDialog } = useConfirm();
   const [page, setPage] = useState<FeaturesPageSettings | null>(null);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
@@ -92,7 +94,12 @@ export default function FeaturesPage() {
     });
   }
 
-  function removeItem(index: number) {
+  async function removeItem(index: number) {
+    const ok = await confirm({
+      title: 'Remove feature',
+      message: 'Remove this feature? It will stay gone after you Save.',
+    });
+    if (!ok) return;
     setPage((prev) => {
       if (!prev) return prev;
       return { ...prev, items: prev.items.filter((_, i) => i !== index) };
@@ -382,6 +389,7 @@ export default function FeaturesPage() {
           load().catch(() => setMessage('Failed to load settings'));
         }}
       />
+      {confirmDialog}
     </div>
   );
 }
