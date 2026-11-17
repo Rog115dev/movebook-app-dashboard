@@ -36,18 +36,23 @@ declare global {
 
 /** Map CMS locale codes to BCP-47 tags used by Chrome Translator. */
 export const TRANSLATOR_LANG: Record<LocaleCode, string> = {
+  ar: 'ar',
+  zh: 'zh',
+  da: 'da',
   en: 'en',
+  fil: 'fil',
   fr: 'fr',
   de: 'de',
-  it: 'it',
-  es: 'es',
   hi: 'hi',
+  id: 'id',
+  it: 'it',
+  ja: 'ja',
+  sw: 'sw',
+  pl: 'pl',
   pt: 'pt',
   ru: 'ru',
-  zh: 'zh',
-  ar: 'ar',
-  ja: 'ja',
-  id: 'id',
+  es: 'es',
+  tr: 'tr',
 };
 
 export function browserTranslatorSupported() {

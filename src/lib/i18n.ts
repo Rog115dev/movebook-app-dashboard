@@ -1,16 +1,22 @@
+/** Sorted by English language name. */
 export const LOCALES = [
+  'ar',
+  'zh',
+  'da',
   'en',
+  'fil',
   'fr',
   'de',
-  'it',
-  'es',
   'hi',
+  'id',
+  'it',
+  'ja',
+  'sw',
+  'pl',
   'pt',
   'ru',
-  'zh',
-  'ar',
-  'ja',
-  'id',
+  'es',
+  'tr',
 ] as const;
 
 export type LocaleCode = (typeof LOCALES)[number];
@@ -19,18 +25,23 @@ export type StringMap = Record<string, string>;
 export type I18nMap = Partial<Record<LocaleCode, StringMap>>;
 
 export const LOCALE_LABELS: Record<LocaleCode, string> = {
+  ar: 'العربية',
+  zh: '中文',
+  da: 'Dansk',
   en: 'English',
+  fil: 'Filipino',
   fr: 'Français',
   de: 'Deutsch',
-  it: 'Italiano',
-  es: 'Español',
   hi: 'हिन्दी',
+  id: 'Bahasa Indonesia',
+  it: 'Italiano',
+  ja: '日本語',
+  sw: 'Kiswahili',
+  pl: 'Polski',
   pt: 'Português',
   ru: 'Русский',
-  zh: '中文',
-  ar: 'العربية',
-  ja: '日本語',
-  id: 'Bahasa Indonesia',
+  es: 'Español',
+  tr: 'Türkçe',
 };
 
 /** Canonical English keys (manual translations edit these). */

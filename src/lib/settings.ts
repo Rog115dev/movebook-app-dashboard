@@ -31,7 +31,8 @@ function normalize(settings: MobileAppSettings): MobileAppSettings {
     ...defaults,
     ...settings,
     defaultLocale: settings.defaultLocale || 'en',
-    locales: settings.locales?.length ? settings.locales : [...LOCALES],
+    // Always expose the full canonical locale list (alphabetical by English name).
+    locales: [...LOCALES],
     i18n: mergeI18n(settings.i18n),
     colors: { ...defaults.colors, ...(settings.colors || {}) },
     home: {
